@@ -1,9 +1,19 @@
-use std::collections::HashMap;
-use std::collections::VecDeque;
+use std::collections::{
+    HashMap,
+    VecDeque,
+};
+
+use pixset::{
+    Pix,
+    Pixset,
+};
 
 use grid::Grid;
 use paths::Paths;
-use renderable::{Render, Renderable};
+use renderable::{
+    Renderable,
+    Vertex,
+};
 use config::{SQUARE_SIZE};
 
 #[derive(Debug)]
@@ -13,6 +23,7 @@ pub struct Dood {
     scale: f32,
     color: [f32; 3],
     hunger: f32,
+    pix: Pix,
 }
 
 impl Dood {
@@ -23,6 +34,7 @@ impl Dood {
             scale: square_size,
             hunger: 100.0,
             color: [0.2; 3],
+            pix: Pix::Dood,
         }
     }
 
@@ -58,20 +70,42 @@ impl Paths for Dood {
 }
 
 impl Renderable for Dood {
-    fn render(&self) -> Render {
+    fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
+        implement_vertex!(Vertex, vertex_position, tex_coords, loc, scale, color);
+
         let offset = (SQUARE_SIZE / 2) as f32;
         let y = (self.y * SQUARE_SIZE) as f32 + offset;
         let x = (self.x * SQUARE_SIZE) as f32 + offset;
-        return Render::new([x, -y], self.scale, self.color)
+
+        return vec![
+            Vertex {
+                vertex_position: [-0.5,  0.5],
+                tex_coords: tiles.tiles.get(&self.pix).unwrap()[0],
+                loc: [x, -y],
+                scale: self.scale,
+                color: self.color
+            },  // left  top
+            Vertex {
+                vertex_position: [ 0.5,  0.5],
+                tex_coords: tiles.tiles.get(&self.pix).unwrap()[1],
+                loc: [x, -y],
+                scale: self.scale,
+                color: self.color
+            },  // right top
+            Vertex {
+                vertex_position: [ 0.5, -0.5],
+                tex_coords: tiles.tiles.get(&self.pix).unwrap()[2],
+                loc: [x, -y],
+                scale: self.scale,
+                color: self.color
+            }, // right bottom
+            Vertex {
+                vertex_position: [-0.5, -0.5],
+                tex_coords: tiles.tiles.get(&self.pix).unwrap()[3],
+                loc: [x, -y],
+                scale: self.scale,
+                color: self.color
+            }, // left  bottom
+        ]
     }
 }
-
-//#[cfg(test)]
-//mod tests {
-//    use super::coords_to_index;
-//
-//    #[test]
-//    fn it_returns_the_x_value_on_the_first_row() {
-//        assert!(coords_to_index((3, 0), 5, 3) == 3)
-//    }
-//}

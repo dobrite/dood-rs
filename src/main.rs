@@ -58,10 +58,6 @@ fn main() {
     let image = image::load(Cursor::new(&include_bytes!("../assets/tileset.png")[..]), image::PNG).unwrap();
     let tileset = glium::texture::Texture2d::new(&display, image);
     let pixset = Pixset::new(TOTAL_TILES, SQUARE_SIZE);
-
-    let vertices = square::vertices(&display);
-    let indices = square::indices(&display);
-
     let program = Program::from_source(&display, shaders::VERTEX, shaders::FRAGMENT, None).unwrap();
 
     let draw_parameters = glium::DrawParameters {
@@ -97,15 +93,14 @@ fn main() {
     }
 
     loop {
-        let instances = {
+        let (vertices, indices) = {
             let grid = grid.lock().unwrap();
-            square::instances(&display, &grid.stuffs)
+            square::vertices(&display, &pixset, &grid.stuffs)
         };
 
         let mut frame = display.draw();
         frame.clear_color(0.0, 0.0, 0.0, 1.0);
-        frame.draw((&vertices, instances.per_instance_if_supported().unwrap()),
-                    &indices, &program, &uniforms, &draw_parameters).unwrap();
+        frame.draw(&vertices, &indices, &program, &uniforms, &draw_parameters).unwrap();
 
         frame.finish();
 

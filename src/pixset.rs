@@ -1,6 +1,6 @@
 use std::collections::HashMap;
 
-#[derive(Eq, PartialEq, Hash)]
+#[derive(Debug, Eq, PartialEq, Hash)]
 pub enum Pix {
     None,
     Dood,

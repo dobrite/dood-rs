@@ -3,8 +3,9 @@
 //16:06 < tomaka> and in the fragment shader, you load the color of the texture and do the blending manually
 //16:07 < tomaka> with mix(tex_color.rgb, color.rgb, tex_color.a) I guess
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
-
 extern crate glium;
+
+use std::collections::HashMap;
 
 use glium::Display;
 use glium::vertex::VertexBufferAny;
@@ -12,38 +13,44 @@ use glium::vertex::VertexBuffer;
 use glium::index::IndexBuffer;
 use glium::index::TrianglesList;
 
-use renderable::{Render, Renderable};
+use pixset::{
+    Pix,
+    Pixset,
+};
 
-#[derive(Copy, Clone)]
-struct Vertex {
-    vertex_position: [f32; 2],
-    tex_coords: [f32; 2],
+use renderable::{
+    Renderable,
+    Vertex,
+};
+
+pub fn vertices(display: &Display, tiles: &Pixset, stuffs: &Vec<Box<Renderable+Send>>)
+    -> (VertexBufferAny, IndexBuffer) {
+        let data: Vec<Vertex> = stuffs.into_iter().flat_map(|s| s.render(tiles)).collect();
+        let len = data.len();
+
+        return (
+            VertexBuffer::new(display, data).into_vertex_buffer_any(),
+            IndexBuffer::new(display, TrianglesList(indices(len))),
+        )
 }
 
-pub fn vertices(display: &Display) -> VertexBufferAny {
-    implement_vertex!(Vertex, vertex_position, tex_coords);
-
-    VertexBuffer::new(display,
-        vec![
-            Vertex { vertex_position: [-0.5,  0.5], tex_coords: [0.0,  1.0] },  // left  top
-            Vertex { vertex_position: [ 0.5,  0.5], tex_coords: [0.25, 1.0] },  // right top
-            Vertex { vertex_position: [ 0.5, -0.5], tex_coords: [0.25, 0.75] }, // right bottom
-            Vertex { vertex_position: [-0.5, -0.5], tex_coords: [0.0,  0.75] }, // left  bottom
-        ]
-    ).into_vertex_buffer_any()
+fn indices(length: usize) -> Vec<u16> {
+    return (0..(length / 4)).into_iter().flat_map(|i|
+        vec![0, 1, 2, 0, 2, 3].into_iter().map(|j| (j + i * 4) as u16).collect::<Vec<u16>>()
+    ).collect()
 }
 
-pub fn indices(display: &Display) -> IndexBuffer {
-    IndexBuffer::new(display, TrianglesList(vec![0u16, 1, 2, 0, 2, 3]))
-}
+#[cfg(test)]
+mod tests {
+    use super::indices;
 
-pub fn instances(display: &Display, stuffs: &Vec<Box<Renderable+Send>>) -> VertexBufferAny {
-    implement_vertex!(Render, loc, scale, color);
-
-    let mut data = Vec::new();
-    for stuff in stuffs.iter() {
-        data.push(stuff.render())
+    #[test]
+    fn it_returns_indices_for_len_four() {
+        assert!(indices(4) == [0u16, 1, 2, 0, 2, 3]);
     }
 
-    VertexBuffer::new(display, data).into_vertex_buffer_any()
+    #[test]
+    fn it_returns_indices_for_len_eight() {
+        assert!(indices(8) == [0u16, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7]);
+    }
 }

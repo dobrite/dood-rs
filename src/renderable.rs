@@ -1,20 +1,19 @@
-#[derive(Debug, Copy, Clone)]
-pub struct Render {
-    pub loc: [f32; 2],
-    pub scale: f32,
-    pub color: [f32; 3],
-}
+use std::collections::HashMap;
 
-impl Render {
-    pub fn new(loc: [f32; 2], scale: f32, color: [f32; 3]) -> Render {
-        return Render {
-            loc: loc,
-            scale: scale, // TODO default this to square_size
-            color: color,
-        }
-    }
+use pixset::{
+    Pix,
+    Pixset,
+};
+
+#[derive(Copy, Clone)]
+pub struct Vertex {
+    pub vertex_position: [f32; 2],
+    pub tex_coords: [f32; 2],
+    pub loc: [f32; 2],
+    pub color: [f32; 3],
+    pub scale: f32,
 }
 
 pub trait Renderable {
-    fn render(&self) -> Render;
+    fn render(&self, tiles: &Pixset) -> Vec<Vertex>;
 }

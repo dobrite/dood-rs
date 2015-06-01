@@ -1,6 +1,7 @@
 use dood::Dood;
 use food::Food;
 use wall::Wall;
+use pixset::Pix;
 use renderable::Renderable;
 
 pub struct Grid {
@@ -18,21 +19,23 @@ impl Grid {
 
         //TODO: dumb
         let d = Dood::new(4, 4, square_size);
-        //*tiles.tiles.get(&Pix::Dood).unwrap()
 
         stuffs.push(Box::new(Dood::new(4, 4, square_size)));
+
         stuffs.push(Box::new(Food {
             x:  8, //  520   16 * 32 + (16 / 2)
             y:  8, // -520 -(16 * 32 + (16 / 2))
             scale: square_size,
-            color: [0.2313725, 0.3254902, 0.1372549]
+            color: [0.2313725, 0.3254902, 0.1372549],
+            pix: Pix::UpArrow,
         }));
 
         stuffs.push(Box::new(Wall {
             x:  6, //  520   16 * 32 + (16 / 2)
             y:  6, // -520 -(16 * 32 + (16 / 2))
             scale: square_size,
-            color: [0.0, 0.0, 0.0]
+            color: [0.0, 0.0, 0.0],
+            pix: Pix::DownArrow,
         }));
 
         let mut walls = Vec::new();
@@ -43,7 +46,7 @@ impl Grid {
             height: height,
             width:  width,
             walls:  walls,
-            dood:   d,
+            dood:   d, // TODO: dumb
         }
     }
 
