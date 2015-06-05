@@ -1,60 +1,59 @@
+use std::sync::{
+    Arc,
+    Mutex,
+};
+
 use dood::Dood;
 use food::Food;
 use wall::Wall;
 use pixset::Pix;
 use renderable::Renderable;
+use updatable::Updatable;
 
 pub struct Grid {
-    pub stuffs: Vec<Box<Renderable + Send>>,
+    pub updatables: Vec<Arc<Mutex<Box<Updatable+Send+Sync>>>>,
+    pub renderables: Vec<Arc<Mutex<Box<Renderable+Send+Sync>>>>,
     pub walls:  Vec<(i32, i32)>,
     pub height: i32,
     pub width:  i32,
-    pub dood: Dood,
 }
 
 impl Grid {
     pub fn new(width: i32, height: i32, square_size: f32) -> Grid {
+        let mut updatables: Vec<Arc<Mutex<Box<Updatable+Send+Sync>>>> = Vec::new();
+        let mut renderables: Vec<Arc<Mutex<Box<Renderable+Send+Sync>>>> = Vec::new();
 
-        let mut stuffs: Vec<Box<Renderable + Send>> = Vec::new();
+        //let d = Box::new(Dood::new(4, 4, square_size));
+        //                 Arc::new(Mutex::new());
 
-        //TODO: dumb
-        let d = Dood::new(4, 4, square_size);
+        //updatables.push(d.clone());
 
-        stuffs.push(Box::new(Dood::new(4, 4, square_size)));
+        //renderables.push(d.clone());
+        let d = Arc::new(Mutex::new(Box::new(Dood::new(4, 4, square_size)) as Box<Renderable+Send+Sync>));
+        renderables.push(d.clone());
 
-        stuffs.push(Box::new(Food {
-            x:  8, //  520   16 * 32 + (16 / 2)
-            y:  8, // -520 -(16 * 32 + (16 / 2))
-            scale: square_size,
-            color: [0.2313725, 0.3254902, 0.1372549],
-            pix: Pix::UpArrow,
-        }));
+        let w = Arc::new(Mutex::new(Box::new(Wall::new(6, 6, square_size)) as Box<Renderable+Send+Sync>));
+        renderables.push(w.clone());
 
-        stuffs.push(Box::new(Wall {
-            x:  6, //  520   16 * 32 + (16 / 2)
-            y:  6, // -520 -(16 * 32 + (16 / 2))
-            scale: square_size,
-            color: [0.0, 0.0, 0.0],
-            pix: Pix::DownArrow,
-        }));
+        let f = Arc::new(Mutex::new(Box::new(Food::new(8, 8, square_size)) as Box<Renderable+Send+Sync>));
+        renderables.push(f.clone());
 
         let mut walls = Vec::new();
         walls.push((6, 6));
 
         Grid {
-            stuffs: stuffs,
+            renderables: renderables,
+            updatables: updatables,
             height: height,
             width:  width,
             walls:  walls,
-            dood:   d, // TODO: dumb
         }
     }
 
     pub fn update(&self) {
-        return
-        //for stuff in self.stuffs.iter_mut() {
-        //    stuff.update();
-        //}
+        for updatable in self.updatables.iter() {
+            updatable.lock().unwrap().update(self);
+        }
     }
 
     pub fn in_bounds(&self, loc: &(i32, i32)) -> bool {

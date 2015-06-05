@@ -15,6 +15,7 @@ mod has_loc;
 mod renderable;
 mod pixset;
 mod config;
+mod updatable;
 
 use std::thread;
 use std::sync::{
@@ -95,7 +96,7 @@ fn main() {
     loop {
         let (vertices, indices) = {
             let grid = grid.lock().unwrap();
-            square::vertices(&display, &pixset, &grid.stuffs)
+            square::vertices(&display, &pixset, &grid.renderables)
         };
 
         let mut frame = display.draw();

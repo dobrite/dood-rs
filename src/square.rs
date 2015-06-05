@@ -5,6 +5,11 @@
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
 extern crate glium;
 
+use std::sync::{
+    Arc,
+    Mutex,
+};
+
 use std::collections::HashMap;
 
 use glium::Display;
@@ -23,14 +28,17 @@ use renderable::{
     Vertex,
 };
 
-pub fn vertices(display: &Display, tiles: &Pixset, stuffs: &Vec<Box<Renderable+Send>>)
-    -> (VertexBufferAny, IndexBuffer) {
-        let data: Vec<Vertex> = stuffs.into_iter().flat_map(|s| s.render(tiles)).collect();
-        let len = data.len();
+pub type TexCoords = [[f32; 2]; 4];
 
+pub fn vertices(display: &Display, tiles: &Pixset, renderables: &Vec<Arc<Mutex<Box<Renderable+Send+Sync>>>>)
+    -> (VertexBufferAny, IndexBuffer) {
+        //let data: Vec<Vertex> = renderables.iter().flat_map(|r| r.lock().unwrap().render(tiles)).collect();
+        //let len = data.len();
+
+        let v: Vec<Vertex> = vec![];
         return (
-            VertexBuffer::new(display, data).into_vertex_buffer_any(),
-            IndexBuffer::new(display, TrianglesList(indices(len))),
+            VertexBuffer::new(display, v).into_vertex_buffer_any(),
+            IndexBuffer::new(display, TrianglesList(indices(0))),
         )
 }
 

@@ -1,5 +1,7 @@
 use std::collections::HashMap;
 
+use square::TexCoords;
+
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum Pix {
     None,
@@ -11,7 +13,7 @@ pub enum Pix {
 }
 
 pub struct Pixset {
-    pub tiles: HashMap<Pix, [[f32; 2]; 4]>
+    pub tiles: HashMap<Pix, TexCoords>
 }
 
 impl Pixset {
@@ -31,7 +33,7 @@ impl Pixset {
         //    }
         //}
 
-        let mut tiles: HashMap<Pix, [[f32; 2]; 4]> = HashMap::new();
+        let mut tiles: HashMap<Pix, TexCoords> = HashMap::new();
 
         // TODO fix
         tiles.insert(Pix::DownArrow,  get_tex_coords(vec![0, 0], total_tiles, square_size));
@@ -44,6 +46,10 @@ impl Pixset {
         return Pixset {
             tiles: tiles,
         }
+    }
+
+    pub fn get(&self, pix: &Pix) -> [[f32; 2]; 4] {
+        return *self.tiles.get(pix).unwrap()
     }
 }
 

@@ -10,6 +10,12 @@ use renderable::{
     Vertex,
 };
 
+use updatable::{
+    Updatable,
+};
+
+use grid::Grid;
+
 #[derive(Debug)]
 pub struct Food {
     pub x: i32,
@@ -20,7 +26,19 @@ pub struct Food {
 }
 
 impl Food {
-    pub fn update(&self) {}
+    pub fn new(x: i32, y: i32, square_size: f32) -> Food {
+        return Food {
+            x: x,
+            y: y,
+            scale: square_size,
+            color: [0.2313725, 0.3254902, 0.1372549],
+            pix: Pix::UpArrow,
+        }
+    }
+}
+
+impl Updatable for Food {
+    fn update(&mut self, grid: &Grid) {}
 }
 
 impl Renderable for Food {
@@ -30,28 +48,28 @@ impl Renderable for Food {
         return vec![
             Vertex {
                 vertex_position: [-0.5,  0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[0],
+                tex_coords: tiles.get(&self.pix)[0],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             },  // left  top
             Vertex {
                 vertex_position: [ 0.5,  0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[1],
+                tex_coords: tiles.get(&self.pix)[1],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             },  // right top
             Vertex {
                 vertex_position: [ 0.5, -0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[2],
+                tex_coords: tiles.get(&self.pix)[2],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             }, // right bottom
             Vertex {
                 vertex_position: [-0.5, -0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[3],
+                tex_coords: tiles.get(&self.pix)[3],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color

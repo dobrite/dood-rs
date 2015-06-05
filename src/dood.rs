@@ -8,13 +8,22 @@ use pixset::{
     Pixset,
 };
 
-use grid::Grid;
-use paths::Paths;
 use renderable::{
     Renderable,
     Vertex,
 };
-use config::{SQUARE_SIZE};
+
+use updatable::{
+    Updatable,
+};
+
+use paths::{
+    Path,
+    Paths,
+};
+
+use grid::Grid;
+use config::SQUARE_SIZE;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -24,6 +33,7 @@ pub struct Dood {
     color: [f32; 3],
     hunger: f32,
     pix: Pix,
+    path: Path,
 }
 
 impl Dood {
@@ -35,16 +45,14 @@ impl Dood {
             hunger: 100.0,
             color: [0.2; 3],
             pix: Pix::Dood,
+            path: HashMap::new(),
         }
     }
 
-    pub fn update(&mut self) {
-        self.hunger -= 0.01;
-    }
 }
 
 impl Paths for Dood {
-    fn path(&self, grid: &Grid, goal: (i32, i32)) -> HashMap<(i32, i32), (i32, i32)> {
+    fn path(&self, grid: &Grid, goal: (i32, i32)) -> Path {
         let mut frontier = VecDeque::new();
         frontier.push_back((self.x, self.y));
         let mut came_from = HashMap::new();
@@ -69,6 +77,17 @@ impl Paths for Dood {
     }
 }
 
+impl Updatable for Dood {
+    fn update(&mut self, grid: &Grid) {
+        self.hunger -= 0.01;
+
+        // TODO use hunger
+        if self.path.is_empty() {
+            self.path = self.path(grid, (8, 8));
+        }
+    }
+}
+
 impl Renderable for Dood {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         implement_vertex!(Vertex, vertex_position, tex_coords, loc, scale, color);
@@ -80,28 +99,28 @@ impl Renderable for Dood {
         return vec![
             Vertex {
                 vertex_position: [-0.5,  0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[0],
+                tex_coords: tiles.get(&self.pix)[0],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             },  // left  top
             Vertex {
                 vertex_position: [ 0.5,  0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[1],
+                tex_coords: tiles.get(&self.pix)[1],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             },  // right top
             Vertex {
                 vertex_position: [ 0.5, -0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[2],
+                tex_coords: tiles.get(&self.pix)[2],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
             }, // right bottom
             Vertex {
                 vertex_position: [-0.5, -0.5],
-                tex_coords: tiles.tiles.get(&self.pix).unwrap()[3],
+                tex_coords: tiles.get(&self.pix)[3],
                 loc: [x, -y],
                 scale: self.scale,
                 color: self.color
