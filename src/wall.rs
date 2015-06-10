@@ -1,17 +1,18 @@
-use std::collections::HashMap;
-
 use pixset::{
     Pix,
     Pixset,
 };
 
-use renderable::{
-    Renderable,
-    Vertex,
+use entity::{
+    Entity
 };
 
-use updatable::{
-    Updatable,
+use loc::{
+    Loc,
+};
+
+use renderable::{
+    Vertex,
 };
 
 use grid::Grid;
@@ -37,11 +38,9 @@ impl Wall {
     }
 }
 
-impl Updatable for Wall {
-    fn update(&mut self, grid: &Grid) {}
-}
+impl Entity for Wall {
+    fn update(&mut self, _: &Grid, _: &Vec<Loc>) {}
 
-impl Renderable for Wall {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         let y = self.y as f32 * 16.0 + 8.0;
         let x = self.x as f32 * 16.0 + 8.0;

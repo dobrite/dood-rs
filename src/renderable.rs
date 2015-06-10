@@ -1,11 +1,6 @@
-use std::collections::HashMap;
-
 use pixset::{
-    Pix,
     Pixset,
 };
-
-trait Renderable2: Renderable + Send + Sync {}
 
 #[derive(Copy, Clone)]
 pub struct Vertex {

@@ -5,21 +5,19 @@
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
 extern crate glium;
 
-use std::sync::{
-    Arc,
-    Mutex,
-};
-
-use std::collections::HashMap;
-
 use glium::Display;
 use glium::vertex::VertexBufferAny;
 use glium::vertex::VertexBuffer;
 use glium::index::IndexBuffer;
-use glium::index::TrianglesList;
+use glium::index::PrimitiveType::TrianglesList;
+
+use entity::Entity;
+use entities::Entities;
+use dood::Dood;
+use wall::Wall;
+use food::Food;
 
 use pixset::{
-    Pix,
     Pixset,
 };
 
@@ -30,16 +28,45 @@ use renderable::{
 
 pub type TexCoords = [[f32; 2]; 4];
 
-pub fn vertices(display: &Display, tiles: &Pixset, renderables: &Vec<Arc<Mutex<Box<Renderable+Send+Sync>>>>)
-    -> (VertexBufferAny, IndexBuffer) {
-        //let data: Vec<Vertex> = renderables.iter().flat_map(|r| r.lock().unwrap().render(tiles)).collect();
-        //let len = data.len();
+pub fn vertices(display: &Display, tiles: &Pixset, entities: &Entities) -> (VertexBufferAny, IndexBuffer<u16>) {
+    let mut data: Vec<Vertex> = Vec::new();
 
-        let v: Vec<Vertex> = vec![];
-        return (
-            VertexBuffer::new(display, v).into_vertex_buffer_any(),
-            IndexBuffer::new(display, TrianglesList(indices(0))),
-        )
+    for (_, entity) in entities {
+        match entity.downcast_ref::<Dood>() {
+            Some(dood) => {
+                let vertexes = dood.render(&tiles);
+                for vertex in vertexes {
+                    data.push(vertex);
+                }
+            }
+            _ => {}
+        }
+        match entity.downcast_ref::<Wall>() {
+            Some(wall) => {
+                let vertexes = wall.render(&tiles);
+                for vertex in vertexes {
+                    data.push(vertex);
+                }
+            }
+            _ => {}
+        }
+        match entity.downcast_ref::<Food>() {
+            Some(food) => {
+                let vertexes = food.render(&tiles);
+                for vertex in vertexes {
+                    data.push(vertex);
+                }
+            }
+            _ => {}
+        }
+    }
+
+    let len = data.len();
+
+    return (
+        VertexBuffer::new(display, data).into_vertex_buffer_any(),
+        IndexBuffer::new(display, TrianglesList, indices(len)),
+    )
 }
 
 fn indices(length: usize) -> Vec<u16> {

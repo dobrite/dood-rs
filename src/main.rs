@@ -11,17 +11,21 @@ mod dood;
 mod food;
 mod wall;
 mod paths;
-mod has_loc;
 mod renderable;
 mod pixset;
 mod config;
 mod updatable;
+mod entity;
+mod entities;
+mod loc;
+
+use std::collections::HashMap;
+
+use std::any::{
+    Any,
+};
 
 use std::thread;
-use std::sync::{
-    Arc,
-    Mutex
-};
 
 use glium::{
     DisplayBuild,
@@ -37,13 +41,24 @@ use glium::draw_parameters::{
 use config::{
     SQUARE_SIZE,
     TOTAL_TILES,
-    UPDATES_PER_SECOND,
+    //UPDATES_PER_SECOND,
 };
 
 use grid::Grid;
 use dood::Dood;
+use food::Food;
+use wall::Wall;
 use pixset::Pixset;
 use std::io::Cursor;
+use entity::Entity;
+
+fn gen_world() -> HashMap<(i32, i32), Box<Any>> {
+    let mut entities = HashMap::new();
+    entities.insert((0, 0), Box::new(Dood::new(0, 0, SQUARE_SIZE as f32)) as Box<Any>);
+    //entities.insert((6, 6), Box::new(Wall::new(6, 6, SQUARE_SIZE as f32)) as Box<Any>);
+    entities.insert((10, 10), Box::new(Food::new(10, 10, SQUARE_SIZE as f32)) as Box<Any>);
+    return entities
+}
 
 fn main() {
     let width = 256.0;
@@ -58,7 +73,7 @@ fn main() {
 
     let image = image::load(Cursor::new(&include_bytes!("../assets/tileset.png")[..]), image::PNG).unwrap();
     let tileset = glium::texture::Texture2d::new(&display, image);
-    let pixset = Pixset::new(TOTAL_TILES, SQUARE_SIZE);
+    let pixset = Pixset::new(TOTAL_TILES);
     let program = Program::from_source(&display, shaders::VERTEX, shaders::FRAGMENT, None).unwrap();
 
     let draw_parameters = glium::DrawParameters {
@@ -79,28 +94,30 @@ fn main() {
         tileset: &tileset,
     };
 
-    // Arc is needed until thread::scoped is stable
-    let grid = Arc::new(Mutex::new(Grid::new(16, 16, SQUARE_SIZE as f32)));
+    let grid = Grid::new(16, 16);
 
-    {
-        let grid = grid.clone();
-        // Spawn off thread to update the grid. Main thread will be in charge of rendering
-        thread::spawn(move || {
-            loop {
-                thread::sleep_ms(1000 / UPDATES_PER_SECOND as u32);
-                grid.lock().unwrap().update();
-            }
-        });
-    }
+    let mut entities = gen_world();
+
+    // TODO only do walls (not food and player)
+    //let blocked = entities.keys().cloned().collect::<Vec<_>>();
+    let blocked = vec![];
 
     loop {
-        let (vertices, indices) = {
-            let grid = grid.lock().unwrap();
-            square::vertices(&display, &pixset, &grid.renderables)
-        };
+        for (_, entity) in entities.iter_mut() {
+            match entity.downcast_mut::<Dood>() {
+                Some(dood) => dood.update(&grid, &blocked),
+                _ => {}
+            }
+            match entity.downcast_mut::<Wall>() {
+                Some(wall) => wall.update(&grid, &blocked),
+                _ => {}
+            }
+        }
+
+        let (vertices, indices) = square::vertices(&display, &pixset, &entities);
 
         let mut frame = display.draw();
-        frame.clear_color(0.0, 0.0, 0.0, 1.0);
+        frame.clear_color(1.0, 1.0, 1.0, 1.0);
         frame.draw(&vertices, &indices, &program, &uniforms, &draw_parameters).unwrap();
 
         frame.finish();
@@ -111,5 +128,7 @@ fn main() {
                 _ => ()
             }
         }
+
+        thread::sleep_ms(1000);
     }
 }

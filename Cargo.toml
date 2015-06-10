@@ -6,6 +6,9 @@ authors = ["Dave O <davidobrite@gmail.com>"]
 
 [dependencies]
 rand = "*"
-glium = "*"
 glutin = "*"
 image = "*"
+
+[dependencies.glium]
+git = "https://github.com/dobrite/glium.git"
+rev = "fix_for_as_ref"
