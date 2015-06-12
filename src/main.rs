@@ -21,13 +21,10 @@ mod entity;
 mod entities;
 mod loc;
 mod state;
+mod world;
 
 use std::collections::HashMap;
-
-use std::any::{
-    Any,
-};
-
+use std::any::Any;
 use std::thread;
 
 use piston::window::WindowSettings;
@@ -59,14 +56,7 @@ use wall::Wall;
 use pixset::Pixset;
 use std::io::Cursor;
 use entity::Entity;
-
-fn gen_world() -> HashMap<Loc, Box<Any>> {
-    let mut entities = HashMap::new();
-    entities.insert((0, 0), Box::new(Dood::new(0, 0, SQUARE_SIZE as f32)) as Box<Any>);
-    //entities.insert((6, 6), Box::new(Wall::new(6, 6, SQUARE_SIZE as f32)) as Box<Any>);
-    entities.insert((10, 10), Box::new(Food::new(10, 10, SQUARE_SIZE as f32)) as Box<Any>);
-    return entities
-}
+use world::gen_world;
 
 fn main() {
     let width = 256.0;
