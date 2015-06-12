@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate glium;
+extern crate piston;
 extern crate glutin;
+extern crate glutin_window;
 extern crate rand;
 extern crate image;
 
@@ -27,6 +29,10 @@ use std::any::{
 };
 
 use std::thread;
+
+use piston::window::WindowSettings;
+use piston::event::*; // TODO not this
+use glutin_window::GlutinWindow as Window;
 
 use glium::{
     DisplayBuild,
