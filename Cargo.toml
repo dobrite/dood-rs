@@ -8,6 +8,8 @@ authors = ["Dave O <davidobrite@gmail.com>"]
 rand = "*"
 glutin = "*"
 image = "*"
+piston = "*"
+pistoncore-glutin_window = "*"
 
 [dependencies.glium]
 git = "https://github.com/dobrite/glium.git"
