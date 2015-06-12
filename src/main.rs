@@ -1,6 +1,8 @@
 #[macro_use]
 extern crate glium;
+extern crate piston;
 extern crate glutin;
+extern crate glutin_window;
 extern crate rand;
 extern crate image;
 extern crate fps_counter;
@@ -20,14 +22,16 @@ mod entity;
 mod entities;
 mod loc;
 mod state;
+mod world;
+mod input;
 
 use std::collections::HashMap;
-
-use std::any::{
-    Any,
-};
-
+use std::any::Any;
 use std::thread;
+
+use piston::window::WindowSettings;
+use piston::event::*; // TODO not this
+use glutin_window::GlutinWindow as Window;
 
 use glium::{
     DisplayBuild,
@@ -48,6 +52,7 @@ use config::{
     //UPDATES_PER_SECOND,
 };
 
+use input::Input;
 use loc::Loc;
 use grid::Grid;
 use dood::Dood;
@@ -56,14 +61,7 @@ use wall::Wall;
 use pixset::Pixset;
 use std::io::Cursor;
 use entity::Entity;
-
-fn gen_world() -> HashMap<Loc, Box<Any>> {
-    let mut entities = HashMap::new();
-    entities.insert((0, 0), Box::new(Dood::new(0, 0, SQUARE_SIZE as f32)) as Box<Any>);
-    //entities.insert((6, 6), Box::new(Wall::new(6, 6, SQUARE_SIZE as f32)) as Box<Any>);
-    entities.insert((10, 10), Box::new(Food::new(10, 10, SQUARE_SIZE as f32)) as Box<Any>);
-    return entities
-}
+use world::World;
 
 fn main() {
     let width = 256.0;
@@ -99,43 +97,33 @@ fn main() {
         tileset: &tileset,
     };
 
-    let grid = Grid::new(16, 16);
-
-    let mut entities = gen_world();
-
-    // TODO only do walls (not food and player)
-    //let blocked = entities.keys().cloned().collect::<Vec<_>>();
-    let blocked = vec![];
+    let mut world = World::new();
+    let mut input = Input::new();
     let mut fps = FPSCounter::new();
 
     loop {
-        for (_, entity) in entities.iter_mut() {
-            match entity.downcast_mut::<Dood>() {
-                Some(dood) => dood.update(&grid, &blocked),
-                _ => {}
-            }
-            match entity.downcast_mut::<Wall>() {
-                Some(wall) => wall.update(&grid, &blocked),
-                _ => {}
+        for event in display.poll_events() {
+            // TODO event_manager(event); to get this out of here
+            match event {
+                glutin::Event::Closed => return,
+                glutin::Event::MouseInput(element_state, mouse_button) => input = input.set_mouse_state(element_state, mouse_button),
+                glutin::Event::MouseMoved(loc) => input = input.set_mouse_loc(loc),
+                _ => ()
+                //event => state.handle(&event) // this was on a paste
             }
         }
 
-        let (vertices, indices) = square::vertices(&display, &pixset, &entities);
+        world.update();
 
+        let (vertices, indices) = square::vertices(&display, &pixset, &world.entities);
         let mut frame = display.draw();
         frame.clear_color(0.0, 0.0, 0.0, 1.0);
         frame.draw(&vertices, &indices, &program, &uniforms, &draw_parameters).unwrap();
-
         frame.finish();
 
-        for event in display.poll_events() {
-            match event {
-                glutin::Event::Closed => return,
-                _ => ()
-            }
-        }
+        println!("{:?}", input);
 
-        thread::sleep_ms(100);
+        thread::sleep_ms(100); // TODO lol
         println!("{:?}", fps.tick());
     }
 }
