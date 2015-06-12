@@ -18,6 +18,7 @@ mod updatable;
 mod entity;
 mod entities;
 mod loc;
+mod state;
 
 use std::collections::HashMap;
 
