@@ -1,5 +1,9 @@
 use loc::Loc;
 
+use entity::{
+    Entity,
+};
+
 pub struct Grid {
     pub height: i32,
     pub width:  i32,
@@ -22,9 +26,9 @@ impl Grid {
         !blocked.contains(&loc)
     }
 
-    pub fn neighbors(&self, loc: (i32, i32), blocked: &Vec<Loc>) -> Vec<(i32, i32)> {
+    pub fn neighbors(&self, loc: Loc, blocked: &Vec<Loc>) -> Vec<Loc> {
         let (x, y) = loc;
-        let results: Vec<(i32, i32)> = vec![
+        let results: Vec<Loc> = vec![
             (x + 1, y),
             (x, y - 1),
             (x - 1, y),
@@ -35,5 +39,8 @@ impl Grid {
             .into_iter()
             .filter(|x| self.in_bounds(x) && self.passable(x, blocked))
             .collect()
+    }
+
+    pub fn find(&self, target: &Entity) {
     }
 }

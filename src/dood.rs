@@ -23,6 +23,8 @@ use entity::{
 use paths::{
     Path,
     Paths,
+    PathContour,
+    PathContourTrait,
 };
 
 use grid::Grid;
@@ -36,7 +38,7 @@ pub struct Dood {
     color: [f32; 3],
     hunger: f32,
     pix: Pix,
-    path: Vec<Loc>, // TODO should maybe redefine Path?
+    path: Path,
 }
 
 impl Dood {
@@ -51,48 +53,9 @@ impl Dood {
             path: Vec::new(),
         }
     }
-
-    // TODO this doesn't belong here
-    pub fn construct_path(&self, came_from: Path, goal: Loc) -> Vec<Loc> {
-        let mut current = goal;
-        let mut path = Vec::new();
-        path.push(current);
-
-        while current != (self.x, self.y) {
-            match came_from.get(&current) {
-                Some(next) => {
-                    path.push(*next);
-                    current = *next
-                }
-                None => {}
-            }
-        }
-
-        return path
-    }
 }
 
-impl Paths for Dood {
-    fn path(&self, grid: &Grid, blocked: &Vec<Loc>, goal: Loc) -> Vec<Loc> {
-        let mut frontier = VecDeque::new();
-        frontier.push_back((self.x, self.y));
-        let mut came_from = HashMap::new();
-        came_from.insert((self.x, self.y), (-1, -1));
-
-        while !frontier.is_empty() {
-            let current = frontier.pop_front().unwrap();
-            if current == goal { break }
-            for next in grid.neighbors(current, blocked).iter() {
-                if !came_from.contains_key(next) {
-                    frontier.push_back(*next);
-                    came_from.insert(*next, current);
-                }
-            }
-        }
-
-        return self.construct_path(came_from, goal)
-    }
-}
+impl Paths for Dood {}
 
 impl Entity for Dood {
     fn update(&mut self, grid: &Grid, entities: &Vec<Loc>) {
@@ -100,8 +63,7 @@ impl Entity for Dood {
 
         // TODO use hunger
         if self.path.is_empty() {
-            // TODO hard coded where food is
-            self.path = self.path(&grid, &entities, (10, 10));
+            self.path = self.path(&grid, &entities, (self.x, self.y), (10, 10));
         }
 
         match self.path.pop() {

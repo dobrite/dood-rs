@@ -44,6 +44,7 @@ use config::{
     //UPDATES_PER_SECOND,
 };
 
+use loc::Loc;
 use grid::Grid;
 use dood::Dood;
 use food::Food;
@@ -52,7 +53,7 @@ use pixset::Pixset;
 use std::io::Cursor;
 use entity::Entity;
 
-fn gen_world() -> HashMap<(i32, i32), Box<Any>> {
+fn gen_world() -> HashMap<Loc, Box<Any>> {
     let mut entities = HashMap::new();
     entities.insert((0, 0), Box::new(Dood::new(0, 0, SQUARE_SIZE as f32)) as Box<Any>);
     //entities.insert((6, 6), Box::new(Wall::new(6, 6, SQUARE_SIZE as f32)) as Box<Any>);
@@ -117,7 +118,7 @@ fn main() {
         let (vertices, indices) = square::vertices(&display, &pixset, &entities);
 
         let mut frame = display.draw();
-        frame.clear_color(1.0, 1.0, 1.0, 1.0);
+        frame.clear_color(0.0, 0.0, 0.0, 1.0);
         frame.draw(&vertices, &indices, &program, &uniforms, &draw_parameters).unwrap();
 
         frame.finish();
@@ -129,6 +130,6 @@ fn main() {
             }
         }
 
-        thread::sleep_ms(1000);
+        thread::sleep_ms(100);
     }
 }
