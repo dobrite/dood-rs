@@ -1,3 +1,5 @@
+jump point search (faster than a*)
+
 trait Mult<T> {
   fn mult(&self) -> i32;
 }

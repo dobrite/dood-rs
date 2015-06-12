@@ -1,6 +1,4 @@
 use std::cmp::Ordering;
-use std::collections::BinaryHeap;
-use std::usize;
 
 use loc::Loc;
 

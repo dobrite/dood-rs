@@ -1,7 +1,8 @@
 #version 140
 
-in vec3 vColor;
 in vec2 v_tex_coords;
+
+in vec3 vColor;
 
 out vec4 color;
 

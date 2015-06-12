@@ -1,9 +1,5 @@
 use loc::Loc;
 
-use entity::{
-    Entity,
-};
-
 pub struct Grid {
     pub height: i32,
     pub width:  i32,
@@ -39,8 +35,5 @@ impl Grid {
             .into_iter()
             .filter(|x| self.in_bounds(x) && self.passable(x, blocked))
             .collect()
-    }
-
-    pub fn find(&self, target: &Entity) {
     }
 }

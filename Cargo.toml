@@ -1,17 +1,16 @@
 [package]
-
 name = "dood-rs"
 version = "0.0.1"
 authors = ["Dave O <davidobrite@gmail.com>"]
 
 [dependencies]
-rand = "*"
-glutin = "*"
 image = "*"
 fps_counter = "*"
 piston = "*"
-pistoncore-glutin_window = "*"
-
-[dependencies.glium]
-git = "https://github.com/dobrite/glium.git"
-rev = "fix_for_as_ref"
+piston_window = "*"
+piston-gfx_texture = "*"
+hprof = "*"
+gfx = "*"
+gfx_device_gl = "*"
+camera_controllers = "*"
+nalgebra = "*"

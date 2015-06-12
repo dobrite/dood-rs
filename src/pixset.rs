@@ -13,7 +13,8 @@ pub enum Pix {
 }
 
 pub struct Pixset {
-    pub tiles: HashMap<Pix, TexCoords>
+    pub tiles: HashMap<Pix, TexCoords>,
+    pub total_tiles: i32,
 }
 
 impl Pixset {
@@ -36,35 +37,26 @@ impl Pixset {
         let mut tiles: HashMap<Pix, TexCoords> = HashMap::new();
 
         // TODO fix
-        tiles.insert(Pix::DownArrow,  get_tex_coords(vec![0, 0], total_tiles));
-        tiles.insert(Pix::LeftArrow,  get_tex_coords(vec![1, 0], total_tiles));
-        tiles.insert(Pix::Dood,       get_tex_coords(vec![2, 0], total_tiles));
-        tiles.insert(Pix::None,       get_tex_coords(vec![3, 0], total_tiles));
-        tiles.insert(Pix::UpArrow,    get_tex_coords(vec![0, 1], total_tiles));
-        tiles.insert(Pix::RightArrow, get_tex_coords(vec![1, 1], total_tiles));
+        tiles.insert(Pix::DownArrow,  get_tex_coords(total_tiles, vec![0, 3]));
+        tiles.insert(Pix::LeftArrow,  get_tex_coords(total_tiles, vec![1, 3]));
+        tiles.insert(Pix::Dood,       get_tex_coords(total_tiles, vec![2, 3]));
+        tiles.insert(Pix::None,       get_tex_coords(total_tiles, vec![3, 3]));
+        tiles.insert(Pix::UpArrow,    get_tex_coords(total_tiles, vec![0, 2]));
+        tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
 
         return Pixset {
             tiles: tiles,
+            total_tiles: total_tiles,
         }
     }
 
     pub fn get(&self, pix: &Pix) -> [[f32; 2]; 4] {
         return *self.tiles.get(pix).unwrap()
     }
+
 }
 
-// 0.0 (x),   0.0 (y)
-
-// 0.0 left,  1.0 top
-// 1.0 right, 1.0 top
-// 1.0 right, 0.0 bottom
-// 0.0 left,  0.0 bottom
-
-// 0,0, 1,0, 2,0, 3,0
-// 0,1, 1,1, 2,1, 3,1
-// 0,2, 1,2, 2,2, 3,2
-// 0,3, 1,3, 2,3, 3,3
-fn get_tex_coords(loc: Vec<i32>, total_tiles: i32) -> [[f32; 2]; 4] {
+fn get_tex_coords(total_tiles: i32, loc: Vec<i32>) -> [[f32; 2]; 4] {
     let tile_dim: f32 = (total_tiles as f32).sqrt();
     let per_tile: f32 = 1.0 / tile_dim;
 
@@ -87,7 +79,7 @@ mod tests {
 
     #[test]
     fn it_gets_tex_coords_for_top_left() {
-        assert!(get_tex_coords(vec![0, 0], 16, 16) == [
+        assert!(get_tex_coords(16, vec![0, 0]) == [
           [0.0,  1.0],
           [0.25, 1.0],
           [0.25, 0.75],
@@ -97,7 +89,7 @@ mod tests {
 
     #[test]
     fn it_gets_tex_coords_for_top_right() {
-        assert!(get_tex_coords(vec![3, 0], 16, 16) == [
+        assert!(get_tex_coords(16, vec![3, 0]) == [
           [0.75, 1.0],
           [1.0,  1.0],
           [1.0,  0.75],
@@ -107,7 +99,7 @@ mod tests {
 
     #[test]
     fn it_gets_tex_coords_for_bottom_right() {
-        assert!(get_tex_coords(vec![3, 3], 16, 16) == [
+        assert!(get_tex_coords(16, vec![3, 3]) == [
           [0.75, 0.25],
           [1.0,  0.25],
           [1.0,  0.0],
@@ -117,13 +109,11 @@ mod tests {
 
     #[test]
     fn it_gets_tex_coords_for_bottom_left() {
-        assert!(get_tex_coords(vec![0, 3], 16, 16) == [
+        assert!(get_tex_coords(16, vec![0, 3]) == [
           [0.0,  0.25],
           [0.25, 0.25],
           [0.25, 0.0],
           [0.0,  0.0],
         ]);
     }
-
-
 }

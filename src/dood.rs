@@ -1,34 +1,18 @@
-use std::collections::{
-    HashMap,
-    VecDeque,
-};
-
 use pixset::{
     Pix,
     Pixset,
 };
 
-use loc::{
-    Loc,
-};
-
-use renderable::{
-    Vertex,
-};
-
-use entity::{
-    Entity,
-};
-
 use paths::{
     Path,
     Paths,
-    PathContour,
-    PathContourTrait,
 };
 
-use grid::Grid;
 use config::SQUARE_SIZE;
+use entity::Entity;
+use grid::Grid;
+use loc::Loc;
+use renderable::Vertex;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -76,41 +60,43 @@ impl Entity for Dood {
     }
 
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
-        implement_vertex!(Vertex, vertex_position, tex_coords, loc, scale, color);
-
         let offset = (SQUARE_SIZE / 2) as f32;
         let y = (self.y * SQUARE_SIZE) as f32 + offset;
         let x = (self.x * SQUARE_SIZE) as f32 + offset;
 
         return vec![
-            Vertex {
-                vertex_position: [-0.5,  0.5],
-                tex_coords: tiles.get(&self.pix)[0],
-                loc: [x, -y],
-                scale: self.scale,
-                color: self.color
-            },  // left  top
-            Vertex {
-                vertex_position: [ 0.5,  0.5],
-                tex_coords: tiles.get(&self.pix)[1],
-                loc: [x, -y],
-                scale: self.scale,
-                color: self.color
-            },  // right top
-            Vertex {
-                vertex_position: [ 0.5, -0.5],
-                tex_coords: tiles.get(&self.pix)[2],
-                loc: [x, -y],
-                scale: self.scale,
-                color: self.color
-            }, // right bottom
+            // bottom left
             Vertex {
                 vertex_position: [-0.5, -0.5],
-                tex_coords: tiles.get(&self.pix)[3],
-                loc: [x, -y],
+                tex_coords: tiles.get(&self.pix)[0],
+                loc: [x, y],
                 scale: self.scale,
                 color: self.color
-            }, // left  bottom
+            },
+            // bottom right
+            Vertex {
+                vertex_position: [0.5, -0.5],
+                tex_coords: tiles.get(&self.pix)[1],
+                loc: [x, y],
+                scale: self.scale,
+                color: self.color
+            },
+            // top right
+            Vertex {
+                vertex_position: [0.5, 0.5],
+                tex_coords: tiles.get(&self.pix)[2],
+                loc: [x, y],
+                scale: self.scale,
+                color: self.color
+            },
+            // top left
+            Vertex {
+                vertex_position: [-0.5, 0.5],
+                tex_coords: tiles.get(&self.pix)[3],
+                loc: [x, y],
+                scale: self.scale,
+                color: self.color
+            },
         ]
     }
 }

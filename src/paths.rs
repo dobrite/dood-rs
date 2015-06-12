@@ -1,6 +1,5 @@
 use std::collections::{
     HashMap,
-    VecDeque,
     BinaryHeap,
 };
 
@@ -124,7 +123,6 @@ pub trait Paths {
                 let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1; // TODO implement costs for terrain
                 if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).unwrap() {
                     cost_so_far.insert(*next, new_cost);
-                    let priority = new_cost;
                     frontier.push(State { cost: new_cost, loc: *next });
                     came_from.insert(*next, current.loc);
                 }

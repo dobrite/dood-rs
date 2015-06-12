@@ -18,18 +18,17 @@ pub struct World {
 impl World {
     pub fn new() -> World {
         let mut entities = HashMap::new();
-        entities.insert((0, 0), Box::new(Dood::new(0, 0, SQUARE_SIZE as f32)) as Box<Any>);
-        //entities.insert((6, 6), Box::new(Wall::new(6, 6, SQUARE_SIZE as f32)) as Box<Any>);
-        entities.insert((10, 10), Box::new(Food::new(10, 10, SQUARE_SIZE as f32)) as Box<Any>);
+        // x, y
+        let food_loc = (7, 7);
+        let dood_loc = (-8, -8);
 
-        // TODO only do walls (not food and player)
-        //let blocked = entities.keys().cloned().collect::<Vec<_>>();
-        let blocked = vec![];
+        entities.insert(food_loc, Box::new(Food::new(food_loc.0, food_loc.1, SQUARE_SIZE as f32)) as Box<Any>);
+        entities.insert(dood_loc, Box::new(Dood::new(dood_loc.0, dood_loc.1, SQUARE_SIZE as f32)) as Box<Any>);
 
         return World {
             entities: entities,
             grid: Grid::new(16, 16),
-            blocked: blocked, // TODO get rid of this
+            blocked: vec![], // TODO get rid of this
         }
     }
 
