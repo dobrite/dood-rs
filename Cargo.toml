@@ -8,6 +8,7 @@ authors = ["Dave O <davidobrite@gmail.com>"]
 rand = "*"
 glutin = "*"
 image = "*"
+fps_counter = "*"
 
 [dependencies.glium]
 git = "https://github.com/dobrite/glium.git"

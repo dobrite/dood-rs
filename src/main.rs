@@ -3,6 +3,7 @@ extern crate glium;
 extern crate glutin;
 extern crate rand;
 extern crate image;
+extern crate fps_counter;
 
 mod shaders;
 mod square;
@@ -38,6 +39,8 @@ use glium::draw_parameters::{
     LinearBlendingFactor,
     BlendingFunction,
 };
+
+use fps_counter::FPSCounter;
 
 use config::{
     SQUARE_SIZE,
@@ -103,6 +106,7 @@ fn main() {
     // TODO only do walls (not food and player)
     //let blocked = entities.keys().cloned().collect::<Vec<_>>();
     let blocked = vec![];
+    let mut fps = FPSCounter::new();
 
     loop {
         for (_, entity) in entities.iter_mut() {
@@ -132,5 +136,6 @@ fn main() {
         }
 
         thread::sleep_ms(100);
+        println!("{:?}", fps.tick());
     }
 }
