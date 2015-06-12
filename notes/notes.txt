@@ -1,0 +1,32 @@
+trait Mult<T> {
+  fn mult(&self) -> i32;
+}
+
+struct Pair {
+  a: i32,
+  b: i32,
+}
+
+// Marker types; because they have no variants, it's impossible
+// to create an actual value with these types.
+enum SimpleMult { }
+enum FoldMult { }
+
+impl Mult<SimpleMult> for Pair {
+  fn mult(&self) -> i32 {
+    return self.a * self.b;
+  }
+}
+
+impl Mult<FoldMult> for Pair {
+  fn mult(&self) -> i32 {
+    (0..self.a).fold(0, |acc, _| acc + self.b)
+  }
+}
+
+fn main() {
+  let x = <Mult<SimpleMult>>::mult(&Pair { a: 3, b: 4 });
+  let y = <Mult<FoldMult>>::mult(&Pair { a: 3, b: 4 });
+  let v = vec![x, y];
+  println!("{:?}", v);
+}
