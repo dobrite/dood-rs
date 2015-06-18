@@ -11,21 +11,22 @@ extern crate hprof;
 extern crate camera_controllers;
 extern crate nalgebra;
 
+mod config;
+mod dood;
+mod entities;
+mod entity;
+mod food;
+mod grid;
+mod input;
+mod loc;
+mod paths;
+mod pixset;
+mod renderable;
 mod shaders;
 mod square;
-mod grid;
-mod dood;
-mod food;
-mod wall;
-mod paths;
-mod renderable;
-mod pixset;
-mod config;
-mod updatable;
-mod entity;
-mod entities;
-mod loc;
 mod state;
+mod updatable;
+mod wall;
 mod world;
 
 use std::io::Cursor;
@@ -54,6 +55,7 @@ use config::TOTAL_TILES;
 use pixset::Pixset;
 use world::World;
 use square::indices;
+use input::Input;
 
 use piston_window::{
     EventLoop,
@@ -128,30 +130,23 @@ fn main() {
     window.set_max_fps(30);
     window.set_ups(1);
 
+    let input = Input::new();
+
     for e in window {
         e.draw_3d(|stream| {
             let (vertices, indices) = square::vertices(&pixset, &world.entities);
             stream.clear(clear_data);
-            stream.draw(&(&factory.create_mesh(&vertices), indices.to_slice(factory, PrimitiveType::TriangleList).clone(), &program, &uniforms, &state)).unwrap();
+            let mesh = &factory.create_mesh(&vertices);
+            let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
+            stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
         });
-        if let Some(Button::Mouse(button)) = e.press_args() {
-            println!("Pressed mouse button '{:?}'", button);
-        };
-        if let Some(button) = e.release_args() {
-            match button {
-                Button::Keyboard(key) => println!("Released keyboard key '{:?}'", key),
-                Button::Mouse(button) => println!("Released mouse button '{:?}'", button),
-            }
-        };
-        e.mouse_cursor(|x, y| {
-            let cursor = [x, y];
-            println!("Mouse moved '{} {}'", x, y);
-        });
-        e.mouse_scroll(|dx, dy| println!("Scrolled mouse '{}, {}'", dx, dy));
-        e.mouse_relative(|dx, dy| println!("Relative mouse moved '{} {}'", dx, dy));
-        e.text(|text| println!("Typed '{}'", text));
-        e.update(|_|
-          { println!("update!");
-        });
+
+        e.update(|_| println!("update!"));
+        e.press(|button| input.press(button));
+        e.release(|button| input.release(button));
+        e.mouse_cursor(|x, y| input.mouse_cursor(x, y));
+        e.mouse_scroll(|dx, dy| input.mouse_scroll(dx, dy));
+        e.mouse_relative(|dx, dy| input.mouse_relative(dx, dy));
+        e.text(|text| input.text(text));
     }
 }
