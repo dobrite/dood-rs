@@ -15,8 +15,10 @@ impl Grid {
     }
 
     pub fn in_bounds(&self, loc: &Loc) -> bool {
-        let (x, y) = *loc;
-        0 <= x && x < self.width && 0 <= y && y < self.height
+        // TODO fix
+        //let (x, y) = *loc;
+        //0 <= x && x < self.width && 0 <= y && y < self.height
+        return true
     }
 
     pub fn passable(&self, loc: &Loc, blocked: &Vec<Loc>) -> bool {
@@ -25,8 +27,8 @@ impl Grid {
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
         return (
-            (window_loc.0 / self.height as f64) as i32,
-            (window_loc.1 / self.width as f64) as i32
+            (window_loc.0 / self.height as f64) as u32,
+            (window_loc.1 / self.width as f64) as u32
         )
     }
 

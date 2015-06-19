@@ -121,7 +121,7 @@ fn main() {
     let pixset = Pixset::new(TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut world = World::new();
+    let mut world = World::new(32, 32);
     let mut input = Input::new();
 
     window.set_max_fps(30);

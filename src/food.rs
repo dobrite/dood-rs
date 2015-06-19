@@ -11,18 +11,16 @@ use renderable::Vertex;
 
 #[derive(Debug)]
 pub struct Food {
-    pub x: i32,
-    pub y: i32,
+    pub loc: Loc,
     pub scale: f32,
     pub color: [f32; 3],
     pub pix: Pix,
 }
 
 impl Food {
-    pub fn new(x: i32, y: i32, square_size: f32) -> Food {
+    pub fn new(loc: Loc, square_size: f32) -> Food {
         return Food {
-            x: x,
-            y: y,
+            loc: loc,
             scale: square_size,
             color: [0.2313725, 0.3254902, 0.1372549],
             pix: Pix::UpArrow,
@@ -35,8 +33,8 @@ impl Entity for Food {
 
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         let offset = (SQUARE_SIZE / 2) as f32;
-        let y = (self.y * SQUARE_SIZE) as f32 + offset;
-        let x = (self.x * SQUARE_SIZE) as f32 + offset;
+        let x = (self.loc.0 * SQUARE_SIZE as u32) as f32 + offset;
+        let y = (self.loc.1 * SQUARE_SIZE as u32) as f32 + offset;
 
         return vec![
             Vertex {
