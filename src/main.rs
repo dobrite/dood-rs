@@ -13,6 +13,7 @@ extern crate nalgebra;
 
 mod camera;
 mod config;
+mod dir;
 mod dood;
 mod entities;
 mod entity;
@@ -53,6 +54,7 @@ use pixset::Pixset;
 use world::World;
 use square::indices;
 use input::Input;
+use input::Output;
 
 use piston_window::{
     EventLoop,
@@ -141,7 +143,13 @@ fn main() {
         });
 
         e.update(|_| println!("update!"));
-        e.press(|button| world.spawn(input.press(button)));
+        e.press(|button| {
+            match input.press(button) {
+                Output::Spawn(window_loc) => world.spawn(camera.to_game_loc(window_loc)),
+                Output::CameraMove(dir)   => camera.pan(dir),
+                Output::Nothing => {}
+            }
+        });
         e.release(|button| input.release(button));
         e.mouse_cursor(|x, y| input.mouse_cursor(x, y));
         e.mouse_scroll(|dx, dy| input.mouse_scroll(dx, dy));

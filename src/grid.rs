@@ -25,13 +25,6 @@ impl Grid {
         !blocked.contains(&loc)
     }
 
-    pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        return (
-            (window_loc.0 / self.height as f64) as i32,
-            (window_loc.1 / self.width as f64) as i32
-        )
-    }
-
     pub fn neighbors(&self, loc: Loc, blocked: &Vec<Loc>) -> Vec<Loc> {
         let (x, y) = loc;
         let results: Vec<Loc> = vec![

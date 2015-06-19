@@ -1,5 +1,8 @@
-use loc::Loc;
 use config::SQUARE_SIZE;
+
+use dir::Dir;
+use loc::Loc;
+use window_loc::WindowLoc;
 
 #[derive(Debug)]
 pub struct Camera {
@@ -30,6 +33,21 @@ impl Camera {
             [0.0, 0.0, 1.0, 0.0],
             [x_o, y_o, 0.0, 1.0],
         ]
+    }
+
+    pub fn pan(&mut self, dir: Dir) {
+        println!("{:?}", dir);
+        match dir {
+            Dir::Up    => self.loc.1 = self.loc.1 + 1,
+            Dir::Down  => self.loc.1 = self.loc.1 - 1,
+            Dir::Right => self.loc.0 = self.loc.0 + 1,
+            Dir::Left  => self.loc.0 = self.loc.0 - 1,
+            _ => {}
+        }
+    }
+
+    pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
+        return (0, 0)
     }
 }
 

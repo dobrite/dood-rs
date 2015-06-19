@@ -20,7 +20,7 @@ impl World {
     pub fn new(width: i32, height: i32) -> World {
         let mut entities = HashMap::new();
         // x, y
-        let food_loc = (0, 0);
+        let food_loc = (1, 1);
         let dood_loc = (-1, -1);
 
         entities.insert(food_loc, Box::new(Food::new(food_loc, SQUARE_SIZE as f32)) as Box<Any>);
@@ -33,9 +33,7 @@ impl World {
         }
     }
 
-    pub fn spawn(&mut self, window_loc: WindowLoc) {
-        let loc = self.grid.to_game_loc(window_loc);
-        println!("{} {} {} {}", window_loc.0, window_loc.1, loc.0, loc.1);
+    pub fn spawn(&mut self, loc: Loc) {
         self.entities.insert(loc, Box::new(Food::new(loc, SQUARE_SIZE as f32)) as Box<Any>);
     }
 

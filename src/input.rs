@@ -1,12 +1,19 @@
 use loc::Loc;
 use window_loc::WindowLoc;
 use std::mem;
+use dir::Dir;
 
 use piston::input::{
     Button,
     Key,
     MouseButton
 };
+
+pub enum Output {
+    CameraMove(Dir),
+    Spawn(WindowLoc),
+    Nothing,
+}
 
 #[derive(Debug)]
 pub struct Input{
@@ -24,23 +31,38 @@ impl Input{
         }
     }
 
-    pub fn press(&mut self, button: Button) -> WindowLoc {
-        self.change(button, true);
-        return self.mouse_loc
+    pub fn press(&mut self, button: Button) -> Output {
+        return self.change(button, true)
     }
 
     pub fn release(&mut self, button: Button) {
         self.change(button, false);
     }
 
-    fn change(&mut self, button: Button, state: bool) {
-        match button {
-            Button::Keyboard(key)             => println!("{:?}", key),
-            Button::Mouse(MouseButton::Left)  => self.mouse_left  = state,
-            Button::Mouse(MouseButton::Right) => self.mouse_right = state,
-            _ => {}
-        }
+    fn change(&mut self, button: Button, state: bool) -> Output {
+        let out = match button {
+            Button::Keyboard(key)             => {
+                match key {
+                    Key::Up    => Output::CameraMove(Dir::Up),
+                    Key::Down  => Output::CameraMove(Dir::Down),
+                    Key::Right => Output::CameraMove(Dir::Right),
+                    Key::Left  => Output::CameraMove(Dir::Left),
+                    _ => Output::Nothing
+                }
+            },
+            Button::Mouse(MouseButton::Left)  => {
+                self.mouse_left  = state;
+                Output::Spawn(self.mouse_loc)
+            },
+            Button::Mouse(MouseButton::Right) => {
+                self.mouse_right = state;
+                Output::Nothing
+            },
+            _ => Output::Nothing
+        };
+
         println!("{:?}", self);
+        return out
     }
 
     pub fn mouse_cursor(&mut self, x: f64, y: f64) {
