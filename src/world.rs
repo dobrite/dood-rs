@@ -2,12 +2,12 @@ use std::any::Any;
 use std::collections::HashMap;
 
 use config::SQUARE_SIZE;
+
 use dood::Dood;
-use food::Food;
-use loc::Loc;
-use grid::Grid;
-use wall::Wall;
 use entity::Entity;
+use food::Food;
+use grid::Grid;
+use loc::Loc;
 use window_loc::WindowLoc;
 
 pub struct World {
@@ -43,10 +43,6 @@ impl World {
         for (_, entity) in self.entities.iter_mut() {
             match entity.downcast_mut::<Dood>() {
                 Some(dood) => dood.update(&self.grid, &self.blocked),
-                _ => {}
-            }
-            match entity.downcast_mut::<Wall>() {
-                Some(wall) => wall.update(&self.grid, &self.blocked),
                 _ => {}
             }
         }

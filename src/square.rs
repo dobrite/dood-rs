@@ -10,7 +10,6 @@ use entity::Entity;
 use food::Food;
 use pixset::Pixset;
 use renderable::Vertex;
-use wall::Wall;
 
 pub type TexCoords = [[f32; 2]; 4];
 
@@ -21,15 +20,6 @@ pub fn vertices(tiles: &Pixset, entities: &Entities) -> (Vec<Vertex>, Vec<u8>) {
         match entity.downcast_ref::<Dood>() {
             Some(dood) => {
                 let vertexes = dood.render(&tiles);
-                for vertex in vertexes {
-                    vertex_data.push(vertex);
-                }
-            }
-            _ => {}
-        }
-        match entity.downcast_ref::<Wall>() {
-            Some(wall) => {
-                let vertexes = wall.render(&tiles);
                 for vertex in vertexes {
                     vertex_data.push(vertex);
                 }

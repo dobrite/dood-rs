@@ -26,7 +26,6 @@ mod shaders;
 mod square;
 mod state;
 mod updatable;
-mod wall;
 mod window_loc;
 mod world;
 
