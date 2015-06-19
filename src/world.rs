@@ -8,6 +8,7 @@ use loc::Loc;
 use grid::Grid;
 use wall::Wall;
 use entity::Entity;
+use window_loc::WindowLoc;
 
 pub struct World {
     pub entities: HashMap<Loc, Box<Any>>,
@@ -30,6 +31,12 @@ impl World {
             grid: Grid::new(16, 16),
             blocked: vec![], // TODO get rid of this
         }
+    }
+
+    pub fn spawn(&mut self, window_loc: WindowLoc) {
+        let loc = self.grid.to_game_loc(window_loc);
+        println!("{} {} {} {}", window_loc.0, window_loc.1, loc.0, loc.1);
+        self.entities.insert(loc, Box::new(Food::new(loc.0, loc.1, SQUARE_SIZE as f32)) as Box<Any>);
     }
 
     pub fn update(&mut self) {

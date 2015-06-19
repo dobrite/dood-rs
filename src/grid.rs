@@ -1,4 +1,5 @@
 use loc::Loc;
+use window_loc::WindowLoc;
 
 pub struct Grid {
     pub height: i32,
@@ -20,6 +21,13 @@ impl Grid {
 
     pub fn passable(&self, loc: &Loc, blocked: &Vec<Loc>) -> bool {
         !blocked.contains(&loc)
+    }
+
+    pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
+        return (
+            (window_loc.0 / self.height as f64) as i32,
+            (window_loc.1 / self.width as f64) as i32
+        )
     }
 
     pub fn neighbors(&self, loc: Loc, blocked: &Vec<Loc>) -> Vec<Loc> {

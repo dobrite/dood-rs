@@ -1,56 +1,51 @@
 use loc::Loc;
+use window_loc::WindowLoc;
 use std::mem;
 
 use piston::input::{
     Button,
-    Key
+    Key,
+    MouseButton
 };
 
 #[derive(Debug)]
-pub struct Input {
-    current: InputState,
-    previous: InputState,
+pub struct Input{
+    mouse_loc: WindowLoc,
+    mouse_left: bool,
+    mouse_right: bool,
 }
 
-#[derive(Debug)]
-struct InputState {
-    right_mouse: bool,
-    left_mouse: bool,
-    cursor_loc: Loc,
-}
-
-impl InputState {
-    pub fn new() -> InputState {
-        return InputState {
-            right_mouse: false,
-            left_mouse: false,
-            cursor_loc: (0, 0),
-        }
-    }
-}
-
-impl Input {
+impl Input{
     pub fn new() -> Input {
         return Input {
-            current: InputState::new(),
-            previous: InputState::new(),
+            mouse_loc: (0.0, 0.0),
+            mouse_left: false,
+            mouse_right: false,
         }
     }
 
-    pub fn swap(&mut self) {
-        mem::swap(&mut self.previous, &mut self.current);
+    pub fn press(&mut self, button: Button) -> WindowLoc {
+        self.change(button, true);
+        return self.mouse_loc
     }
 
-    pub fn press(&self, button: Button) {
-        println!("Pressed button {:?}", button);
+    pub fn release(&mut self, button: Button) {
+        self.change(button, false);
     }
 
-    pub fn release(&self, button: Button) {
-        println!("Released button {:?}", button);
+    fn change(&mut self, button: Button, state: bool) {
+        match button {
+            Button::Keyboard(key)             => println!("{:?}", key),
+            Button::Mouse(MouseButton::Left)  => self.mouse_left  = state,
+            Button::Mouse(MouseButton::Right) => self.mouse_right = state,
+            _ => {}
+        }
+        println!("{:?}", self);
     }
 
-    pub fn mouse_cursor(&self, x: f64, y: f64) {
-        println!("Mouse moved '{} {}'", x, y);
+    pub fn mouse_cursor(&mut self, x: f64, y: f64) {
+        self.mouse_loc = (x, y);
+        println!("{:?}", self);
     }
 
     pub fn mouse_scroll(&self, dx: f64, dy: f64) {
@@ -64,30 +59,4 @@ impl Input {
     pub fn text(&self, text: &str) {
         println!("Typed '{}'", text);
     }
-
-    //pub fn set_mouse_state(&self, element_state: ElementState, mouse_button: MouseButton) -> Input {
-    //    let left_mouse_pressed = match mouse_button {
-    //        MouseButton::Left => element_state == ElementState::Pressed,
-    //        _ => self.left_mouse_pressed,
-    //    };
-
-    //    let right_mouse_pressed = match mouse_button {
-    //        MouseButton::Right => element_state == ElementState::Pressed,
-    //        _ => self.right_mouse_pressed,
-    //    };
-
-    //    return Input {
-    //        left_mouse_pressed: left_mouse_pressed,
-    //        right_mouse_pressed: right_mouse_pressed,
-    //        cursor_loc: self.cursor_loc.clone(),
-    //    }
-    //}
-
-    //pub fn set_mouse_loc(&self, loc: Loc) -> Input {
-    //    return Input {
-    //        left_mouse_pressed: self.left_mouse_pressed.clone(),
-    //        right_mouse_pressed: self.right_mouse_pressed.clone(),
-    //        cursor_loc: loc,
-    //    }
-    //}
 }

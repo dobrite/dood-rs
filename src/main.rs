@@ -27,6 +27,7 @@ mod square;
 mod state;
 mod updatable;
 mod wall;
+mod window_loc;
 mod world;
 
 use std::io::Cursor;
@@ -34,11 +35,6 @@ use std::io::Cursor;
 use piston_window::{
     PistonWindow,
     WindowSettings,
-};
-
-use piston::input::{
-    Button,
-    Key
 };
 
 use camera_controllers::model_view_projection;
@@ -123,14 +119,14 @@ fn main() {
 
     //let state = gfx::DrawState::new();
     let state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
-    let world = World::new();
     let pixset = Pixset::new(TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
+    let mut world = World::new();
+    let mut input = Input::new();
+
     window.set_max_fps(30);
     window.set_ups(1);
-
-    let input = Input::new();
 
     for e in window {
         e.draw_3d(|stream| {
@@ -142,7 +138,7 @@ fn main() {
         });
 
         e.update(|_| println!("update!"));
-        e.press(|button| input.press(button));
+        e.press(|button| world.spawn(input.press(button)));
         e.release(|button| input.release(button));
         e.mouse_cursor(|x, y| input.mouse_cursor(x, y));
         e.mouse_scroll(|dx, dy| input.mouse_scroll(dx, dy));
