@@ -27,8 +27,8 @@ impl Grid {
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
         return (
-            (window_loc.0 / self.height as f64) as u32,
-            (window_loc.1 / self.width as f64) as u32
+            (window_loc.0 / self.height as f64) as i32,
+            (window_loc.1 / self.width as f64) as i32
         )
     }
 

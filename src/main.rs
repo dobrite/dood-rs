@@ -11,6 +11,7 @@ extern crate hprof;
 extern crate camera_controllers;
 extern crate nalgebra;
 
+mod camera;
 mod config;
 mod dood;
 mod entities;
@@ -47,6 +48,7 @@ use gfx_texture::Texture;
 
 use config::TOTAL_TILES;
 
+use camera::Camera;
 use pixset::Pixset;
 use world::World;
 use square::indices;
@@ -69,7 +71,7 @@ use nalgebra::{
 };
 
 gfx_parameters!(Params {
-    view_transform@ view_transform: [[f32; 4]; 4],
+    mvp@ mvp: [[f32; 4]; 4],
     tex@ tex: gfx::shade::TextureParam<R>,
 });
 
@@ -108,10 +110,10 @@ fn main() {
         [0.0, 0.0, 0.0, 1.0],
     ];
 
-    let ortho_projection = *OrthoMat3::new(height, width, 0.0, 1.0).as_mat().as_array();
+    let ortho_projection = *OrthoMat3::new(height, width, 0.0, 100.0).as_mat().as_array();
 
-    let uniforms = Params {
-        view_transform: model_view_projection(mat4_id, mat4_id, ortho_projection),
+    let mut uniforms = Params {
+        mvp: model_view_projection(mat4_id, mat4_id, ortho_projection),
         tex: (texture, Some(sampler)),
         _r: std::marker::PhantomData,
     };
@@ -123,6 +125,7 @@ fn main() {
 
     let mut world = World::new(32, 32);
     let mut input = Input::new();
+    let mut camera = Camera::new(height, width, (-1, -1));
 
     window.set_max_fps(30);
     window.set_ups(1);
@@ -133,6 +136,7 @@ fn main() {
             stream.clear(clear_data);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
+            uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
         });
 

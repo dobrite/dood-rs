@@ -1,6 +1,6 @@
 #version 140
 
-uniform mat4 view_transform;
+uniform mat4 mvp;
 
 in float scale;
 
@@ -14,7 +14,7 @@ out vec3 vColor;
 out vec2 v_tex_coords;
 
 void main() {
-    gl_Position = view_transform * vec4(vertex_position * scale + loc, 0.0, 1.0);
+    gl_Position = mvp * vec4(vertex_position * scale + loc, 0.0, 1.0);
     vColor = color;
     v_tex_coords = tex_coords;
 }

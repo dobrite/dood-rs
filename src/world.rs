@@ -21,7 +21,7 @@ impl World {
         let mut entities = HashMap::new();
         // x, y
         let food_loc = (0, 0);
-        let dood_loc = (31, 31);
+        let dood_loc = (-1, -1);
 
         entities.insert(food_loc, Box::new(Food::new(food_loc, SQUARE_SIZE as f32)) as Box<Any>);
         entities.insert(dood_loc, Box::new(Dood::new(dood_loc, SQUARE_SIZE as f32)) as Box<Any>);

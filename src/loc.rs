@@ -1,2 +1,2 @@
 // Tuple Struct?
-pub type Loc = (u32, u32);
+pub type Loc = (i32, i32);
