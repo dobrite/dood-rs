@@ -36,7 +36,6 @@ impl Camera {
     }
 
     pub fn pan(&mut self, dir: Dir) {
-        println!("{:?}", dir);
         match dir {
             Dir::Up    => self.loc.1 = self.loc.1 + 1,
             Dir::Down  => self.loc.1 = self.loc.1 - 1,
@@ -47,13 +46,46 @@ impl Camera {
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        return (0, 0)
+        let x = (window_loc.0 as f32 / self.width)  * SQUARE_SIZE as f32;
+        let y = (window_loc.1 as f32 / self.height) * SQUARE_SIZE as f32;
+
+        return (
+             ((x.trunc() + self.loc.0 as f32).round() as i32),
+            (-(y.trunc() - self.loc.1 as f32).round() as i32)
+        )
     }
 }
 
 #[cfg(test)]
 mod tests {
     use super::Camera;
+
+    //camera loc (-12, 10) click on (200, 169.5) intermediate (12.5, 10.59375) result: (1, -1)
+    #[test]
+    fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_four() {
+        assert!(Camera::new(256.0, 256.0, (-12, 10)).to_game_loc((200.0f64, 169.5f64)) == (0, 0));
+    }
+
+        //(-7, 8) (121, 138) (0, 0)
+    #[test]
+    fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_two() {
+        assert!(Camera::new(256.0, 256.0, (-7, 8)).to_game_loc((121.0f64, 138.0f64)) == (0, 0));
+    }
+        //(-7, 10) (123, 173) (1, -1)
+    #[test]
+    fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_three() {
+        assert!(Camera::new(256.0, 256.0, (-7, 10)).to_game_loc((123.0f64, 173.0f64)) == (0, 0));
+    }
+
+    #[test]
+    fn it_returns_game_coords_for_window_loc_minus_twelve_twelve_top_left() {
+        assert!(Camera::new(256.0, 256.0, (-12, 12)).to_game_loc((5.0f64, 5.0f64)) == (-12, 12));
+    }
+
+    #[test]
+    fn it_returns_game_coords_for_window_loc_zero_zero_top_left() {
+        assert!(Camera::new(256.0, 256.0, (0, 0)).to_game_loc((1.0f64, 1.0f64)) == (0, 0));
+    }
 
     #[test]
     fn it_returns_x_for_loc_zero_zero_square_size_sixteen_and_two_fifty_six() {

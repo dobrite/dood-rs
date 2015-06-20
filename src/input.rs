@@ -60,14 +60,11 @@ impl Input{
             },
             _ => Output::Nothing
         };
-
-        println!("{:?}", self);
         return out
     }
 
     pub fn mouse_cursor(&mut self, x: f64, y: f64) {
         self.mouse_loc = (x, y);
-        println!("{:?}", self);
     }
 
     pub fn mouse_scroll(&self, dx: f64, dy: f64) {

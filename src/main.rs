@@ -127,7 +127,7 @@ fn main() {
 
     let mut world = World::new(32, 32);
     let mut input = Input::new();
-    let mut camera = Camera::new(height, width, (-1, -1));
+    let mut camera = Camera::new(height, width, (0, 0));
 
     window.set_max_fps(30);
     window.set_ups(1);
