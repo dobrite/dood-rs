@@ -14,6 +14,7 @@ extern crate nalgebra;
 mod camera;
 mod config;
 mod dir;
+mod dist;
 mod dood;
 mod entities;
 mod food;
@@ -27,6 +28,7 @@ mod shaders;
 mod square;
 mod state;
 mod updatable;
+mod utils;
 mod window_loc;
 mod world;
 

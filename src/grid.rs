@@ -1,4 +1,5 @@
 use loc::Loc;
+use dist::Dist;
 use window_loc::WindowLoc;
 
 pub struct Grid {
