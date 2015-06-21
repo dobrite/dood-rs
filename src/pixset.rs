@@ -6,6 +6,7 @@ use square::TexCoords;
 pub enum Pix {
     None,
     Dood,
+    Food,
     UpArrow,
     DownArrow,
     RightArrow,
@@ -21,7 +22,7 @@ impl Pixset {
     pub fn new(total_tiles: i32) -> Pixset {
         // TODO fix
         //let tiles = vec![
-        //    Pix::DownArrow, Pix::LeftArrow,  Pix::Dood, Pix::None,
+        //    Pix::DownArrow, Pix::LeftArrow,  Pix::Dood, Pix::Food,
         //    Pix::UpArrow,   Pix::RightArrow, Pix::None, Pix::None,
         //    Pix::None,      Pix::None,       Pix::None, Pix::None,
         //    Pix::None,      Pix::None,       Pix::None, Pix::None,
@@ -40,7 +41,7 @@ impl Pixset {
         tiles.insert(Pix::DownArrow,  get_tex_coords(total_tiles, vec![0, 3]));
         tiles.insert(Pix::LeftArrow,  get_tex_coords(total_tiles, vec![1, 3]));
         tiles.insert(Pix::Dood,       get_tex_coords(total_tiles, vec![2, 3]));
-        tiles.insert(Pix::None,       get_tex_coords(total_tiles, vec![3, 3]));
+        tiles.insert(Pix::Food,       get_tex_coords(total_tiles, vec![3, 3]));
         tiles.insert(Pix::UpArrow,    get_tex_coords(total_tiles, vec![0, 2]));
         tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
 

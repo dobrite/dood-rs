@@ -27,7 +27,7 @@ impl Food {
             loc: loc,
             scale: square_size,
             color: [0.2313725, 0.3254902, 0.1372549],
-            pix: Pix::UpArrow,
+            pix: Pix::Food,
         }
     }
 }

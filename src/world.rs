@@ -44,7 +44,8 @@ impl World {
     }
 
     pub fn spawn(&mut self, loc: Loc) {
-        self.renderables.insert(loc, Rc::new(RefCell::new(Food::new(loc, SQUARE_SIZE as f32))) as Rc<RefCell<Renderable>>);
+        let food = Rc::new(RefCell::new(Food::new(loc, SQUARE_SIZE as f32)));
+        self.renderables.insert(loc, food as Rc<RefCell<Renderable>>);
     }
 
     pub fn update(&mut self) {
