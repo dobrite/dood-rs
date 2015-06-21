@@ -8,11 +8,15 @@ use paths::{
     Paths,
 };
 
+use renderable::{
+    Vertex,
+    Renderable,
+};
+
 use config::SQUARE_SIZE;
-use entity::Entity;
 use grid::Grid;
 use loc::Loc;
-use renderable::Vertex;
+use updatable::Updatable;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -39,7 +43,7 @@ impl Dood {
 
 impl Paths for Dood {}
 
-impl Entity for Dood {
+impl Updatable for Dood {
     fn update(&mut self, grid: &Grid, entities: &Vec<Loc>) {
         self.hunger -= 0.01;
 
@@ -53,7 +57,9 @@ impl Entity for Dood {
             None => {},
         }
     }
+}
 
+impl Renderable for Dood {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         let offset = (SQUARE_SIZE / 2) as f32;
         let x = (self.loc.0 * SQUARE_SIZE) as f32 + offset;

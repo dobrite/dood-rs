@@ -1,6 +1,8 @@
+use std::rc::Rc;
+use std::cell::RefCell;
 use std::collections::HashMap;
-use std::any::Any;
 
 use loc::Loc;
+use renderable::Renderable;
 
-pub type Entities = HashMap<Loc, Box<Any>>;
+pub type Entities = HashMap<Loc, Rc<RefCell<Renderable>>>;

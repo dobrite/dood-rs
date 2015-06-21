@@ -16,7 +16,6 @@ mod config;
 mod dir;
 mod dood;
 mod entities;
-mod entity;
 mod food;
 mod grid;
 mod input;
@@ -134,7 +133,7 @@ fn main() {
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = square::vertices(&pixset, &world.entities);
+            let (vertices, indices) = square::vertices(&pixset, &world.renderables);
             stream.clear(clear_data);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();

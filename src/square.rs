@@ -3,10 +3,8 @@
 //16:06 < tomaka> and in the fragment shader, you load the color of the texture and do the blending manually
 //16:07 < tomaka> with mix(tex_color.rgb, color.rgb, tex_color.a) I guess
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
-
 use dood::Dood;
 use entities::Entities;
-use entity::Entity;
 use food::Food;
 use pixset::Pixset;
 use renderable::Vertex;
@@ -17,23 +15,9 @@ pub fn vertices(tiles: &Pixset, entities: &Entities) -> (Vec<Vertex>, Vec<u8>) {
     let mut vertex_data: Vec<Vertex> = Vec::new();
 
     for (_, entity) in entities {
-        match entity.downcast_ref::<Dood>() {
-            Some(dood) => {
-                let vertexes = dood.render(&tiles);
-                for vertex in vertexes {
-                    vertex_data.push(vertex);
-                }
-            }
-            _ => {}
-        }
-        match entity.downcast_ref::<Food>() {
-            Some(food) => {
-                let vertexes = food.render(&tiles);
-                for vertex in vertexes {
-                    vertex_data.push(vertex);
-                }
-            }
-            _ => {}
+        let vertexes = entity.borrow().render(&tiles);
+        for vertex in vertexes {
+            vertex_data.push(vertex);
         }
     }
 

@@ -3,11 +3,15 @@ use pixset::{
     Pixset,
 };
 
+use renderable::{
+    Vertex,
+    Renderable,
+};
+
 use config::SQUARE_SIZE;
-use entity::Entity;
 use grid::Grid;
 use loc::Loc;
-use renderable::Vertex;
+use updatable::Updatable;
 
 #[derive(Debug)]
 pub struct Food {
@@ -28,9 +32,11 @@ impl Food {
     }
 }
 
-impl Entity for Food {
+impl Updatable for Food {
     fn update(&mut self, _: &Grid, _: &Vec<Loc>) {}
+}
 
+impl Renderable for Food {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         let offset = (SQUARE_SIZE / 2) as f32;
         let x = (self.loc.0 * SQUARE_SIZE) as f32 + offset;

@@ -1,7 +1,6 @@
 use grid::Grid;
-
-trait Updatable2: Updatable + Send + Sync {}
+use loc::Loc;
 
 pub trait Updatable {
-    fn update(&mut self, grid: &Grid);
+    fn update(&mut self, grid: &Grid, entities: &Vec<Loc>);
 }
