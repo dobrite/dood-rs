@@ -19,9 +19,9 @@ pub struct Dood {
     loc: Loc,
     scale: f32,
     color: [f32; 3],
-    hunger: f32,
     pix: Pix,
     path: Path,
+    hunger: f32,
 }
 
 impl Dood {

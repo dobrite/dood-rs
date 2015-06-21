@@ -11,10 +11,10 @@ use renderable::Vertex;
 
 #[derive(Debug)]
 pub struct Food {
-    pub loc: Loc,
-    pub scale: f32,
-    pub color: [f32; 3],
-    pub pix: Pix,
+    loc: Loc,
+    scale: f32,
+    color: [f32; 3],
+    pix: Pix,
 }
 
 impl Food {
