@@ -28,8 +28,8 @@ impl World {
         let food_loc = (1, 1);
         let dood_loc = (-1, -1);
 
-        let food = Rc::new(RefCell::new(Food::new(food_loc, SQUARE_SIZE as f32)));
-        let dood = Rc::new(RefCell::new(Dood::new(dood_loc, SQUARE_SIZE as f32)));
+        let food = Rc::new(RefCell::new(Food::new(food_loc)));
+        let dood = Rc::new(RefCell::new(Dood::new(dood_loc)));
 
         renderables.insert(food_loc, food.clone() as Rc<RefCell<Renderable>>);
         renderables.insert(dood_loc, dood.clone() as Rc<RefCell<Renderable>>);
@@ -44,7 +44,7 @@ impl World {
     }
 
     pub fn spawn(&mut self, loc: Loc) {
-        let food = Rc::new(RefCell::new(Food::new(loc, SQUARE_SIZE as f32)));
+        let food = Rc::new(RefCell::new(Food::new(loc)));
         self.renderables.insert(loc, food as Rc<RefCell<Renderable>>);
     }
 

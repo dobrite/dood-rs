@@ -29,10 +29,10 @@ pub struct Dood {
 }
 
 impl Dood {
-    pub fn new(loc: Loc, square_size: f32) -> Dood {
+    pub fn new(loc: Loc) -> Dood {
         return Dood {
             loc: loc,
-            scale: square_size,
+            scale: SQUARE_SIZE as f32,
             hunger: 100.0,
             color: [0.2; 3],
             pix: Pix::Dood,

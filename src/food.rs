@@ -22,10 +22,10 @@ pub struct Food {
 }
 
 impl Food {
-    pub fn new(loc: Loc, square_size: f32) -> Food {
+    pub fn new(loc: Loc) -> Food {
         return Food {
             loc: loc,
-            scale: square_size,
+            scale: SQUARE_SIZE as f32,
             color: [0.2313725, 0.3254902, 0.1372549],
             pix: Pix::Food,
         }
