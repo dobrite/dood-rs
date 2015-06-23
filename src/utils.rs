@@ -7,9 +7,9 @@ pub fn distance(start: Loc, end: Loc) -> f32 {
     return (((end.0 - start.0).pow(2) + (end.1 - start.1).pow(2)) as f32).sqrt()
 }
 
-pub fn get_closest(start: Loc, collection: Vec<Loc>) -> Option<Loc> {
+pub fn get_closest(start: Loc, collection: Vec<&Loc>) -> Option<Loc> {
     let mut closest = collection.iter()
-        .map(|&to| (distance(start, to), to))
+        .map(|&to| (distance(start, *to), *to))
         .collect::<Vec<_>>();
 
     closest.sort_by(|&(d1, _), &(d2, _)| {

@@ -1,6 +1,7 @@
 use grid::Grid;
 use loc::Loc;
+use world::World;
 
 pub trait Updatable {
-    fn update(&mut self, grid: &Grid, entities: &Vec<Loc>);
+    fn update(&mut self, world: &World);
 }

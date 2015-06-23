@@ -14,9 +14,12 @@ use renderable::{
 };
 
 use config::SQUARE_SIZE;
+
 use grid::Grid;
 use loc::Loc;
 use updatable::Updatable;
+use world::World;
+use utils::get_closest;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -44,12 +47,13 @@ impl Dood {
 impl Paths for Dood {}
 
 impl Updatable for Dood {
-    fn update(&mut self, grid: &Grid, entities: &Vec<Loc>) {
+    fn update(&mut self, world: &World) {
         self.hunger -= 0.01;
 
-        // TODO use hunger
         if self.path.is_empty() {
-            self.path = self.path(&grid, &entities, self.loc, (10, 10));
+            if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
+                self.path = self.path(&world.grid, self.loc, food_loc);
+            }
         }
 
         match self.path.pop() {

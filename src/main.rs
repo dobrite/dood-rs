@@ -21,6 +21,7 @@ mod food;
 mod grid;
 mod input;
 mod loc;
+mod loc_map;
 mod paths;
 mod pixset;
 mod renderable;
@@ -143,7 +144,7 @@ fn main() {
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
         });
 
-        e.update(|_| println!("update!"));
+        e.update(|_| world.update());
         e.press(|button| {
             match input.press(button) {
                 Output::Spawn(window_loc) => world.spawn(camera.to_game_loc(window_loc)),

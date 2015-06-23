@@ -8,14 +8,17 @@ use dood::Dood;
 use food::Food;
 use grid::Grid;
 use loc::Loc;
+use loc_map::LocMap;
 use renderable::Renderable;
 use updatable::Updatable;
 use window_loc::WindowLoc;
 
 pub struct World {
-    pub renderables: HashMap<Loc, Rc<RefCell<Renderable>>>,
-    pub updatables:  HashMap<Loc, Rc<RefCell<Updatable>>>,
-    grid: Grid,
+    pub renderables: LocMap<Renderable>,
+    pub updatables:  LocMap<Updatable>,
+    pub foods: LocMap<Food>,
+    pub doods: LocMap<Dood>,
+    pub grid: Grid, // TODO prob doesn't need to be in World
     blocked: Vec<Loc>,
 }
 
@@ -23,6 +26,8 @@ impl World {
     pub fn new(width: i32, height: i32) -> World {
         let mut renderables = HashMap::new();
         let mut updatables  = HashMap::new();
+        let mut doods = HashMap::new();
+        let mut foods = HashMap::new();
 
         // x, y
         let food_loc = (1, 1);
@@ -34,10 +39,14 @@ impl World {
         renderables.insert(food_loc, food.clone() as Rc<RefCell<Renderable>>);
         renderables.insert(dood_loc, dood.clone() as Rc<RefCell<Renderable>>);
         updatables.insert(dood_loc, dood.clone() as Rc<RefCell<Updatable>>);
+        foods.insert(food_loc, food.clone());
+        doods.insert(dood_loc, dood.clone());
 
         return World {
             renderables: renderables,
             updatables: updatables,
+            foods: foods,
+            doods: doods,
             grid: Grid::new(width, height),
             blocked: vec![], // TODO get rid of this
         }
@@ -48,9 +57,9 @@ impl World {
         self.renderables.insert(loc, food as Rc<RefCell<Renderable>>);
     }
 
-    pub fn update(&mut self) {
-        for (_, entity) in self.updatables.iter_mut() {
-            entity.borrow_mut().update(&self.grid, &self.blocked);
+    pub fn update(&self) {
+        for (_, entity) in self.updatables.iter() {
+            entity.borrow_mut().update(self);
         }
     }
 }

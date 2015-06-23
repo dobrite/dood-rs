@@ -12,6 +12,7 @@ use config::SQUARE_SIZE;
 use grid::Grid;
 use loc::Loc;
 use updatable::Updatable;
+use world::World;
 
 #[derive(Debug)]
 pub struct Food {
@@ -33,7 +34,7 @@ impl Food {
 }
 
 impl Updatable for Food {
-    fn update(&mut self, _: &Grid, _: &Vec<Loc>) {}
+    fn update(&mut self, _: &World) {}
 }
 
 impl Renderable for Food {

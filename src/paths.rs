@@ -108,7 +108,9 @@ pub type Path = Vec<Loc>;
 //}
 
 pub trait Paths {
-    fn path(&self, grid: &Grid, blocked: &Vec<Loc>, start: Loc, goal: Loc) -> Path {
+    fn path(&self, grid: &Grid, start: Loc, goal: Loc) -> Path {
+        let blocked = vec![]; // TODO do something with this
+
         let mut frontier = BinaryHeap::new();
         frontier.push(State { cost: 0, loc: start });
         let mut came_from = HashMap::new();
@@ -119,7 +121,7 @@ pub trait Paths {
         while !frontier.is_empty() {
             let current = frontier.pop().unwrap();
             if current.loc == goal { break }
-            for next in grid.neighbors(current.loc, blocked).iter() {
+            for next in grid.neighbors(current.loc, &blocked).iter() {
                 let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1; // TODO implement costs for terrain
                 if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).unwrap() {
                     cost_so_far.insert(*next, new_cost);
