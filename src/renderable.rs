@@ -8,19 +8,6 @@ gfx_vertex!(Vertex {
     scale@ scale: f32,
 });
 
-impl Vertex {
-    fn new(pos: [f32; 2], tc: [f32; 2], loc: [f32; 2], color: [f32; 3], scale: f32) -> Vertex {
-        Vertex {
-            vertex_position: pos,
-            tex_coords: tc,
-            loc: loc,
-            color: color,
-            scale: scale,
-        }
-    }
-}
-
-
 pub trait Renderable {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex>;
 }
