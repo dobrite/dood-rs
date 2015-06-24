@@ -73,10 +73,7 @@ use piston_window::{
     UpdateEvent,
 };
 
-use nalgebra::{
-    Mat4,
-    OrthoMat3,
-};
+use nalgebra::OrthoMat3;
 
 gfx_parameters!(Params {
     mvp@ mvp: [[f32; 4]; 4],

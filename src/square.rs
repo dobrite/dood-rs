@@ -3,9 +3,7 @@
 //16:06 < tomaka> and in the fragment shader, you load the color of the texture and do the blending manually
 //16:07 < tomaka> with mix(tex_color.rgb, color.rgb, tex_color.a) I guess
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
-use dood::Dood;
 use entities::Entities;
-use food::Food;
 use pixset::Pixset;
 use renderable::Vertex;
 

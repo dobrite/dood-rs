@@ -1,6 +1,5 @@
 use loc::Loc;
 use window_loc::WindowLoc;
-use std::mem;
 use dir::Dir;
 
 use piston::input::{

@@ -3,7 +3,6 @@ use std::rc::Rc;
 use std::cell::RefCell;
 
 use loc::Loc;
-use renderable::Renderable;
 
 pub type LocMap<T> = HashMap<Loc, Rc<RefCell<T>>>;
 

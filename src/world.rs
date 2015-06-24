@@ -2,8 +2,6 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-use config::SQUARE_SIZE;
-
 use dood::Dood;
 use food::Food;
 use grid::Grid;
@@ -11,7 +9,6 @@ use loc::Loc;
 use loc_map::LocMap;
 use renderable::Renderable;
 use updatable::Updatable;
-use window_loc::WindowLoc;
 
 pub struct World {
     pub renderables: LocMap<Renderable>,
@@ -19,7 +16,6 @@ pub struct World {
     pub foods: LocMap<Food>,
     pub doods: LocMap<Dood>,
     pub grid: Grid, // TODO prob doesn't need to be in World
-    blocked: Vec<Loc>,
 }
 
 impl World {
@@ -48,7 +44,6 @@ impl World {
             foods: foods,
             doods: doods,
             grid: Grid::new(width, height),
-            blocked: vec![], // TODO get rid of this
         }
     }
 

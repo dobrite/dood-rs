@@ -15,7 +15,6 @@ use renderable::{
 
 use config::SQUARE_SIZE;
 
-use grid::Grid;
 use loc::Loc;
 use updatable::Updatable;
 use world::World;

@@ -3,7 +3,7 @@ use std::cmp::Ordering;
 use dist::Dist;
 use loc::Loc;
 
-pub fn distance(start: Loc, end: Loc) -> f32 {
+pub fn distance(start: Loc, end: Loc) -> Dist {
     return (((end.0 - start.0).pow(2) + (end.1 - start.1).pow(2)) as f32).sqrt()
 }
 

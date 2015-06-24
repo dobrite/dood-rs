@@ -1,5 +1,3 @@
-use grid::Grid;
-use loc::Loc;
 use world::World;
 
 pub trait Updatable {
