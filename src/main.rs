@@ -49,7 +49,11 @@ use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
 use gfx_texture::Texture;
 
-use config::TOTAL_TILES;
+use config::{
+    TOTAL_TILES,
+    FRAMES_PER_SECOND,
+    UPDATES_PER_SECOND,
+};
 
 use camera::Camera;
 use pixset::Pixset;
@@ -131,8 +135,8 @@ fn main() {
     let mut input = Input::new();
     let mut camera = Camera::new(height, width, (-7, 7));
 
-    window.set_max_fps(30);
-    window.set_ups(1);
+    window.set_max_fps(FRAMES_PER_SECOND);
+    window.set_ups(UPDATES_PER_SECOND);
 
     for e in window {
         e.draw_3d(|stream| {
