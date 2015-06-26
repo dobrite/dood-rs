@@ -51,7 +51,7 @@ mod tests {
 
     #[test]
     fn it_returns_the_closest_location_in_array_some() {
-        assert!(get_closest((0, 0), vec![(5, 5), (1, 1), (3, -3)]) == Some((1, 1)))
+        assert!(get_closest((0, 0), vec![&(5, 5), &(1, 1), &(3, -3)]) == Some((1, 1)))
     }
 
     #[test]

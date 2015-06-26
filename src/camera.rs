@@ -6,16 +6,16 @@ use window_loc::WindowLoc;
 
 #[derive(Debug)]
 pub struct Camera {
-    height: f32,
     width: f32,
+    height: f32,
     loc: (i32, i32),
 }
 
 impl Camera {
-    pub fn new(height: f32, width: f32, loc: (i32, i32)) -> Camera {
+    pub fn new(width: f32, height: f32, loc: (i32, i32)) -> Camera {
         return Camera {
-            height: height,
             width: width,
+            height: height,
             loc: loc,
         }
     }
@@ -46,8 +46,8 @@ impl Camera {
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        let x = (window_loc.0 as f32 / self.width)  * SQUARE_SIZE as f32;
-        let y = (window_loc.1 as f32 / self.height) * SQUARE_SIZE as f32;
+        let x = (window_loc.0 as f32 / SQUARE_SIZE as f32);
+        let y = (window_loc.1 as f32 / SQUARE_SIZE as f32);
 
         return (
              ((x.trunc() + self.loc.0 as f32).round() as i32),
@@ -113,5 +113,10 @@ mod tests {
     #[test]
     fn it_returns_y_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
         assert!(Camera::new(256.0, 256.0, (-1, -1)).as_mat()[3][1] == 128.0);
+    }
+
+    #[test]
+    fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_sixty_four() {
+        assert!(Camera::new(1024.0, 1024.0, (0, 0)).to_game_loc((1015.0f64, 1015.0f64)) == (63, -63));
     }
 }

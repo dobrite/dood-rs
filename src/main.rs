@@ -51,6 +51,7 @@ use gfx_texture::Texture;
 
 use config::{
     TOTAL_TILES,
+    SQUARE_SIZE,
     FRAMES_PER_SECOND,
     UPDATES_PER_SECOND,
 };
@@ -81,12 +82,12 @@ gfx_parameters!(Params {
 });
 
 fn main() {
-    let width = 256.0;
-    let height = 256.0;
+    let width  = 1024.0;
+    let height = 1024.0;
 
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
-        [height as u32, width as u32]
+        [width as u32, height as u32]
     ).exit_on_esc(true).into();
 
     let ref mut factory = window.factory.borrow().clone();
@@ -128,9 +129,9 @@ fn main() {
     let pixset = Pixset::new(TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut world = World::new(32, 32);
+    let mut world = World::new((width / SQUARE_SIZE as f32) as i32, (height / SQUARE_SIZE as f32) as i32);
     let mut input = Input::new();
-    let mut camera = Camera::new(height, width, (-7, 7));
+    let mut camera = Camera::new(width, height, (-7, 7));
 
     window.set_max_fps(FRAMES_PER_SECOND);
     window.set_ups(UPDATES_PER_SECOND);
