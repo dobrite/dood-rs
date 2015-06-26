@@ -60,18 +60,16 @@ impl Camera {
 mod tests {
     use super::Camera;
 
-    //camera loc (-12, 10) click on (200, 169.5) intermediate (12.5, 10.59375) result: (1, -1)
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_four() {
         assert!(Camera::new(256.0, 256.0, (-12, 10)).to_game_loc((200.0f64, 169.5f64)) == (0, 0));
     }
 
-        //(-7, 8) (121, 138) (0, 0)
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_two() {
         assert!(Camera::new(256.0, 256.0, (-7, 8)).to_game_loc((121.0f64, 138.0f64)) == (0, 0));
     }
-        //(-7, 10) (123, 173) (1, -1)
+
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_three() {
         assert!(Camera::new(256.0, 256.0, (-7, 10)).to_game_loc((123.0f64, 173.0f64)) == (0, 0));
