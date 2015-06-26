@@ -5,6 +5,7 @@ dood! gets the food!
 3. `cargo run`
 4. Give dat dood some food!
 
-![dood](http://i.imgur.com/dwTRazF.gif)
+- mouse click to drop food
+- arrow keys to pan camera
 
 based on [conway_rs](https://github.com/camjackson/conway_rs)
