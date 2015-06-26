@@ -15,7 +15,6 @@ use renderable::{
 
 use config::SQUARE_SIZE;
 
-use entities::EntityState;
 use loc::Loc;
 use updatable::Updatable;
 use utils::get_closest;
@@ -29,7 +28,6 @@ pub struct Dood {
     pix: Pix,
     path: Path,
     hunger: f32,
-    pub state: EntityState, // TODO fix
 }
 
 impl Dood {
@@ -41,7 +39,6 @@ impl Dood {
             color: [0.2; 3],
             pix: Pix::Dood,
             path: Vec::new(),
-            state: EntityState::Ok
         }
     }
 }
@@ -56,7 +53,7 @@ impl Updatable for Dood {
             if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
                 if food_loc == self.loc {
                     if let Some(food) = world.foods.get(&food_loc) {
-                        food.borrow_mut().eat(20.0);
+                        self.hunger += food.borrow_mut().eat(20.0);
                     }
                 } else {
                     self.path = self.path(&world.grid, self.loc, food_loc);

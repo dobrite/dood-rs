@@ -3,7 +3,6 @@ use std::collections::HashMap;
 use std::rc::Rc;
 
 use dood::Dood;
-use entities::EntityState;
 use food::Food;
 use grid::Grid;
 use loc::Loc;
@@ -35,6 +34,7 @@ impl World {
 
         renderables.insert(food_loc, food.clone() as Rc<RefCell<Renderable>>);
         renderables.insert(dood_loc, dood.clone() as Rc<RefCell<Renderable>>);
+        updatables.insert(food_loc, food.clone() as Rc<RefCell<Updatable>>);
         updatables.insert(dood_loc, dood.clone() as Rc<RefCell<Updatable>>);
         foods.insert(food_loc, food.clone());
         doods.insert(dood_loc, dood.clone());
@@ -61,27 +61,19 @@ impl World {
     }
 
     pub fn vacuum(&mut self) {
-        //for (loc, entity) in self.renderables.iter_mut() {
-        //    if entity.borrow().state == EntityState::OOP {
-        //        println!("dead");
-        //    }
-        //}
-
-        //for (loc, entity) in self.updatables.iter_mut() {
-        //    if entity.borrow().state == EntityState::OOP {
-        //        println!("dead");
-        //    }
-        //}
-
-        for (loc, entity) in self.foods.iter_mut() {
-            if entity.borrow().state == EntityState::OOP {
-                println!("dead");
-            }
+        let mut remove = vec![];
+        self.to_remove(&mut remove);
+        for loc in remove.iter() {
+            self.foods.remove(loc);
+            self.renderables.remove(loc);
+            self.updatables.remove(loc);
         }
+    }
 
-        for (loc, entity) in self.doods.iter_mut() {
-            if entity.borrow().state == EntityState::OOP {
-                println!("dead");
+    fn to_remove(&self, remove: &mut Vec<Loc>) {
+        for (loc, food) in self.foods.iter() {
+            if food.borrow().get_noms() <= 0.0 {
+                remove.push(*loc);
             }
         }
     }
