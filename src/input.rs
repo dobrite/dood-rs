@@ -24,7 +24,7 @@ pub struct Input{
 impl Input{
     pub fn new() -> Input {
         return Input {
-            mouse_loc: (0.0, 0.0),
+            mouse_loc: WindowLoc { x: 0.0, y: 0.0 },
             mouse_left: false,
             mouse_right: false,
         }
@@ -51,7 +51,7 @@ impl Input{
             },
             Button::Mouse(MouseButton::Left)  => {
                 self.mouse_left  = state;
-                Output::Spawn(self.mouse_loc)
+                Output::Spawn(self.mouse_loc.clone())
             },
             Button::Mouse(MouseButton::Right) => {
                 self.mouse_right = state;
@@ -63,7 +63,7 @@ impl Input{
     }
 
     pub fn mouse_cursor(&mut self, x: f64, y: f64) {
-        self.mouse_loc = (x, y);
+        self.mouse_loc = WindowLoc { x: x, y: y };
     }
 
     pub fn mouse_scroll(&self, dx: f64, dy: f64) {

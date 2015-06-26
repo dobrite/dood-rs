@@ -1,2 +1,5 @@
-// tuple struct?
-pub type WindowLoc = (f64, f64);
+#[derive(Clone, Debug)]
+pub struct WindowLoc {
+    pub x: f64,
+    pub y: f64,
+}
