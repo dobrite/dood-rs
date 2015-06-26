@@ -5,4 +5,6 @@ dood! gets the food!
 3. `cargo run`
 4. Give dat dood some food!
 
+![dood](http://i.imgur.com/dwTRazF.gif)
+
 based on [conway_rs](https://github.com/camjackson/conway_rs)
