@@ -83,7 +83,7 @@ gfx_parameters!(Params {
 
 fn main() {
     let width  = 1024.0;
-    let height = 1024.0;
+    let height = 768.0;
 
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
@@ -116,7 +116,7 @@ fn main() {
         [0.0, 0.0, 0.0, 1.0],
     ];
 
-    let ortho_projection = *OrthoMat3::new(height, width, 0.0, 100.0).as_mat().as_array();
+    let ortho_projection = *OrthoMat3::new(width, height, 0.0, 100.0).as_mat().as_array();
 
     let mut uniforms = Params {
         mvp: model_view_projection(mat4_id, mat4_id, ortho_projection),
