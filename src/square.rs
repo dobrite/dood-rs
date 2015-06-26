@@ -13,9 +13,8 @@ pub fn vertices(tiles: &Pixset, entities: &Entities) -> (Vec<Vertex>, Vec<u8>) {
     let mut vertex_data: Vec<Vertex> = Vec::new();
 
     for (_, entity) in entities {
-        let vertexes = entity.borrow().render(&tiles);
-        for vertex in vertexes {
-            vertex_data.push(vertex);
+        for vertex in entity.borrow().render(&tiles) {
+            vertex_data.push(vertex)
         }
     }
 

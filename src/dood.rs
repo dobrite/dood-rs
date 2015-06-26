@@ -15,10 +15,11 @@ use renderable::{
 
 use config::SQUARE_SIZE;
 
+use entities::EntityState;
 use loc::Loc;
 use updatable::Updatable;
-use world::World;
 use utils::get_closest;
+use world::World;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -28,6 +29,7 @@ pub struct Dood {
     pix: Pix,
     path: Path,
     hunger: f32,
+    pub state: EntityState, // TODO fix
 }
 
 impl Dood {
@@ -35,10 +37,11 @@ impl Dood {
         return Dood {
             loc: loc,
             scale: SQUARE_SIZE as f32,
-            hunger: 100.0,
+            hunger: 55.0,
             color: [0.2; 3],
             pix: Pix::Dood,
             path: Vec::new(),
+            state: EntityState::Ok
         }
     }
 }
@@ -47,11 +50,17 @@ impl Paths for Dood {}
 
 impl Updatable for Dood {
     fn update(&mut self, world: &World) {
-        self.hunger -= 0.01;
+        self.hunger -= 1.0;
 
-        if self.path.is_empty() {
+        if self.path.is_empty() && self.hunger < 50.0 {
             if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
-                self.path = self.path(&world.grid, self.loc, food_loc);
+                if food_loc == self.loc {
+                    if let Some(food) = world.foods.get(&food_loc) {
+                        food.borrow_mut().eat(20.0);
+                    }
+                } else {
+                    self.path = self.path(&world.grid, self.loc, food_loc);
+                }
             }
         }
 

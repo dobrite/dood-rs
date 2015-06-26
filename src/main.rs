@@ -145,7 +145,10 @@ fn main() {
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
         });
 
-        e.update(|_| world.update());
+        e.update(|_| {
+            world.update();
+            world.vacuum();
+        });
         e.press(|button| {
             match input.press(button) {
                 Output::Spawn(window_loc) => world.spawn(camera.to_game_loc(window_loc)),

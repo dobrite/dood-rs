@@ -9,6 +9,8 @@ use renderable::{
 };
 
 use config::SQUARE_SIZE;
+
+use entities::EntityState;
 use loc::Loc;
 use updatable::Updatable;
 use world::World;
@@ -19,6 +21,8 @@ pub struct Food {
     scale: f32,
     color: [f32; 3],
     pix: Pix,
+    noms: f32,
+    pub state: EntityState, // TODO fix
 }
 
 impl Food {
@@ -28,12 +32,22 @@ impl Food {
             scale: SQUARE_SIZE as f32,
             color: [0.2313725, 0.3254902, 0.1372549],
             pix: Pix::Food,
+            noms: 100.0,
+            state: EntityState::Ok,
         }
+    }
+
+    pub fn eat(&mut self, usage: f32) {
+        self.noms -= usage;
     }
 }
 
 impl Updatable for Food {
-    fn update(&mut self, _: &World) {}
+    fn update(&mut self, _: &World) {
+        if self.noms <= 0.0 {
+            self.state = EntityState::OOP;
+        }
+    }
 }
 
 impl Renderable for Food {

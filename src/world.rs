@@ -1,8 +1,9 @@
-use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
+use std::rc::Rc;
 
 use dood::Dood;
+use entities::EntityState;
 use food::Food;
 use grid::Grid;
 use loc::Loc;
@@ -49,12 +50,39 @@ impl World {
 
     pub fn spawn(&mut self, loc: Loc) {
         let food = Rc::new(RefCell::new(Food::new(loc)));
-        self.renderables.insert(loc, food as Rc<RefCell<Renderable>>);
+        self.renderables.insert(loc, food.clone() as Rc<RefCell<Renderable>>);
+        self.foods.insert(loc, food.clone());
     }
 
     pub fn update(&self) {
         for (_, entity) in self.updatables.iter() {
             entity.borrow_mut().update(self);
+        }
+    }
+
+    pub fn vacuum(&mut self) {
+        //for (loc, entity) in self.renderables.iter_mut() {
+        //    if entity.borrow().state == EntityState::OOP {
+        //        println!("dead");
+        //    }
+        //}
+
+        //for (loc, entity) in self.updatables.iter_mut() {
+        //    if entity.borrow().state == EntityState::OOP {
+        //        println!("dead");
+        //    }
+        //}
+
+        for (loc, entity) in self.foods.iter_mut() {
+            if entity.borrow().state == EntityState::OOP {
+                println!("dead");
+            }
+        }
+
+        for (loc, entity) in self.doods.iter_mut() {
+            if entity.borrow().state == EntityState::OOP {
+                println!("dead");
+            }
         }
     }
 }
