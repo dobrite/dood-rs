@@ -115,7 +115,7 @@ pub trait Paths {
         frontier.push(State { cost: 0, loc: start });
         let mut came_from = HashMap::new();
         let mut cost_so_far = HashMap::new();
-        came_from.insert(start, (-1, -1));
+        came_from.insert(start, Loc { x: -1, y: -1 });
         cost_so_far.insert(start, 0);
 
         while !frontier.is_empty() {

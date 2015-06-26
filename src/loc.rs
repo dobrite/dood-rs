@@ -1,2 +1,5 @@
-// Tuple Struct?
-pub type Loc = (i32, i32);
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
+pub struct Loc {
+    pub x: i32,
+    pub y: i32,
+}

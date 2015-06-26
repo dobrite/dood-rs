@@ -54,8 +54,8 @@ impl Updatable for Food {
 impl Renderable for Food {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
         let offset = (SQUARE_SIZE / 2) as f32;
-        let x = (self.loc.0 * SQUARE_SIZE) as f32 + offset;
-        let y = (self.loc.1 * SQUARE_SIZE) as f32 + offset;
+        let x = (self.loc.x * SQUARE_SIZE) as f32 + offset;
+        let y = (self.loc.y * SQUARE_SIZE) as f32 + offset;
 
         return vec![
             Vertex {

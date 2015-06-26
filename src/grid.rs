@@ -25,12 +25,14 @@ impl Grid {
     }
 
     pub fn neighbors(&self, loc: Loc, blocked: &Vec<Loc>) -> Vec<Loc> {
-        let (x, y) = loc;
+        let x = loc.x;
+        let y = loc.y;
+
         let results: Vec<Loc> = vec![
-            (x + 1, y),
-            (x, y - 1),
-            (x - 1, y),
-            (x, y + 1),
+            Loc { x: x + 1, y: y     },
+            Loc { x: x,     y: y - 1 },
+            Loc { x: x - 1, y: y     },
+            Loc { x: x,     y: y + 1 },
         ];
         //if (x + y) % 2 == 0 { results.reverse(); }
         results

@@ -26,8 +26,8 @@ impl World {
         let mut foods = HashMap::new();
 
         // x, y
-        let food_loc = (1, 1);
-        let dood_loc = (-1, -1);
+        let food_loc = Loc { x:  1, y:  1 };
+        let dood_loc = Loc { x: -1, y: -1 };
 
         let food = Rc::new(RefCell::new(Food::new(food_loc)));
         let dood = Rc::new(RefCell::new(Dood::new(dood_loc)));
