@@ -36,7 +36,7 @@ impl Dood {
             loc: loc,
             scale: SQUARE_SIZE as f32,
             hunger: 55.0,
-            color: [0.2; 3],
+            color: [255.0, 0.0, 0.0],
             pix: Pix::Dood,
             path: Vec::new(),
         }

@@ -107,7 +107,7 @@ fn main() {
 
     let image = image::load(Cursor::new(&include_bytes!("../assets/tileset.png")[..]), image::PNG).unwrap();
     let texture = Texture::from_image(factory, &image.to_rgba(), true, false, false).handle();
-    let sampler_info = gfx::tex::SamplerInfo::new(gfx::tex::FilterMethod::Bilinear, gfx::tex::WrapMode::Clamp);
+    let sampler_info = gfx::tex::SamplerInfo::new(gfx::tex::FilterMethod::Scale, gfx::tex::WrapMode::Clamp);
     let sampler = factory.create_sampler(sampler_info);
 
     let mat4_id = [

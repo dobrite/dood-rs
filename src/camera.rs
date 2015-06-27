@@ -50,8 +50,8 @@ impl Camera {
         let y = (window_loc.y as f32 / SQUARE_SIZE as f32);
 
         return Loc {
-            x:  (x.trunc() + self.loc.x as f32).round() as i32,
-            y: -(y.trunc() - self.loc.y as f32).round() as i32
+            x:  (x.trunc() + self.loc.x as f32) as i32,
+            y: -(y.trunc() - self.loc.y as f32) as i32
         }
     }
 }
