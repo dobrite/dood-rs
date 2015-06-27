@@ -46,8 +46,8 @@ impl Camera {
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        let x = (window_loc.x as f32 / SQUARE_SIZE as f32);
-        let y = (window_loc.y as f32 / SQUARE_SIZE as f32);
+        let x = window_loc.x as f32 / SQUARE_SIZE as f32;
+        let y = window_loc.y as f32 / SQUARE_SIZE as f32;
 
         return Loc {
             x:  (x.trunc() + self.loc.x as f32) as i32,
