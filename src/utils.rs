@@ -4,7 +4,7 @@ use dist::Dist;
 use loc::Loc;
 
 pub fn distance(start: Loc, end: Loc) -> Dist {
-    return (((end.x - start.x).pow(2) + (end.y - start.y).pow(2)) as f32).sqrt()
+    (((end.x - start.x).pow(2) + (end.y - start.y).pow(2)) as f32).sqrt()
 }
 
 pub fn get_closest(start: Loc, collection: Vec<&Loc>) -> Option<Loc> {

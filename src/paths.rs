@@ -25,7 +25,7 @@ pub type Path = Vec<Loc>;
 //
 //impl Mult<SimpleMult> for Pair {
 //  fn mult(&self) -> i32 {
-//    return self.a * self.b;
+//    self.a * self.b
 //  }
 //}
 //
@@ -131,7 +131,7 @@ pub trait Paths {
             }
         }
 
-        return came_from.to_path(start, goal);
+        came_from.to_path(start, goal)
     }
 }
 
@@ -156,7 +156,7 @@ impl PathContourTrait for PathContour {
             }
         }
 
-        // reverse?
-        return path
+        // TODO reverse?
+        path
     }
 }

@@ -42,7 +42,7 @@ impl World {
         foods.insert(food_loc, food.clone());
         doods.insert(dood_loc, dood.clone());
 
-        return World {
+        World {
             renderables: renderables,
             updatables: updatables,
             foods: foods,

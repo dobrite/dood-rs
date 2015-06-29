@@ -13,7 +13,7 @@ pub struct Camera {
 
 impl Camera {
     pub fn new(width: f32, height: f32, loc: Loc) -> Camera {
-        return Camera {
+        Camera {
             width: width,
             height: height,
             loc: loc,
@@ -27,7 +27,7 @@ impl Camera {
         let x_o = -(self.width  / 2.0) - x_offset;
         let y_o =  (self.height / 2.0) - y_offset;
 
-        return [
+        [
             [1.0, 0.0, 0.0, 0.0],
             [0.0, 1.0, 0.0, 0.0],
             [0.0, 0.0, 1.0, 0.0],
@@ -49,7 +49,7 @@ impl Camera {
         let x = window_loc.x as f32 / SQUARE_SIZE as f32;
         let y = window_loc.y as f32 / SQUARE_SIZE as f32;
 
-        return Loc {
+        Loc {
             x:  (x.trunc() + self.loc.x as f32) as i32,
             y: -(y.trunc() - self.loc.y as f32) as i32
         }

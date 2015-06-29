@@ -16,7 +16,7 @@ enum FoldMult { }
 
 impl Mult<SimpleMult> for Pair {
   fn mult(&self) -> i32 {
-    return self.a * self.b;
+    self.a * self.b
   }
 }
 

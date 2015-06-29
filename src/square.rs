@@ -19,11 +19,11 @@ pub fn vertices(tiles: &Pixset, entities: &Entities) -> (Vec<Vertex>, Vec<u8>) {
     }
 
     let len = vertex_data.len();
-    return (vertex_data, indices(len))
+    (vertex_data, indices(len))
 }
 
 pub fn indices(length: usize) -> Vec<u8> {
-    return (0..(length / 4)).into_iter().flat_map(|i|
+    (0..(length / 4)).into_iter().flat_map(|i|
         vec![0, 1, 2, 0, 2, 3].into_iter().map(|j| (j + i * 4) as u8).collect::<Vec<u8>>()
     ).collect()
 }

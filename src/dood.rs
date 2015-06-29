@@ -32,7 +32,7 @@ pub struct Dood {
 
 impl Dood {
     pub fn new(loc: Loc) -> Dood {
-        return Dood {
+        Dood {
             loc: loc,
             scale: SQUARE_SIZE as f32,
             hunger: 55.0,
@@ -74,7 +74,7 @@ impl Renderable for Dood {
         let x = (self.loc.x * SQUARE_SIZE) as f32 + offset;
         let y = (self.loc.y * SQUARE_SIZE) as f32 + offset;
 
-        return vec![
+        vec![
             // bottom left
             Vertex {
                 vertex_position: [-0.5, -0.5],

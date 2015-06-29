@@ -17,7 +17,7 @@ impl Grid {
         // TODO fix
         //let (x, y) = *loc;
         //0 <= x && x < self.width && 0 <= y && y < self.height
-        return true
+        true
     }
 
     pub fn passable(&self, loc: &Loc, blocked: &Vec<Loc>) -> bool {

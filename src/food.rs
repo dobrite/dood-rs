@@ -25,7 +25,7 @@ pub struct Food {
 
 impl Food {
     pub fn new(loc: Loc) -> Food {
-        return Food {
+        Food {
             loc: loc,
             scale: SQUARE_SIZE as f32,
             color: [0.2313725, 0.3254902, 0.1372549],
@@ -57,7 +57,7 @@ impl Renderable for Food {
         let x = (self.loc.x * SQUARE_SIZE) as f32 + offset;
         let y = (self.loc.y * SQUARE_SIZE) as f32 + offset;
 
-        return vec![
+        vec![
             Vertex {
                 vertex_position: [-0.5, -0.5],
                 tex_coords: tiles.get(&self.pix)[0],

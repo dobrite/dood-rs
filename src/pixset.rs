@@ -47,16 +47,15 @@ impl Pixset {
         tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
         tiles.insert(Pix::Wall,       get_tex_coords(total_tiles, vec![2, 2]));
 
-        return Pixset {
+        Pixset {
             tiles: tiles,
             total_tiles: total_tiles,
         }
     }
 
     pub fn get(&self, pix: &Pix) -> [[f32; 2]; 4] {
-        return *self.tiles.get(pix).unwrap()
+        *self.tiles.get(pix).unwrap()
     }
-
 }
 
 fn get_tex_coords(total_tiles: i32, loc: Vec<i32>) -> [[f32; 2]; 4] {
@@ -68,7 +67,7 @@ fn get_tex_coords(total_tiles: i32, loc: Vec<i32>) -> [[f32; 2]; 4] {
     let bottom = 1.0 - (loc[1] + 1) as f32 * per_tile;
     let left = loc[0] as f32 * per_tile;
 
-    return [
+    [
         [left,  top],
         [right, top],
         [right, bottom],
