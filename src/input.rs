@@ -10,7 +10,8 @@ use piston::input::{
 
 pub enum Output {
     CameraMove(Dir),
-    Spawn(WindowLoc),
+    SpawnFood(WindowLoc),
+    SpawnWall(WindowLoc),
     Nothing,
 }
 
@@ -23,7 +24,7 @@ pub struct Input{
 
 impl Input{
     pub fn new() -> Input {
-        return Input {
+        Input {
             mouse_loc: WindowLoc { x: 0.0, y: 0.0 },
             mouse_left: false,
             mouse_right: false,
@@ -31,7 +32,7 @@ impl Input{
     }
 
     pub fn press(&mut self, button: Button) -> Output {
-        return self.change(button, true)
+        self.change(button, true)
     }
 
     pub fn release(&mut self, button: Button) {
@@ -40,7 +41,7 @@ impl Input{
 
     fn change(&mut self, button: Button, state: bool) -> Output {
         let out = match button {
-            Button::Keyboard(key)             => {
+            Button::Keyboard(key) => {
                 match key {
                     Key::Up    => Output::CameraMove(Dir::Up),
                     Key::Down  => Output::CameraMove(Dir::Down),
@@ -51,15 +52,15 @@ impl Input{
             },
             Button::Mouse(MouseButton::Left)  => {
                 self.mouse_left  = state;
-                Output::Spawn(self.mouse_loc.clone())
+                Output::SpawnFood(self.mouse_loc.clone())
             },
             Button::Mouse(MouseButton::Right) => {
                 self.mouse_right = state;
-                Output::Nothing
+                Output::SpawnWall(self.mouse_loc.clone())
             },
             _ => Output::Nothing
         };
-        return out
+        out
     }
 
     pub fn mouse_cursor(&mut self, x: f64, y: f64) {

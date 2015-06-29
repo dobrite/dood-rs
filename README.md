@@ -5,7 +5,8 @@ dood! gets the food!
 3. `cargo run`
 4. Give dat dood some food!
 
-- mouse click to drop food
+- left mouse click to drop food
+- right mouse click to create wall
 - arrow keys to pan camera
 
 based on [conway_rs](https://github.com/camjackson/conway_rs)

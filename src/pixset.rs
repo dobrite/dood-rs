@@ -11,6 +11,7 @@ pub enum Pix {
     DownArrow,
     RightArrow,
     LeftArrow,
+    Wall,
 }
 
 pub struct Pixset {
@@ -44,6 +45,7 @@ impl Pixset {
         tiles.insert(Pix::Food,       get_tex_coords(total_tiles, vec![3, 3]));
         tiles.insert(Pix::UpArrow,    get_tex_coords(total_tiles, vec![0, 2]));
         tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
+        tiles.insert(Pix::Wall,       get_tex_coords(total_tiles, vec![2, 2]));
 
         return Pixset {
             tiles: tiles,

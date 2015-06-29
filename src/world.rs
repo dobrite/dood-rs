@@ -9,12 +9,14 @@ use loc::Loc;
 use loc_map::LocMap;
 use renderable::Renderable;
 use updatable::Updatable;
+use wall::Wall;
 
 pub struct World {
     pub renderables: LocMap<Renderable>,
     pub updatables:  LocMap<Updatable>,
     pub foods: LocMap<Food>,
     pub doods: LocMap<Dood>,
+    pub walls: LocMap<Wall>,
     pub grid: Grid, // TODO prob doesn't need to be in World
 }
 
@@ -24,6 +26,7 @@ impl World {
         let mut updatables  = HashMap::new();
         let mut doods = HashMap::new();
         let mut foods = HashMap::new();
+        let mut walls = HashMap::new();
 
         // x, y
         let food_loc = Loc { x:  1, y:  1 };
@@ -44,14 +47,21 @@ impl World {
             updatables: updatables,
             foods: foods,
             doods: doods,
+            walls: walls,
             grid: Grid::new(width, height),
         }
     }
 
-    pub fn spawn(&mut self, loc: Loc) {
+    pub fn spawn_food(&mut self, loc: Loc) {
         let food = Rc::new(RefCell::new(Food::new(loc)));
         self.renderables.insert(loc, food.clone() as Rc<RefCell<Renderable>>);
         self.foods.insert(loc, food.clone());
+    }
+
+    pub fn spawn_wall(&mut self, loc: Loc) {
+        let wall = Rc::new(RefCell::new(Wall::new(loc)));
+        self.renderables.insert(loc, wall.clone() as Rc<RefCell<Renderable>>);
+        self.walls.insert(loc, wall.clone());
     }
 
     pub fn update(&self) {

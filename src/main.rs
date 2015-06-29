@@ -30,6 +30,7 @@ mod square;
 mod state;
 mod updatable;
 mod utils;
+mod wall;
 mod window_loc;
 mod world;
 
@@ -154,7 +155,8 @@ fn main() {
 
         e.press(|button| {
             match input.press(button) {
-                Output::Spawn(window_loc) => world.spawn(camera.to_game_loc(window_loc)),
+                Output::SpawnFood(window_loc) => world.spawn_food(camera.to_game_loc(window_loc)),
+                Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir)   => camera.pan(dir),
                 Output::Nothing => {}
             }
