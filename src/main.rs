@@ -88,8 +88,8 @@ gfx_parameters!(Params {
 });
 
 fn main() {
-    let width  = 1024.0;
-    let height = 768.0;
+    let width  = 1536.0; // 96
+    let height = 1024.0; // 64
 
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
