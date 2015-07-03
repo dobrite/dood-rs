@@ -40,7 +40,7 @@ impl Input{
     }
 
     fn change(&mut self, button: Button, state: bool) -> Output {
-        let out = match button {
+        match button {
             Button::Keyboard(key) => {
                 match key {
                     Key::Up    => Output::CameraMove(Dir::Up),
@@ -59,8 +59,7 @@ impl Input{
                 Output::SpawnWall(self.mouse_loc.clone())
             },
             _ => Output::Nothing
-        };
-        out
+        }
     }
 
     pub fn mouse_cursor(&mut self, x: f64, y: f64) {

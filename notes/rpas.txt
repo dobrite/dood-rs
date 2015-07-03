@@ -1,0 +1,29 @@
+each cell has 3 angles
+n = num cells in row
+ar = 1.0f / (n +1)  "angle range"
+sa = n*a            "starting angle"
+ca = sa + (ar/2)
+ea = sa + ar
+
+Can't this be a lookup table?
+(stride 2) per cell
+[sa1, ca1, ea1, ca2, ea2, ca3, ea3]
+
+process from orthogonal towards diagonal
+
+visible obstacle found:
+  store starting and ending angles
+  next line and past any cells within this range are unlit
+  increase num of found obstacles by 1
+  difference total num and total num up to prev line
+
+transparent tile:
+  ca to be unblocked plus either sa or ea
+opaque tile:
+  any single unobstructed angle
+
+most permissive: any cell visible if single unobstructed angle
+
+when cell processed:
+  iterate over blocked ranges on previous rows
+  if not obstructed, cell is visible

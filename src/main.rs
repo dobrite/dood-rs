@@ -1,3 +1,5 @@
+#![feature(vec_resize, rc_weak)]
+
 #[macro_use]
 extern crate gfx;
 
@@ -18,7 +20,9 @@ mod dist;
 mod dood;
 mod entities;
 mod food;
+mod fov;
 mod grid;
+mod has_loc;
 mod input;
 mod loc;
 mod loc_map;
@@ -132,8 +136,28 @@ fn main() {
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
     let mut world = World::new((width / SQUARE_SIZE as f32) as i32, (height / SQUARE_SIZE as f32) as i32);
+    world.spawn_wall(Loc { x: 10, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 11, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 13, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 14, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 15, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 16, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 17, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 18, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 19, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 20, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 21, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 23, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 24, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 25, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 26, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 27, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 28, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 29, y: 23 }); // TODO bad
+    world.spawn_wall(Loc { x: 30, y: 23 }); // TODO bad
+
     let mut input = Input::new();
-    let mut camera = Camera::new(width, height, Loc { x: -7, y: 7 });
+    let mut camera = Camera::new(width, height, Loc { x: 0, y: 48 });
 
     window.set_max_fps(FRAMES_PER_SECOND);
     window.set_ups(UPDATES_PER_SECOND);
@@ -141,10 +165,10 @@ fn main() {
     for e in window {
         e.draw_3d(|stream| {
             let (vertices, indices) = square::vertices(&pixset, &world.renderables);
-            stream.clear(clear_data);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
+            stream.clear(clear_data);
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
         });
 
@@ -157,10 +181,11 @@ fn main() {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => world.spawn_food(camera.to_game_loc(window_loc)),
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
-                Output::CameraMove(dir)   => camera.pan(dir),
+                Output::CameraMove(dir)       => camera.pan(dir),
                 Output::Nothing => {}
             }
         });
+
         e.release(|button| input.release(button));
         e.mouse_cursor(|x, y| input.mouse_cursor(x, y));
         e.mouse_scroll(|dx, dy| input.mouse_scroll(dx, dy));

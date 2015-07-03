@@ -16,6 +16,7 @@ use renderable::{
 use config::SQUARE_SIZE;
 
 use loc::Loc;
+use has_loc::HasLoc;
 use updatable::Updatable;
 use utils::get_closest;
 use world::World;
@@ -35,11 +36,17 @@ impl Dood {
         Dood {
             loc: loc,
             scale: SQUARE_SIZE as f32,
-            hunger: 55.0,
+            hunger: 49.0,
             color: [250.0, 0.0, 0.0],
             pix: Pix::Dood,
             path: Vec::new(),
         }
+    }
+}
+
+impl HasLoc for Dood {
+    fn get_loc(&self) -> Loc {
+        self.loc
     }
 }
 

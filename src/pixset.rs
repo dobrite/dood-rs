@@ -4,7 +4,6 @@ use square::TexCoords;
 
 #[derive(Debug, Eq, PartialEq, Hash)]
 pub enum Pix {
-    None,
     Dood,
     Food,
     UpArrow,
@@ -12,6 +11,7 @@ pub enum Pix {
     RightArrow,
     LeftArrow,
     Wall,
+    Empty,
 }
 
 pub struct Pixset {
@@ -46,6 +46,7 @@ impl Pixset {
         tiles.insert(Pix::UpArrow,    get_tex_coords(total_tiles, vec![0, 2]));
         tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
         tiles.insert(Pix::Wall,       get_tex_coords(total_tiles, vec![2, 2]));
+        tiles.insert(Pix::Empty,      get_tex_coords(total_tiles, vec![3, 2]));
 
         Pixset {
             tiles: tiles,
