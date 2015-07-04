@@ -386,53 +386,66 @@ impl Renderable for Fov {
 mod tests {
     use super::Fov;
 
+    use std::rc::Rc;
+    use std::cell::RefCell;
+
+    use loc::Loc;
+    use has_loc::HasLoc;
+
+    struct Dummy;
+    impl HasLoc for Dummy {
+        fn get_loc(&self) -> Loc {
+            Loc { x: 2, y: 2 }
+        }
+    }
+
     #[test]
     fn new_it_returns_fov() {
-        let fov = Fov::new(2, 2);
+        let fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(true);
     }
 
     #[test]
     fn clear_fov_it_clears_fov() {
-        let mut fov = Fov::new(2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         fov.clear_fov();
         assert!(fov.in_fov.iter().all(|ref row| row.iter().all(|&elem| !elem)));
     }
 
     #[test]
     fn get_width_it_gets_the_width() {
-        let mut fov = Fov::new(2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.get_width() == 2);
     }
 
     #[test]
     fn get_height_it_gets_the_height() {
-        let mut fov = Fov::new(2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.get_height() == 2);
     }
 
     #[test]
     fn is_transparent_it_gets_transparency_for_indices() {
-        let mut fov = Fov::new(2, 2);
-        assert!(fov.is_transparent(1, 1) == false);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn set_transparent_it_sets_transparency_for_indices() {
-        let mut fov = Fov::new(2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         fov.set_transparent(1, 1, true);
         assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn is_in_fov_it_returns_value_at_indices() {
-        let mut fov = Fov::new(2, 2);
-        assert!(fov.is_in_fov(1, 1) == false);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        assert!(fov.is_in_fov(1, 1) == true);
     }
 
     #[test]
     fn can_see_it_returns_and_of_is_in_fov_and_is_transparent() {
-        let mut fov = Fov::new(2, 2);
-        assert!(fov.can_see(1, 1) == false);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        assert!(fov.can_see(1, 1) == true);
     }
 }

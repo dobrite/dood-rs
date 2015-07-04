@@ -54,24 +54,24 @@ impl Paths for Dood {}
 
 impl Updatable for Dood {
     fn update(&mut self, world: &World) {
-        self.hunger -= 1.0;
+        //self.hunger -= 1.0;
 
-        if self.path.is_empty() && self.hunger < 50.0 {
-            if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
-                if food_loc == self.loc {
-                    if let Some(food) = world.foods.get(&food_loc) {
-                        self.hunger += food.borrow_mut().eat(20.0);
-                    }
-                } else {
-                    self.path = self.path(&world.grid, self.loc, food_loc);
-                }
-            }
-        }
+        //if self.path.is_empty() && self.hunger < 50.0 {
+        //    if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
+        //        if food_loc == self.loc {
+        //            if let Some(food) = world.foods.get(&food_loc) {
+        //                self.hunger += food.borrow_mut().eat(20.0);
+        //            }
+        //        } else {
+        //            self.path = self.path(&world.grid, self.loc, food_loc);
+        //        }
+        //    }
+        //}
 
-        match self.path.pop() {
-            Some(loc) => self.loc = loc,
-            None => {},
-        }
+        //match self.path.pop() {
+        //    Some(loc) => self.loc = loc,
+        //    None => {},
+        //}
     }
 }
 

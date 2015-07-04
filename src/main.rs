@@ -16,8 +16,9 @@ extern crate hprof;
 extern crate camera_controllers;
 extern crate nalgebra;
 
-mod chunk;
 mod camera;
+mod chunk;
+mod chunk_coord;
 mod config;
 mod dir;
 mod dist;
@@ -32,6 +33,7 @@ mod loc_map;
 mod paths;
 mod pixset;
 mod renderable;
+mod scratch;
 mod shaders;
 mod square;
 mod state;
@@ -134,32 +136,11 @@ fn main() {
         _r: std::marker::PhantomData,
     };
 
-    //let state = gfx::DrawState::new();
     let state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
     let pixset = Pixset::new(TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut world = World::new((width / SQUARE_SIZE as f32) as i32, (height / SQUARE_SIZE as f32) as i32);
-    world.spawn_wall(Loc { x: 10, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 11, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 13, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 14, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 15, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 16, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 17, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 18, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 19, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 20, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 21, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 23, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 24, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 25, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 26, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 27, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 28, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 29, y: 23 }); // TODO bad
-    world.spawn_wall(Loc { x: 30, y: 23 }); // TODO bad
-
+    let mut world = World::new();
     let mut input = Input::new();
     let mut camera = Camera::new(width, height, Loc { x: 0, y: 48 });
 
@@ -168,7 +149,11 @@ fn main() {
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = square::vertices(&pixset, &world.renderables);
+            use square::FixMe;
+            // TODO FixMe
+            let mut fix_me = FixMe::new();
+            //let (vertices, indices) = square::vertices(&pixset, &world.renderables);
+            let (vertices, indices) = square::vertices(&pixset, &fix_me);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
