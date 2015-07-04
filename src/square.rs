@@ -3,17 +3,24 @@
 //16:06 < tomaka> and in the fragment shader, you load the color of the texture and do the blending manually
 //16:07 < tomaka> with mix(tex_color.rgb, color.rgb, tex_color.a) I guess
 //16:07 < tomaka> or tex_color.rgb * tex_color.a + color.rgb * (1 - tex_color.a) more explicitely
-use entities::Entities;
+use std::rc::Rc;
+use std::cell::RefCell;
+use std::collections::HashMap;
+
+use loc::Loc;
+use loc_map::LocMap;
 use pixset::Pixset;
 use renderable::Vertex;
+use renderable::Renderable;
 
 pub type TexCoords = [[f32; 2]; 4];
+pub type FixMe = HashMap<Loc, Rc<RefCell<Renderable>>>;
 
-pub fn vertices(tiles: &Pixset, entities: &Entities) -> (Vec<Vertex>, Vec<u8>) {
+pub fn vertices(tiles: &Pixset, renderables: &FixMe) -> (Vec<Vertex>, Vec<u8>) {
     let mut vertex_data: Vec<Vertex> = Vec::new();
 
-    for (_, entity) in entities {
-        for vertex in entity.borrow().render(&tiles) {
+    for (_, render) in renderables {
+        for vertex in render.borrow().render(&tiles) {
             vertex_data.push(vertex)
         }
     }

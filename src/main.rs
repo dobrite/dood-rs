@@ -18,7 +18,6 @@ mod config;
 mod dir;
 mod dist;
 mod dood;
-mod entities;
 mod food;
 mod fov;
 mod grid;
