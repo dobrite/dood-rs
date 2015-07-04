@@ -1,6 +1,9 @@
 #![feature(vec_resize, rc_weak)]
 
 #[macro_use]
+extern crate bitflags;
+
+#[macro_use]
 extern crate gfx;
 
 extern crate piston;
@@ -13,6 +16,7 @@ extern crate hprof;
 extern crate camera_controllers;
 extern crate nalgebra;
 
+mod chunk;
 mod camera;
 mod config;
 mod dir;
@@ -31,6 +35,7 @@ mod renderable;
 mod shaders;
 mod square;
 mod state;
+mod terrain;
 mod updatable;
 mod utils;
 mod wall;
