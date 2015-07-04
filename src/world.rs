@@ -42,7 +42,7 @@ impl World {
 
         for x in 0..3 {
             for y in 0..3 {
-                world.create(ChunkCoord::new(x - 1, y - 1));
+                world.create(ChunkCoord::new(x - 1, y - 1, 0));
             }
         }
 
@@ -95,36 +95,5 @@ impl World {
         //        remove.push(*loc);
         //    }
         //}
-    }
-
-    fn loc_to_chunk_coord(&self, loc: Loc) -> ChunkCoord {
-        let chunk_x = ((loc.x as f64 / self.chunk_width  as f64)).floor();
-        let chunk_y = ((loc.y as f64 / self.chunk_height as f64)).floor();
-        ChunkCoord::new(chunk_x as i32, chunk_y as i32)
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use loc::Loc;
-    use chunk_coord::ChunkCoord;
-    use super::World;
-
-    #[test]
-    fn new_it_returns_zero_zero_for_zero_zero() {
-        assert!(World::new().loc_to_chunk_coord(Loc { x: 0, y: 0 }) ==
-                ChunkCoord { chunk_x: 0, chunk_y: 0, offset: 0 });
-    }
-
-    #[test]
-    fn new_it_returns_one_one_for_sixty_five_sixty_five() {
-        assert!(World::new().loc_to_chunk_coord(Loc { x: 65, y: 65 }) ==
-                ChunkCoord { chunk_x: 1, chunk_y: 1, offset: 0 });
-    }
-
-    #[test]
-    fn new_it_returns_minus_one_minus_one_for_minus_one_minus_one() {
-        assert!(World::new().loc_to_chunk_coord(Loc { x: -1, y: -1 }) ==
-                ChunkCoord { chunk_x: -1, chunk_y: -1, offset: 0 });
     }
 }
