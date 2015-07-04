@@ -24,6 +24,8 @@ use updatable::Updatable;
 use wall::Wall;
 
 pub struct World {
+    chunk_width: i32,
+    chunk_height: i32,
     pub chunks: HashMap<ChunkCoord, Chunk>,
     //pub grid: Grid, // TODO prob doesn't need to be in world
 }
@@ -31,17 +33,29 @@ pub struct World {
 impl World {
     pub fn new() -> World {
         let mut chunks = HashMap::new();
+        let mut world = World {
+            chunk_width: CHUNK_WIDTH,
+            chunk_height: CHUNK_HEIGHT,
+            chunks: chunks,
+            //grid: Grid::new(width, height),
+        };
 
         for x in 0..3 {
             for y in 0..3 {
-                chunks.insert(ChunkCoord { x: x - 1, y: y - 1 }, Chunk::new(CHUNK_WIDTH, CHUNK_HEIGHT));
+                world.create(ChunkCoord::new(x - 1, y - 1));
             }
         }
 
-        World {
-            chunks: chunks,
-            //grid: Grid::new(width, height),
-        }
+        world
+    }
+
+    fn create(&mut self, cc: ChunkCoord) {
+        let chunk = Chunk::new(self.chunk_width, self.chunk_height);
+        self.chunks.insert(cc, chunk);
+    }
+
+    fn get_chunk(&mut self, cc: ChunkCoord) -> &Chunk {
+        self.chunks.entry(cc).or_insert(Chunk::new(self.chunk_width, self.chunk_height))
     }
 
     pub fn spawn_food(&mut self, loc: Loc) {
@@ -82,20 +96,35 @@ impl World {
         //    }
         //}
     }
-}
 
-fn world_loc_to_chunk_loc(loc: Loc) -> ChunkCoord {
-    ChunkCoord { x: 0, y: 0 }
+    fn loc_to_chunk_coord(&self, loc: Loc) -> ChunkCoord {
+        let chunk_x = ((loc.x as f64 / self.chunk_width  as f64)).floor();
+        let chunk_y = ((loc.y as f64 / self.chunk_height as f64)).floor();
+        ChunkCoord::new(chunk_x as i32, chunk_y as i32)
+    }
 }
 
 #[cfg(test)]
 mod tests {
     use loc::Loc;
     use chunk_coord::ChunkCoord;
-    use super::world_loc_to_chunk_loc;
+    use super::World;
 
     #[test]
     fn new_it_returns_zero_zero_for_zero_zero() {
-        assert!(world_loc_to_chunk_loc(Loc { x: 0, y: 0 }) == ChunkCoord { x: 0, y: 0 });
+        assert!(World::new().loc_to_chunk_coord(Loc { x: 0, y: 0 }) ==
+                ChunkCoord { chunk_x: 0, chunk_y: 0, offset: 0 });
+    }
+
+    #[test]
+    fn new_it_returns_one_one_for_sixty_five_sixty_five() {
+        assert!(World::new().loc_to_chunk_coord(Loc { x: 65, y: 65 }) ==
+                ChunkCoord { chunk_x: 1, chunk_y: 1, offset: 0 });
+    }
+
+    #[test]
+    fn new_it_returns_minus_one_minus_one_for_minus_one_minus_one() {
+        assert!(World::new().loc_to_chunk_coord(Loc { x: -1, y: -1 }) ==
+                ChunkCoord { chunk_x: -1, chunk_y: -1, offset: 0 });
     }
 }
