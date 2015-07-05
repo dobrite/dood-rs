@@ -18,7 +18,7 @@ extern crate nalgebra;
 
 mod camera;
 mod chunk;
-mod chunk_coord;
+mod chunk_loc;
 mod config;
 mod dir;
 mod dist;
@@ -27,6 +27,7 @@ mod food;
 mod fov;
 mod grid;
 mod has_loc;
+mod indices;
 mod input;
 mod loc;
 mod loc_map;
@@ -35,6 +36,7 @@ mod pixset;
 mod renderable;
 mod scratch;
 mod shaders;
+mod size;
 mod square;
 mod state;
 mod terrain;
@@ -43,6 +45,7 @@ mod utils;
 mod wall;
 mod window_loc;
 mod world;
+mod world_coord;
 
 use std::io::Cursor;
 
