@@ -20,8 +20,10 @@ bitflags! {
 }
 
 pub struct Scratch {
-    terrain: Vec<Terrain>,
-    flags: Vec<Flags>,
+    terrain:  Vec<Terrain>,
+    flags:    Vec<Flags>,
+    //vertices: Vec<Vertex>,
+    indices:  Vec<u32>,
 }
 
 impl Scratch {
@@ -33,19 +35,21 @@ impl Scratch {
 
         Scratch {
             // TODO move back to None
-            terrain: vec![Terrain::Dirt; len],
-            flags: vec![NONE; len],
+            terrain:  vec![Terrain::Dirt; len],
+            flags:    vec![NONE; len],
+            //vertices: vec![NONE; len * 4],
+            indices:  indices(len * 3),
         }
     }
 
     // TODO return &[Vertex] using vec as_slice?
-    pub fn render(&self, tiles: &Pixset) -> (Vec<Vertex>, Vec<u32>) {
+    pub fn render(&self, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
         let width  = config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH;
         let height = config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT;
         let offset = (config::SQUARE_SIZE / 2) as f32;
 
-        // Box<[[Vertex; 16]; 16];
-        let mut vertex_data: Vec<Vertex> = Vec::new();
+        // Box<[Vertex; 256];
+        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4);
 
         let mut count = 0;
         for terrain in self.terrain.iter() {
@@ -54,56 +58,54 @@ impl Scratch {
             let x: f32 = (square_x * config::SQUARE_SIZE) as f32 + offset;
             let y: f32 = (square_y * config::SQUARE_SIZE) as f32 + offset;
             let vertices = match terrain {
-                &Terrain::Dirt => vec![
+                &Terrain::Dirt => {
                     // bottom left
-                    Vertex {
+                    vertex_data.push(Vertex {
                         vertex_position: [-0.5, -0.5],
                         tex_coords: tiles.get(&Pix::Food)[0],
                         loc: [x, y],
                         scale: 16.0,
                         color: [255.0, 0.0, 0.0]
-                    },
+                    });
+
                     // bottom right
-                    Vertex {
+                    vertex_data.push(Vertex {
                         vertex_position: [0.5, -0.5],
                         tex_coords: tiles.get(&Pix::Food)[1],
                         loc: [x, y],
                         scale: 16.0,
                         color: [255.0, 0.0, 0.0]
-                    },
+                    });
+
                     // top right
-                    Vertex {
+                    vertex_data.push(Vertex {
                         vertex_position: [0.5, 0.5],
                         tex_coords: tiles.get(&Pix::Food)[2],
                         loc: [x, y],
                         scale: 16.0,
                         color: [255.0, 0.0, 0.0]
-                    },
+                    });
+
                     // top left
-                    Vertex {
+                    vertex_data.push(Vertex {
                         vertex_position: [-0.5, 0.5],
                         tex_coords: tiles.get(&Pix::Food)[3],
                         loc: [x, y],
                         scale: 16.0,
                         color: [255.0, 0.0, 0.0]
-                    },
-                ],
-                _ => vec![],
+                    });
+                },
+                _ => {},
             };
-
-            for vertex in vertices {
-                vertex_data.push(vertex);
-            }
-
             count += 1;
         }
 
-        let len = vertex_data.len();
-        (vertex_data, indices(len))
+        // TODO match length of indices to (vertex_data / 4) * 3
+        (vertex_data, &self.indices)
     }
 }
 
-pub fn indices(length: usize) -> Vec<u32> {
+fn indices(length: usize) -> Vec<u32> {
     (0..(length / 4)).into_iter().flat_map(|i|
         vec![0, 1, 2, 0, 2, 3].into_iter().map(|j| (j + i * 4) as u32).collect::<Vec<u32>>()
     ).collect()
