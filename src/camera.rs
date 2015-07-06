@@ -2,30 +2,30 @@ use config::SQUARE_SIZE;
 
 use dir::Dir;
 use loc::Loc;
+use screen_size::ScreenSize;
 use window_loc::WindowLoc;
 
 #[derive(Debug)]
 pub struct Camera {
-    width: f32,
-    height: f32,
+    screen_size: ScreenSize,
     loc: Loc,
 }
 
 impl Camera {
-    pub fn new(width: f32, height: f32, loc: Loc) -> Camera {
+    pub fn new(screen_size: ScreenSize, loc: Loc) -> Camera {
         Camera {
-            width: width,
-            height: height,
+            screen_size: screen_size,
             loc: loc,
         }
     }
 
+    // TODO don't allocate a new one each frame
     pub fn as_mat(&self) -> [[f32; 4]; 4] {
         let x_offset =  (self.loc.x as i32      * SQUARE_SIZE) as f32;
         let y_offset = ((self.loc.y as i32 + 1) * SQUARE_SIZE) as f32;
 
-        let x_o = -(self.width  / 2.0) - x_offset;
-        let y_o =  (self.height / 2.0) - y_offset;
+        let x_o = -(self.screen_size.width  / 2.0) - x_offset;
+        let y_o =  (self.screen_size.height / 2.0) - y_offset;
 
         [
             [1.0, 0.0, 0.0, 0.0],

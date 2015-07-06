@@ -35,6 +35,7 @@ mod paths;
 mod pixset;
 mod renderable;
 mod scratch;
+mod screen_size;
 mod shaders;
 mod size;
 mod state;
@@ -69,6 +70,7 @@ use world::World;
 use input::Input;
 use input::Output;
 use scratch::Scratch;
+use screen_size::ScreenSize;
 
 use piston_window::{
     EventLoop,
@@ -89,12 +91,14 @@ gfx_parameters!(Params {
 });
 
 fn main() {
-    let width  = 1536.0; // 96
-    let height = 1024.0; // 64
+    let screen_size = ScreenSize {
+        width: 1536.0,  // 96
+        height: 1024.0, // 64
+    };
 
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
-        [width as u32, height as u32]
+        [screen_size.width as u32, screen_size.height as u32]
     ).exit_on_esc(true).into();
 
     let ref mut factory = window.factory.borrow().clone();
@@ -123,7 +127,7 @@ fn main() {
         [0.0, 0.0, 0.0, 1.0],
     ];
 
-    let ortho_projection = *OrthoMat3::new(width, height, 0.0, 100.0).as_mat().as_array();
+    let ortho_projection = *OrthoMat3::new(screen_size.width, screen_size.height, 0.0, 100.0).as_mat().as_array();
 
     let mut uniforms = Params {
         mvp: model_view_projection(mat4_id, mat4_id, ortho_projection),
@@ -137,7 +141,7 @@ fn main() {
 
     let mut world = World::new();
     let mut input = Input::new();
-    let mut camera = Camera::new(width, height, Loc { x: 96, y: 96 });
+    let mut camera = Camera::new(screen_size, Loc { x: 96, y: 96 });
     let scratch = Scratch::new();
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
