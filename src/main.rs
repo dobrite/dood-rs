@@ -37,7 +37,6 @@ mod renderable;
 mod scratch;
 mod shaders;
 mod size;
-mod square;
 mod state;
 mod terrain;
 mod updatable;
@@ -74,9 +73,9 @@ use loc::Loc;
 use camera::Camera;
 use pixset::Pixset;
 use world::World;
-use square::indices;
 use input::Input;
 use input::Output;
+use scratch::Scratch;
 
 use piston_window::{
     EventLoop,
@@ -146,17 +145,14 @@ fn main() {
     let mut world = World::new();
     let mut input = Input::new();
     let mut camera = Camera::new(width, height, Loc { x: 0, y: 48 });
+    let scratch = Scratch::new(8, 8);
 
     window.set_max_fps(FRAMES_PER_SECOND);
     window.set_ups(UPDATES_PER_SECOND);
 
     for e in window {
         e.draw_3d(|stream| {
-            use square::FixMe;
-            // TODO FixMe
-            let mut fix_me = FixMe::new();
-            //let (vertices, indices) = square::vertices(&pixset, &world.renderables);
-            let (vertices, indices) = square::vertices(&pixset, &fix_me);
+            let (vertices, indices) = scratch.render(&pixset);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
