@@ -38,7 +38,7 @@ impl Scratch {
             terrain:  vec![Terrain::Dirt; len],
             flags:    vec![NONE; len],
             //vertices: vec![NONE; len * 4],
-            indices:  indices(len * 3),
+            indices:  indices(len * 4),
         }
     }
 

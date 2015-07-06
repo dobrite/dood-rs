@@ -137,7 +137,7 @@ fn main() {
 
     let mut world = World::new();
     let mut input = Input::new();
-    let mut camera = Camera::new(width, height, Loc { x: 0, y: 48 });
+    let mut camera = Camera::new(width, height, Loc { x: 96, y: 96 });
     let scratch = Scratch::new();
 
     window.set_max_fps(config::FRAMES_PER_SECOND);

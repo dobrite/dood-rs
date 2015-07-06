@@ -36,6 +36,7 @@ impl Camera {
     }
 
     pub fn pan(&mut self, dir: Dir) {
+        println!("{:?}", self.loc);
         match dir {
             Dir::Right => self.loc.x += 1,
             Dir::Left  => self.loc.x -= 1,
