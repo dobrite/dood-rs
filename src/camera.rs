@@ -4,6 +4,7 @@ use dir::Dir;
 use loc::Loc;
 use screen_size::ScreenSize;
 use window_loc::WindowLoc;
+use world_coord::WorldCoord;
 
 #[derive(Debug)]
 pub struct Camera {
@@ -36,7 +37,7 @@ impl Camera {
     }
 
     pub fn pan(&mut self, dir: Dir) {
-        println!("{:?}", self.loc);
+        println!("{:?}", WorldCoord::from_loc(&self.loc));
         match dir {
             Dir::Right => self.loc.x += 1,
             Dir::Left  => self.loc.x -= 1,
