@@ -1,7 +1,5 @@
 use std::collections::HashMap;
 
-use square::TexCoords;
-
 pub type TexCoords = [[f32; 2]; 4];
 
 #[derive(Debug, Eq, PartialEq, Hash)]

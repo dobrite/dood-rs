@@ -11,7 +11,7 @@ use indices::Indices;
 ///             |       |       |
 /// (cc -1,1)   | -1,1  |  0,1  | (cc 0,1)
 ///             |       |       |
-///           ---------------------
+///           ---------0,0---------
 ///             |       |       |
 /// (cc -1,0)   | -1,0  |  0,0  | (cc 0,0)
 ///             |       |       |
@@ -178,5 +178,34 @@ mod tests {
         let loc = Loc { x: -1, y: 0 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
                 WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 0 }, indices: Indices { row: 0, col: 7 } });
+    }
+
+    // 16x16
+    // Upper Right Quadrant
+
+    #[test]
+    fn from_loc_16_16_it_returns_correct_for_0_1() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: 0, y: 1 };
+        assert!(WorldCoord::from_loc(&size, &loc) ==
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 15, col: 0 } });
+    }
+
+    #[test]
+    fn from_loc_16_16_it_returns_correct_for_16_17() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: 16, y: 17 };
+        assert!(WorldCoord::from_loc(&size, &loc) ==
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 15, col: 0 } });
+    }
+
+    // Lower Left Quadrant
+
+    #[test]
+    fn from_loc_16_16_it_returns_correct_for_minus_17_minus_16() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: -17, y: -16 };
+        assert!(WorldCoord::from_loc(&size, &loc) ==
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -2, y: -1 }, indices: Indices { row: 0, col: 15 } });
     }
 }
