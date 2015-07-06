@@ -5,11 +5,7 @@ use std::rc::{
     Weak,
 };
 
-use config::{
-    CHUNK_WIDTH,
-    CHUNK_HEIGHT,
-};
-
+use config;
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use dood::Dood;
@@ -35,15 +31,18 @@ impl World {
     pub fn new() -> World {
         let mut chunks = HashMap::new();
         let mut world = World {
-            chunk_width: CHUNK_WIDTH,
-            chunk_height: CHUNK_HEIGHT,
+            chunk_width: config::CHUNK_WIDTH,
+            chunk_height: config::CHUNK_HEIGHT,
             chunks: chunks,
             //grid: Grid::new(width, height),
         };
 
-        for x in 0..3 {
-            for y in 0..3 {
-                world.create(ChunkLoc { x: x - 1, y: y - 1 });
+        for x in 0..config::SCRATCH_CHUNKS_WIDTH {
+            for y in 0..config::SCRATCH_CHUNKS_HEIGHT {
+                world.create(ChunkLoc {
+                    x: x - (config::SCRATCH_CHUNKS_WIDTH  / 2),
+                    y: y - (config::SCRATCH_CHUNKS_HEIGHT / 2),
+                });
             }
         }
 

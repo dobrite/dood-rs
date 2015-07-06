@@ -62,13 +62,6 @@ use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
 use gfx_texture::Texture;
 
-use config::{
-    TOTAL_TILES,
-    SQUARE_SIZE,
-    FRAMES_PER_SECOND,
-    UPDATES_PER_SECOND,
-};
-
 use loc::Loc;
 use camera::Camera;
 use pixset::Pixset;
@@ -139,16 +132,16 @@ fn main() {
     };
 
     let state = gfx::DrawState::new().depth(gfx::state::Comparison::LessEqual, true);
-    let pixset = Pixset::new(TOTAL_TILES);
+    let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
     let mut world = World::new();
     let mut input = Input::new();
     let mut camera = Camera::new(width, height, Loc { x: 0, y: 48 });
-    let scratch = Scratch::new(8, 8);
+    let scratch = Scratch::new();
 
-    window.set_max_fps(FRAMES_PER_SECOND);
-    window.set_ups(UPDATES_PER_SECOND);
+    window.set_max_fps(config::FRAMES_PER_SECOND);
+    window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
         e.draw_3d(|stream| {

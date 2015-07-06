@@ -1,3 +1,4 @@
+use config;
 use terrain::Terrain;
 use renderable::Vertex;
 use pixset::{
@@ -24,8 +25,11 @@ pub struct Scratch {
 }
 
 impl Scratch {
-    pub fn new(width: i32, height: i32) -> Scratch {
-        let len = (3 * (width as usize * height as usize)).pow(2);
+    pub fn new() -> Scratch {
+        let len = (config::SCRATCH_CHUNKS_WIDTH *
+            config::CHUNK_WIDTH *
+            config::SCRATCH_CHUNKS_HEIGHT *
+            config::CHUNK_HEIGHT) as usize;
 
         Scratch {
             // TODO move back to None
@@ -36,14 +40,19 @@ impl Scratch {
 
     // TODO return &[Vertex] using vec as_slice?
     pub fn render(&self, tiles: &Pixset) -> (Vec<Vertex>, Vec<u32>) {
+        let width  = config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH;
+        let height = config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT;
+        let offset = (config::SQUARE_SIZE / 2) as f32;
+
+        // Box<[[Vertex; 16]; 16];
         let mut vertex_data: Vec<Vertex> = Vec::new();
 
         let mut count = 0;
         for terrain in self.terrain.iter() {
-            let square_x = count / 192; // TODO
-            let square_y = count % 192; // TODO
-            let x = (square_x * 16) as f32 + 8.0;
-            let y = (square_y * 16) as f32 + 8.0;
+            let square_x = count / width;
+            let square_y = count % height;
+            let x: f32 = (square_x * config::SQUARE_SIZE) as f32 + offset;
+            let y: f32 = (square_y * config::SQUARE_SIZE) as f32 + offset;
             let vertices = match terrain {
                 &Terrain::Dirt => vec![
                     // bottom left
