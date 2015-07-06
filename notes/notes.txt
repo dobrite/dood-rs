@@ -32,3 +32,7 @@ fn main() {
   let v = vec![x, y];
   println!("{:?}", v);
 }
+
+///
+
+http://www.reddit.com/r/rust/comments/3cboot/question_about_polymorphism_in_rust/
