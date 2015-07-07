@@ -1,4 +1,6 @@
 use config;
+use camera::Camera;
+use loc::Loc;
 use terrain::Terrain;
 use renderable::Vertex;
 use pixset::{
@@ -20,6 +22,7 @@ bitflags! {
 }
 
 pub struct Scratch {
+    loc: Loc,
     terrain:  Vec<Terrain>,
     flags:    Vec<Flags>,
     //vertices: Vec<Vertex>,
@@ -27,13 +30,17 @@ pub struct Scratch {
 }
 
 impl Scratch {
-    pub fn new() -> Scratch {
+    pub fn new(loc: Loc) -> Scratch {
         let len = (config::SCRATCH_CHUNKS_WIDTH *
             config::CHUNK_WIDTH *
             config::SCRATCH_CHUNKS_HEIGHT *
             config::CHUNK_HEIGHT) as usize;
 
+        // scratch is 36864 (192 x 192)
+        // camera  is 96 x 64
+
         Scratch {
+            loc: loc,
             // TODO move back to None
             terrain:  vec![Terrain::Dirt; len],
             flags:    vec![NONE; len],
@@ -43,7 +50,7 @@ impl Scratch {
     }
 
     // TODO return &[Vertex] using vec as_slice?
-    pub fn render(&self, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
+    pub fn render(&self, camera: &Camera, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
         let width  = config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH;
         let height = config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT;
         let offset = (config::SQUARE_SIZE / 2) as f32;

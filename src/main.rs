@@ -141,15 +141,15 @@ fn main() {
 
     let mut world = World::new();
     let mut input = Input::new();
-    let mut camera = Camera::new(screen_size, Loc { x: 96, y: 96 });
-    let scratch = Scratch::new();
+    let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 });
+    let scratch = Scratch::new(Loc { x: -50, y: -50 });
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = scratch.render(&pixset);
+            let (vertices, indices) = scratch.render(&camera, &pixset);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
@@ -164,7 +164,10 @@ fn main() {
 
         e.press(|button| {
             match input.press(button) {
-                Output::SpawnFood(window_loc) => world.spawn_food(camera.to_game_loc(window_loc)),
+                Output::SpawnFood(window_loc) => {
+                    //world.spawn_food(camera.to_game_loc(window_loc))
+                    println!("{:?}", camera.to_game_loc(window_loc));
+                },
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir)       => camera.pan(dir),
                 Output::Nothing => {}

@@ -1,7 +1,8 @@
-use config::SQUARE_SIZE;
+use config;
 
 use dir::Dir;
 use loc::Loc;
+use size::Size;
 use screen_size::ScreenSize;
 use window_loc::WindowLoc;
 use world_coord::WorldCoord;
@@ -10,6 +11,7 @@ use world_coord::WorldCoord;
 pub struct Camera {
     screen_size: ScreenSize,
     loc: Loc,
+    dim: Size,
 }
 
 impl Camera {
@@ -17,13 +19,29 @@ impl Camera {
         Camera {
             screen_size: screen_size,
             loc: loc,
+            dim: Size {
+                width:  (screen_size.width  as i32 / config::SQUARE_SIZE),
+                height: (screen_size.height as i32 / config::SQUARE_SIZE),
+            }
         }
+    }
+
+    pub fn get_screen_size(&self) -> ScreenSize {
+        self.screen_size
+    }
+
+    pub fn get_loc(&self) -> Loc {
+        self.loc
+    }
+
+    pub fn get_dim(&self) -> Size {
+        self.dim
     }
 
     // TODO don't allocate a new one each frame
     pub fn as_mat(&self) -> [[f32; 4]; 4] {
-        let x_offset =  (self.loc.x as i32      * SQUARE_SIZE) as f32;
-        let y_offset = ((self.loc.y as i32 + 1) * SQUARE_SIZE) as f32;
+        let x_offset =  (self.loc.x as i32      * config::SQUARE_SIZE) as f32;
+        let y_offset = ((self.loc.y as i32 + 1) * config::SQUARE_SIZE) as f32;
 
         let x_o = -(self.screen_size.width  / 2.0) - x_offset;
         let y_o =  (self.screen_size.height / 2.0) - y_offset;
@@ -48,13 +66,22 @@ impl Camera {
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        let x = window_loc.x as f32 / SQUARE_SIZE as f32;
-        let y = window_loc.y as f32 / SQUARE_SIZE as f32;
+        let x = window_loc.x as f32 / config::SQUARE_SIZE as f32;
+        let y = window_loc.y as f32 / config::SQUARE_SIZE as f32;
 
         Loc {
             x:  (x.trunc() + self.loc.x as f32) as i32,
             y: -(y.trunc() - self.loc.y as f32) as i32
         }
+    }
+
+    pub fn to_loc_box(&self) -> (i32, i32, i32, i32) {
+        (
+            self.loc.x,
+            self.loc.y,
+            self.loc.x + self.dim.width, // might need - 1
+            self.loc.y - self.dim.height, // might need + 1
+        )
     }
 }
 
@@ -64,6 +91,13 @@ mod tests {
     use window_loc::WindowLoc;
     use screen_size::ScreenSize;
     use super::Camera;
+
+    #[test]
+    fn to_loc_box() {
+        let screen_size = ScreenSize { width: 1536.0, height: 1024.0 };
+        assert!(Camera::new(screen_size, Loc { x: -50, y: 50 })
+            .to_loc_box() == (-50, 50, 46, -14));
+    }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_four() {

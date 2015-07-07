@@ -39,6 +39,7 @@ impl World {
 
         for x in 0..config::SCRATCH_CHUNKS_WIDTH {
             for y in 0..config::SCRATCH_CHUNKS_HEIGHT {
+                // -6, -6, to 5, 5
                 world.create(ChunkLoc {
                     x: x - (config::SCRATCH_CHUNKS_WIDTH  / 2),
                     y: y - (config::SCRATCH_CHUNKS_HEIGHT / 2),
