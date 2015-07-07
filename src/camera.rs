@@ -71,16 +71,20 @@ impl Camera {
 
         Loc {
             x:  (x.trunc() + self.loc.x as f32) as i32,
-            y: -(y.trunc() - self.loc.y as f32) as i32
+            y: -(y.trunc() - self.loc.y as f32) as i32,
         }
     }
 
-    pub fn to_loc_box(&self) -> (i32, i32, i32, i32) {
+    pub fn to_loc_box(&self) -> (Loc, Loc) {
         (
-            self.loc.x,
-            self.loc.y,
-            self.loc.x + self.dim.width, // might need - 1
-            self.loc.y - self.dim.height, // might need + 1
+            Loc {
+                x: self.loc.x,
+                y: self.loc.y,
+            },
+            Loc {
+                x: self.loc.x + self.dim.width,  /* might need - 1 */
+                y: self.loc.y - self.dim.height, /* might need + 1 */
+            }
         )
     }
 }
@@ -96,7 +100,7 @@ mod tests {
     fn to_loc_box() {
         let screen_size = ScreenSize { width: 1536.0, height: 1024.0 };
         assert!(Camera::new(screen_size, Loc { x: -50, y: 50 })
-            .to_loc_box() == (-50, 50, 46, -14));
+            .to_loc_box() == (Loc { x: -50, y: 50 }, Loc { x: 46, y: -14 }));
     }
 
     #[test]

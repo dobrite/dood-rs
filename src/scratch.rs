@@ -50,7 +50,7 @@ impl Scratch {
     }
 
     // TODO return &[Vertex] using vec as_slice?
-    pub fn render(&self, camera: &Camera, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
+    pub fn render(&self, loc_box: (Loc, Loc), tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
         let width  = config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH;
         let height = config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT;
         let offset = (config::SQUARE_SIZE / 2) as f32;

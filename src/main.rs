@@ -149,7 +149,8 @@ fn main() {
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = scratch.render(&camera, &pixset);
+            let loc_box = camera.to_loc_box();
+            let (vertices, indices) = scratch.render(loc_box, &pixset);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
