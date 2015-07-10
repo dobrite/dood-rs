@@ -8,8 +8,6 @@ use renderable::{
     Renderable,
 };
 
-use config::SQUARE_SIZE;
-
 use loc::Loc;
 use updatable::Updatable;
 use world::World;

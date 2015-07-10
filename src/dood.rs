@@ -13,8 +13,6 @@ use renderable::{
     Renderable,
 };
 
-use config::SQUARE_SIZE;
-
 use loc::Loc;
 use has_loc::HasLoc;
 use updatable::Updatable;
