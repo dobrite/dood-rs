@@ -8,7 +8,6 @@ use std::rc::{
 use config;
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
-use dood::Dood;
 use food::Food;
 use fov::Fov;
 use grid::Grid;

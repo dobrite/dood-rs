@@ -22,10 +22,10 @@ pub struct Food {
 }
 
 impl Food {
-    pub fn new(loc: Loc) -> Food {
+    pub fn new(loc: Loc, square_size: i32) -> Food {
         Food {
             loc: loc,
-            scale: SQUARE_SIZE as f32,
+            scale: square_size as f32,
             color: [0.2313725, 0.3254902, 0.1372549],
             pix: Pix::Food,
             noms: 100.0,
@@ -51,9 +51,9 @@ impl Updatable for Food {
 
 impl Renderable for Food {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
-        let offset = (SQUARE_SIZE / 2) as f32;
-        let x = (self.loc.x * SQUARE_SIZE) as f32 + offset;
-        let y = (self.loc.y * SQUARE_SIZE) as f32 + offset;
+        let offset = (self.scale / 2.0) as f32;
+        let x = (self.loc.x as f32 * self.scale) + offset;
+        let y = (self.loc.y as f32 * self.scale) + offset;
 
         vec![
             Vertex {
