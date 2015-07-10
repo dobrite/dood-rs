@@ -71,6 +71,7 @@ use input::Input;
 use input::Output;
 use scratch::Scratch;
 use screen_size::ScreenSize;
+use world_coord::WorldCoord;
 
 use piston_window::{
     EventLoop,
@@ -142,15 +143,14 @@ fn main() {
     let mut world = World::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 });
-    let scratch = Scratch::new(Loc { x: -50, y: -50 });
+    let scratch = Scratch::new(Loc { x: -80, y: 80 });
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
         e.draw_3d(|stream| {
-            let loc_box = camera.to_loc_box();
-            let (vertices, indices) = scratch.render(loc_box, &pixset);
+            let (vertices, indices) = scratch.render(camera.get_loc(), camera.get_dim(), &pixset);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
