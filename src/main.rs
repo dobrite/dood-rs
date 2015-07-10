@@ -71,7 +71,6 @@ use input::Input;
 use input::Output;
 use scratch::Scratch;
 use screen_size::ScreenSize;
-use world_coord::WorldCoord;
 
 use piston_window::{
     EventLoop,
@@ -142,7 +141,7 @@ fn main() {
 
     let mut world = World::new();
     let mut input = Input::new();
-    let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 });
+    let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 }, config::SQUARE_SIZE);
     let scratch = Scratch::new(Loc { x: -80, y: 80 });
 
     window.set_max_fps(config::FRAMES_PER_SECOND);

@@ -1,5 +1,3 @@
-use config;
-
 use dir::Dir;
 use loc::Loc;
 use size::Size;
@@ -15,13 +13,13 @@ pub struct Camera {
 }
 
 impl Camera {
-    pub fn new(screen_size: ScreenSize, loc: Loc) -> Camera {
+    pub fn new(screen_size: ScreenSize, loc: Loc, square_size: i32) -> Camera {
         Camera {
             screen_size: screen_size,
             loc: loc,
             dim: Size {
-                width:  (screen_size.width  as i32 / config::SQUARE_SIZE),
-                height: (screen_size.height as i32 / config::SQUARE_SIZE),
+                width:  (screen_size.width  as i32 / square_size),
+                height: (screen_size.height as i32 / square_size),
             }
         }
     }
@@ -38,10 +36,14 @@ impl Camera {
         self.dim
     }
 
+    fn square_size(&self) -> i32 {
+        self.screen_size.width as i32 / self.dim.width
+    }
+
     // TODO don't allocate a new one each frame
     pub fn as_mat(&self) -> [[f32; 4]; 4] {
-        let x_offset =  (self.loc.x as i32      * config::SQUARE_SIZE) as f32;
-        let y_offset = ((self.loc.y as i32 + 1) * config::SQUARE_SIZE) as f32;
+        let x_offset =  (self.loc.x      * self.square_size()) as f32;
+        let y_offset = ((self.loc.y + 1) * self.square_size()) as f32;
 
         let x_o = -(self.screen_size.width  / 2.0) - x_offset;
         let y_o =  (self.screen_size.height / 2.0) - y_offset;
@@ -66,8 +68,8 @@ impl Camera {
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
-        let x = window_loc.x as f32 / config::SQUARE_SIZE as f32;
-        let y = window_loc.y as f32 / config::SQUARE_SIZE as f32;
+        let x = window_loc.x as f32 / self.square_size() as f32;
+        let y = window_loc.y as f32 / self.square_size() as f32;
 
         Loc {
             x:  (x.trunc() + self.loc.x as f32) as i32,
@@ -99,85 +101,91 @@ mod tests {
     #[test]
     fn to_loc_box() {
         let screen_size = ScreenSize { width: 1536.0, height: 1024.0 };
-        assert!(Camera::new(screen_size, Loc { x: -50, y: 50 })
+        assert!(Camera::new(screen_size, Loc { x: -50, y: 50 }, 16)
             .to_loc_box() == (Loc { x: -50, y: 50 }, Loc { x: 46, y: -14 }));
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_four() {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -12, y: 10 })
+        assert!(Camera::new(screen_size, Loc { x: -12, y: 10 }, 16)
             .to_game_loc(WindowLoc { x: 200.0f64, y: 169.5f64 }) == Loc { x: 0, y: 0 });
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_two() {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -7, y: 8 })
+        assert!(Camera::new(screen_size, Loc { x: -7, y: 8 }, 16)
             .to_game_loc(WindowLoc { x: 121.0f64, y: 138.0f64 }) == Loc { x: 0, y: 0 });
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_three() {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -7, y: 10 })
+        assert!(Camera::new(screen_size, Loc { x: -7, y: 10 }, 16)
             .to_game_loc(WindowLoc { x: 123.0f64, y: 173.0f64 }) == Loc { x: 0, y: 0 });
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_minus_twelve_twelve_top_left() {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -12, y: 12 })
+        assert!(Camera::new(screen_size, Loc { x: -12, y: 12 }, 16)
             .to_game_loc(WindowLoc { x: 5.0f64, y: 5.0f64 }) == Loc { x: -12, y: 12 });
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_top_left() {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 })
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16)
             .to_game_loc(WindowLoc { x: 1.0f64, y: 1.0f64 }) == Loc { x: 0, y: 0 });
-    }
-
-    #[test]
-    fn it_returns_x_for_loc_zero_zero_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }).as_mat()[3][0] == -128.0);
-    }
-
-    #[test]
-    fn it_returns_y_for_loc_zero_zero_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }).as_mat()[3][1] == 112.0);
-    }
-
-    #[test]
-    fn it_returns_x_for_loc_one_one_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: 1, y: 1 }).as_mat()[3][0] == -144.0);
-    }
-
-    #[test]
-    fn it_returns_y_for_loc_one_one_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: 1, y: 1 }).as_mat()[3][1] == 96.0);
-    }
-
-    #[test]
-    fn it_returns_x_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }).as_mat()[3][0] == -112.0);
-    }
-
-    #[test]
-    fn it_returns_y_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
-        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
-        assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }).as_mat()[3][1] == 128.0);
     }
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_sixty_four() {
         let screen_size = ScreenSize { width: 1024.0, height: 1024.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 })
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16)
             .to_game_loc(WindowLoc { x: 1015.0f64, y: 1015.0f64 }) == Loc { x: 63, y: -63 });
+    }
+
+    #[test]
+    fn it_returns_x_for_loc_zero_zero_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).as_mat()[3][0] == -128.0);
+    }
+
+    #[test]
+    fn it_returns_y_for_loc_zero_zero_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).as_mat()[3][1] == 112.0);
+    }
+
+    #[test]
+    fn it_returns_x_for_loc_one_one_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: 1, y: 1 }, 16).as_mat()[3][0] == -144.0);
+    }
+
+    #[test]
+    fn it_returns_y_for_loc_one_one_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: 1, y: 1 }, 16).as_mat()[3][1] == 96.0);
+    }
+
+    #[test]
+    fn it_returns_x_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }, 16).as_mat()[3][0] == -112.0);
+    }
+
+    #[test]
+    fn it_returns_y_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
+        let screen_size = ScreenSize { width: 256.0, height: 256.0 };
+        assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }, 16).as_mat()[3][1] == 128.0);
+    }
+
+    #[test]
+    fn square_size_it_returns_for_sixteen() {
+        let screen_size = ScreenSize { width: 1024.0, height: 1024.0 };
+        assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }, 16).square_size() == 16);
     }
 }
