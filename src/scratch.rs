@@ -38,19 +38,10 @@ impl Scratch {
         let len = (size.width * size.height) as usize;
         // scratch is 36864 (192 x 192)
         // camera  is 96 x 64 (x: -50, y: -50)
-        let mut terrain = vec![Terrain::Dirt; len];
-
-        for terr in &mut terrain {
-            if rand::random::<bool>() {
-                *terr = Terrain::Grass;
-            }
-        }
-
         Scratch {
             loc: loc,
             size: size,
-            // TODO move back to None
-            terrain: terrain,
+            terrain: vec![Terrain::None; len],
             flags: vec![NONE; len],
             //vertices: vec![NONE; len * 4],
             indices:  indices(len * 4),
