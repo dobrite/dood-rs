@@ -82,35 +82,21 @@ impl Scratch {
 
     // TODO return &[Vertex] using vec as_slice?
     pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
-        let camera_offset_x = camera_loc.x - self.loc.x;
-        let camera_offset_y = camera_loc.y - self.loc.y;
-        let x_diff = (self.size.width -  camera_dim.width) as usize;
-        let y_diff =  self.size.height - camera_dim.height;
-
-        assert!(camera_offset_x >= 0);
-        assert!(camera_offset_y <= 0);
-        assert!(x_diff >= 0);
-        assert!(y_diff >= 0);
-
-        // Box<[Vertex; 256];
         let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4); // TODO over allocation
-        let mut start = (camera_offset_y * -1 * self.size.width + camera_offset_x) as usize;
-        let mut end = 0;
-        let camera_width  = camera_dim.width  as usize; // TODO consider passing in like this
-        let camera_height = camera_dim.height as usize; // TODO consider passing in like this
-        let end = (camera_height * 2) as i32;
-        let mut i: i32 = -1;
-        let x_offset = (camera_loc.x * config::SQUARE_SIZE) as f32;
+
+        let start = ((camera_loc.y - self.loc.y) * -1 * self.size.width + camera_loc.x - self.loc.x) as usize;
+        let end = (camera_dim.height * 2) as usize;
+        let x_offset =  (camera_loc.x * config::SQUARE_SIZE) as f32;
         let y_offset = ((camera_dim.height - camera_loc.y - 1) * config::SQUARE_SIZE) as f32;
-        for row_terrain in self.terrain[start..].chunks(camera_width) {
-            i += 1;
+        let square_size = config::SQUARE_SIZE as usize;
+
+        for (i, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
             if i % 2 == 1 { continue };
             if i == end { break };
-            let mut col: i32 = 0;
-            let row: i32 = i / 2;
-            for terrain in row_terrain {
-                let x: f32 = (col * config::SQUARE_SIZE) as f32 + x_offset;
-                let y: f32 = (row * config::SQUARE_SIZE) as f32 - y_offset;
+            let row = i / 2;
+            for (col, terrain) in row_terrain.iter().enumerate() {
+                let x = (col * square_size) as f32 + x_offset;
+                let y = (row * square_size) as f32 - y_offset;
                 let vertices = match terrain {
                     &Terrain::Dirt => {
                         // bottom left
@@ -182,7 +168,6 @@ impl Scratch {
                     },
                     _ => {},
                 };
-                col += 1;
             }
         }
 
