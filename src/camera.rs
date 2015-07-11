@@ -71,8 +71,8 @@ impl Camera {
         let y = window_loc.y as f32 / self.square_size() as f32;
 
         Loc {
-            x:  (x.trunc() + self.loc.x as f32) as i32,
-            y: -(y.trunc() - self.loc.y as f32) as i32,
+            x:   x as i32 + self.loc.x,
+            y: -(y as i32 - self.loc.y),
         }
     }
 
