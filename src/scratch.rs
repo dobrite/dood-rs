@@ -78,8 +78,6 @@ impl Scratch {
 
     // TODO return &[Vertex] using vec as_slice?
     pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
-        let tile_offset = (config::SQUARE_SIZE / 2) as f32;
-
         let camera_offset_x = camera_loc.x - self.loc.x;
         let camera_offset_y = camera_loc.y - self.loc.y;
         let x_diff = (self.width - camera_dim.width) as usize;
@@ -97,8 +95,6 @@ impl Scratch {
         let camera_width  = camera_dim.width  as usize; // TODO consider passing in like this
         let camera_height = camera_dim.height as usize; // TODO consider passing in like this
         let end = (camera_height * 2) as i32;
-        let tile_offset = (config::SQUARE_SIZE / 2) as f32;
-
         let mut i: i32 = -1;
         let x_offset = (camera_loc.x * config::SQUARE_SIZE) as f32;
         let y_offset = ((camera_dim.height - camera_loc.y - 1) * config::SQUARE_SIZE) as f32;
@@ -109,13 +105,13 @@ impl Scratch {
             let mut col: i32 = 0;
             let row: i32 = i / 2;
             for terrain in row_terrain {
-                let x: f32 = (col * config::SQUARE_SIZE) as f32 + tile_offset + x_offset;
-                let y: f32 = (row * config::SQUARE_SIZE) as f32 + tile_offset - y_offset;
+                let x: f32 = (col * config::SQUARE_SIZE) as f32 + x_offset;
+                let y: f32 = (row * config::SQUARE_SIZE) as f32 - y_offset;
                 let vertices = match terrain {
                     &Terrain::Dirt => {
                         // bottom left
                         vertex_data.push(Vertex {
-                            vertex_position: [-0.5, -0.5],
+                            vertex_position: [0.0, 0.0],
                             tex_coords: tiles.get(&Pix::Food)[0],
                             loc: [x, y],
                             scale: 16.0,
@@ -123,7 +119,7 @@ impl Scratch {
                         });
                         // bottom right
                         vertex_data.push(Vertex {
-                            vertex_position: [0.5, -0.5],
+                            vertex_position: [1.0, 0.0],
                             tex_coords: tiles.get(&Pix::Food)[1],
                             loc: [x, y],
                             scale: 16.0,
@@ -131,7 +127,7 @@ impl Scratch {
                         });
                         // top right
                         vertex_data.push(Vertex {
-                            vertex_position: [0.5, 0.5],
+                            vertex_position: [1.0, 1.0],
                             tex_coords: tiles.get(&Pix::Food)[2],
                             loc: [x, y],
                             scale: 16.0,
@@ -139,7 +135,7 @@ impl Scratch {
                         });
                         // top left
                         vertex_data.push(Vertex {
-                            vertex_position: [-0.5, 0.5],
+                            vertex_position: [0.0, 1.0],
                             tex_coords: tiles.get(&Pix::Food)[3],
                             loc: [x, y],
                             scale: 16.0,
