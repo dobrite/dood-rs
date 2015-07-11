@@ -65,6 +65,7 @@ use gfx::PrimitiveType;
 use gfx_texture::Texture;
 
 use loc::Loc;
+use size::Size;
 use camera::Camera;
 use pixset::Pixset;
 use world::World;
@@ -143,7 +144,11 @@ fn main() {
     let mut world = World::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 }, config::SQUARE_SIZE);
-    let scratch = Scratch::new(Loc { x: -80, y: 80 });
+    let scratch = {
+        let size = Size { width:  config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH,
+                          height: config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT, };
+        Scratch::new(Loc { x: -80, y: 80 }, size)
+    };
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);

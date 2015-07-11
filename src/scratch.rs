@@ -26,8 +26,7 @@ bitflags! {
 
 pub struct Scratch {
     loc: Loc,
-    width: i32, // TODO make Size
-    height: i32, // TODO make Size
+    size: Size,
     terrain:  Vec<Terrain>,
     flags:    Vec<Flags>,
     //vertices: Vec<Vertex>,
@@ -35,10 +34,8 @@ pub struct Scratch {
 }
 
 impl Scratch {
-    pub fn new(loc: Loc) -> Scratch {
-        let width = config::SCRATCH_CHUNKS_WIDTH * config::CHUNK_WIDTH;
-        let height = config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT;
-        let len = (width * height) as usize;
+    pub fn new(loc: Loc, size: Size) -> Scratch {
+        let len = (size.width * size.height) as usize;
         // scratch is 36864 (192 x 192)
         // camera  is 96 x 64 (x: -50, y: -50)
         let mut terrain = vec![Terrain::Dirt; len];
@@ -51,8 +48,7 @@ impl Scratch {
 
         Scratch {
             loc: loc,
-            width: width,
-            height: height,
+            size: size,
             // TODO move back to None
             terrain: terrain,
             flags: vec![NONE; len],
@@ -88,8 +84,8 @@ impl Scratch {
     pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
         let camera_offset_x = camera_loc.x - self.loc.x;
         let camera_offset_y = camera_loc.y - self.loc.y;
-        let x_diff = (self.width - camera_dim.width) as usize;
-        let y_diff = self.height - camera_dim.height;
+        let x_diff = (self.size.width -  camera_dim.width) as usize;
+        let y_diff =  self.size.height - camera_dim.height;
 
         assert!(camera_offset_x >= 0);
         assert!(camera_offset_y <= 0);
@@ -98,7 +94,7 @@ impl Scratch {
 
         // Box<[Vertex; 256];
         let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4); // TODO over allocation
-        let mut start = (camera_offset_y * -1 * self.width + camera_offset_x) as usize;
+        let mut start = (camera_offset_y * -1 * self.size.width + camera_offset_x) as usize;
         let mut end = 0;
         let camera_width  = camera_dim.width  as usize; // TODO consider passing in like this
         let camera_height = camera_dim.height as usize; // TODO consider passing in like this
@@ -203,6 +199,7 @@ fn indices(length: usize) -> Vec<u32> {
 #[cfg(test)]
 mod tests {
     use super::{indices, Scratch};
+    use config;
     use loc::Loc;
     use size::Size;
     use pixset::Pixset;
@@ -212,7 +209,10 @@ mod tests {
 
     #[test]
     fn it_returns_() {
-        Scratch::new(Loc { x: -80, y: 80 }).render(Loc { x: -50, y: 50 }, Size { width: 96, height: 64 }, &Pixset::new(16));
+        let size = Size { width: config::SCRATCH_CHUNKS_WIDTH * config::CHUNK_WIDTH,
+                          height: config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT };
+        Scratch::new(Loc { x: -80, y: 80 }, size)
+            .render(Loc { x: -50, y: 50 }, Size { width: 96, height: 64 }, &Pixset::new(16));
         assert!(true == false);
     }
 
