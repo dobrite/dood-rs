@@ -5,7 +5,6 @@ use std::rc::{
     Weak,
 };
 
-use config;
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use food::Food;
@@ -15,6 +14,7 @@ use has_loc::HasLoc;
 use loc::Loc;
 use loc_map::LocMap;
 use renderable::Renderable;
+use size::Size;
 use updatable::Updatable;
 use wall::Wall;
 use world_coord::WorldCoord;
@@ -27,21 +27,21 @@ pub struct World {
 }
 
 impl World {
-    pub fn new() -> World {
+    pub fn new(chunk_size: Size) -> World {
         let mut chunks = HashMap::new();
         let mut world = World {
-            chunk_width: config::CHUNK_WIDTH,
-            chunk_height: config::CHUNK_HEIGHT,
+            chunk_width:  chunk_size.width,
+            chunk_height: chunk_size.height,
             chunks: chunks,
             //grid: Grid::new(width, height),
         };
 
-        for x in 0..config::SCRATCH_CHUNKS_WIDTH {
-            for y in 0..config::SCRATCH_CHUNKS_HEIGHT {
+        for x in 0..12 { // TODO better number
+            for y in 0..12 {
                 // -6, -6, to 5, 5
                 world.create(ChunkLoc {
-                    x: x - (config::SCRATCH_CHUNKS_WIDTH  / 2),
-                    y: y - (config::SCRATCH_CHUNKS_HEIGHT / 2),
+                    x: x - (12 / 2), // TODO better numbers
+                    y: y - (12 / 2),
                 });
             }
         }

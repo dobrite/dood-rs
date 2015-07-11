@@ -153,7 +153,7 @@ fn main() {
     let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut world = World::new();
+    let mut world = World::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 }, config::SQUARE_SIZE);
     let scratch = {

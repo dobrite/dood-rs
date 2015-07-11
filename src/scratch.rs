@@ -157,6 +157,40 @@ impl Scratch {
                             color: [0.0, 255.0, 0.0]
                         });
                     },
+                    &Terrain::None => {
+                        // bottom left
+                        vertex_data.push(Vertex {
+                            vertex_position: [0.0, 0.0],
+                            tex_coords: tiles.get(&Pix::Empty)[0],
+                            loc: [x, y],
+                            scale: 16.0,
+                            color: [0.0, 0.0, 0.0]
+                        });
+                        // bottom right
+                        vertex_data.push(Vertex {
+                            vertex_position: [1.0, 0.0],
+                            tex_coords: tiles.get(&Pix::Empty)[1],
+                            loc: [x, y],
+                            scale: 16.0,
+                            color: [0.0, 0.0, 0.0]
+                        });
+                        // top right
+                        vertex_data.push(Vertex {
+                            vertex_position: [1.0, 1.0],
+                            tex_coords: tiles.get(&Pix::Empty)[2],
+                            loc: [x, y],
+                            scale: 16.0,
+                            color: [0.0, 0.0, 0.0]
+                        });
+                        // top left
+                        vertex_data.push(Vertex {
+                            vertex_position: [0.0, 1.0],
+                            tex_coords: tiles.get(&Pix::Empty)[3],
+                            loc: [x, y],
+                            scale: 16.0,
+                            color: [0.0, 0.0, 0.0]
+                        });
+                    },
                     _ => {},
                 };
             }
