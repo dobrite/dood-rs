@@ -14,7 +14,6 @@ extern crate image;
 extern crate fps_counter;
 extern crate hprof;
 extern crate camera_controllers;
-extern crate nalgebra;
 extern crate rand;
 
 mod camera;
@@ -86,8 +85,6 @@ use piston_window::{
     UpdateEvent,
 };
 
-use nalgebra::OrthoMat3;
-
 gfx_parameters!(Params {
     mvp@ mvp: [[f32; 4]; 4],
     tex@ tex: gfx::shade::TextureParam<R>,
@@ -130,7 +127,17 @@ fn main() {
         [0.0, 0.0, 0.0, 1.0],
     ];
 
-    let ortho_projection = *OrthoMat3::new(screen_size.width, screen_size.height, 0.0, 100.0).as_mat().as_array();
+    let z_far = 100.0;
+    let o_w = 2.0 / screen_size.width;
+    let o_h = 2.0 / screen_size.height;
+    let o_z = 2.0 / -(z_far);
+
+    let ortho_projection = [
+        [o_w, 0.0,  0.0, 0.0],
+        [0.0, o_h,  0.0, 0.0],
+        [0.0, 0.0,  o_z, 0.0],
+        [0.0, 0.0, -1.0, 1.0],
+    ];
 
     let mut uniforms = Params {
         mvp: model_view_projection(mat4_id, mat4_id, ortho_projection),
