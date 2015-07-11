@@ -60,8 +60,8 @@ impl Camera {
         match dir {
             Dir::Right => self.loc.x += 1,
             Dir::Left  => self.loc.x -= 1,
-            Dir::Up    => self.loc.y += 1,
-            Dir::Down  => self.loc.y -= 1,
+            Dir::Up    => self.loc.y -= 1,
+            Dir::Down  => self.loc.y += 1,
             _ => {}
         }
     }
