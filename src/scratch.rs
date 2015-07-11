@@ -73,7 +73,7 @@ impl Scratch {
 
     // TODO return &[Vertex] using vec as_slice?
     pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
-        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4); // TODO over allocation
+        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4);
 
         let start = ((camera_loc.y - self.loc.y) * -1 * self.size.width + camera_loc.x - self.loc.x) as usize;
         let end = (camera_dim.height * 2) as usize;
