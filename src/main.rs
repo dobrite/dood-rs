@@ -186,7 +186,7 @@ fn main() {
         e.press(|button| {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
-                    //world.spawn_food(camera.to_game_loc(window_loc))
+                    world.spawn_food(camera.to_game_loc(window_loc));
                     println!("{:?}", camera.to_game_loc(window_loc));
                 },
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),

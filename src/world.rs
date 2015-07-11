@@ -5,6 +5,7 @@ use std::rc::{
     Weak,
 };
 
+use config;
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use food::Food;
@@ -51,14 +52,16 @@ impl World {
         self.chunks.insert(cl, chunk);
     }
 
-    fn get_chunk(&mut self, cl: ChunkLoc) -> &Chunk {
+    fn get_chunk(&mut self, cl: ChunkLoc) -> &mut Chunk {
         self.chunks.entry(cl).or_insert(Chunk::new(self.chunk_width, self.chunk_height))
     }
 
     pub fn spawn_food(&mut self, loc: Loc) {
-        //let food = Rc::new(RefCell::new(Food::new(loc)));
-        //self.renderables.insert(loc, food.clone() as Rc<RefCell<Renderable>>);
-        //self.foods.insert(loc, food.clone());
+        let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
+        let ref mut chunk = *self.get_chunk(WorldCoord::from_loc(&size, &loc).get_chunk_loc());
+        let food = Rc::new(RefCell::new(Food::new(loc, config::SQUARE_SIZE))); // TODO get rid of config
+        chunk.insert_food(loc, food.clone());
+        chunk.insert_renderable(loc, food.clone() as Rc<RefCell<Renderable>>);
     }
 
     pub fn spawn_wall(&mut self, loc: Loc) {

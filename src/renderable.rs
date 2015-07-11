@@ -1,3 +1,4 @@
+use std::fmt;
 use pixset::Pixset;
 
 gfx_vertex!(Vertex {
@@ -10,4 +11,10 @@ gfx_vertex!(Vertex {
 
 pub trait Renderable {
     fn render(&self, tiles: &Pixset) -> Vec<Vertex>;
+}
+
+impl fmt::Debug for Renderable {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "<Renderable>")
+    }
 }

@@ -23,8 +23,8 @@ use indices::Indices;
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct WorldCoord {
     size: Size,
-    pub chunk_loc: ChunkLoc,
-    pub indices: Indices,
+    chunk_loc: ChunkLoc,
+    indices: Indices,
 }
 
 impl WorldCoord {
@@ -44,6 +44,9 @@ impl WorldCoord {
         WorldCoord::new(*size, ChunkLoc { x: chunk_x, y: chunk_y }, Indices::new(row, col))
     }
 
+    pub fn get_chunk_loc(&self) -> ChunkLoc {
+        self.chunk_loc
+    }
 }
 
 fn chunk(a: i32, dim: i32) -> i32 {
