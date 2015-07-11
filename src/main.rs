@@ -15,6 +15,7 @@ extern crate fps_counter;
 extern crate hprof;
 extern crate camera_controllers;
 extern crate nalgebra;
+extern crate rand;
 
 mod camera;
 mod chunk;

@@ -13,6 +13,7 @@ dependencies = [
  "piston 0.2.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "piston-gfx_texture 0.1.0 (registry+https://github.com/rust-lang/crates.io-index)",
  "piston_window 0.3.0 (registry+https://github.com/rust-lang/crates.io-index)",
+ "rand 0.3.8 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

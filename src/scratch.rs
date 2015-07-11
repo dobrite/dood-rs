@@ -1,4 +1,5 @@
 use config;
+use rand;
 use camera::Camera;
 use loc::Loc;
 use size::Size;
@@ -40,13 +41,20 @@ impl Scratch {
         let len = (width * height) as usize;
         // scratch is 36864 (192 x 192)
         // camera  is 96 x 64 (x: -50, y: -50)
+        let mut terrain = vec![Terrain::Dirt; len];
+
+        for terr in &mut terrain {
+            if rand::random::<bool>() {
+                *terr = Terrain::Grass;
+            }
+        }
 
         Scratch {
             loc: loc,
             width: width,
             height: height,
             // TODO move back to None
-            terrain: vec![Terrain::Dirt; len],
+            terrain: terrain,
             flags: vec![NONE; len],
             //vertices: vec![NONE; len * 4],
             indices:  indices(len * 4),
@@ -145,7 +153,7 @@ impl Scratch {
                     &Terrain::Grass => {
                         // bottom left
                         vertex_data.push(Vertex {
-                            vertex_position: [-0.5, -0.5],
+                            vertex_position: [0.0, 0.0],
                             tex_coords: tiles.get(&Pix::Food)[0],
                             loc: [x, y],
                             scale: 16.0,
@@ -153,7 +161,7 @@ impl Scratch {
                         });
                         // bottom right
                         vertex_data.push(Vertex {
-                            vertex_position: [0.5, -0.5],
+                            vertex_position: [1.0, 0.0],
                             tex_coords: tiles.get(&Pix::Food)[1],
                             loc: [x, y],
                             scale: 16.0,
@@ -161,7 +169,7 @@ impl Scratch {
                         });
                         // top right
                         vertex_data.push(Vertex {
-                            vertex_position: [0.5, 0.5],
+                            vertex_position: [1.0, 1.0],
                             tex_coords: tiles.get(&Pix::Food)[2],
                             loc: [x, y],
                             scale: 16.0,
@@ -169,7 +177,7 @@ impl Scratch {
                         });
                         // top left
                         vertex_data.push(Vertex {
-                            vertex_position: [-0.5, 0.5],
+                            vertex_position: [0.0, 1.0],
                             tex_coords: tiles.get(&Pix::Food)[3],
                             loc: [x, y],
                             scale: 16.0,
