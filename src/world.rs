@@ -9,7 +9,6 @@ use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use food::Food;
 use fov::Fov;
-use grid::Grid;
 use has_loc::HasLoc;
 use loc::Loc;
 use loc_map::LocMap;
@@ -23,7 +22,6 @@ pub struct World {
     chunk_width: i32,
     chunk_height: i32,
     pub chunks: HashMap<ChunkLoc, Chunk>,
-    //pub grid: Grid, // TODO prob doesn't need to be in world
 }
 
 impl World {
@@ -33,7 +31,6 @@ impl World {
             chunk_width:  chunk_size.width,
             chunk_height: chunk_size.height,
             chunks: chunks,
-            //grid: Grid::new(width, height),
         };
 
         for x in 0..12 { // TODO better number
