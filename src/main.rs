@@ -167,6 +167,11 @@ fn main() {
 
     let mut fps = FPSCounter::new();
 
+    // WorldCoord { chunk_loc: ChunkLoc { x: -5, y: 5 }, indices: Indices { row: 0, col: 0 } }
+    // WorldCoord { chunk_loc: ChunkLoc { x: 7, y: 5 }, indices: Indices { row: 0, col: 0 } }
+    // WorldCoord { chunk_loc: ChunkLoc { x: 7, y: -7 }, indices: Indices { row: 0, col: 0 } }
+    // WorldCoord { chunk_loc: ChunkLoc { x: -5, y: -7 }, indices: Indices { row: 0, col: 0 } }
+
     for e in window {
         e.draw_3d(|stream| {
             let (vertices, indices) = scratch.render(camera.get_loc(), camera.get_dim(), &pixset);
