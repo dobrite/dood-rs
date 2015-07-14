@@ -89,7 +89,7 @@ impl World {
         //}
     }
 
-    fn to_remove(&self, remove: &mut Vec<Loc>) {
+    fn to_remove(&self, remove: &mut &[Loc]) {
         //for (loc, food) in self.foods.iter() {
         //    if food.borrow().get_noms() <= 0.0 {
         //        remove.push(*loc);

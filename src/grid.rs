@@ -20,11 +20,11 @@ impl Grid {
         true
     }
 
-    pub fn passable(&self, loc: &Loc, blocked: &Vec<Loc>) -> bool {
+    pub fn passable(&self, loc: &Loc, blocked: &[Loc]) -> bool {
         !blocked.contains(&loc)
     }
 
-    pub fn neighbors(&self, loc: Loc, blocked: &Vec<Loc>) -> Vec<Loc> {
+    pub fn neighbors(&self, loc: Loc, blocked: &[Loc]) -> Vec<Loc> {
         let x = loc.x;
         let y = loc.y;
 
