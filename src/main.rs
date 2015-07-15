@@ -1,4 +1,4 @@
-#![feature(vec_resize, rc_weak)]
+#![feature(vec_resize, rc_weak, clone_from_slice)]
 
 #[macro_use]
 extern crate bitflags;
@@ -54,6 +54,7 @@ use piston_window::{
     WindowSettings,
 };
 
+use hprof::*;
 use fps_counter::FPSCounter;
 use camera_controllers::model_view_projection;
 use gfx::device::Factory;
@@ -155,12 +156,18 @@ fn main() {
 
     let mut world = World::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut input = Input::new();
-    let mut camera = Camera::new(screen_size, Loc { x: -50, y: 50 }, config::SQUARE_SIZE);
+    let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
     let scratch = {
         let size = Size { width:  config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH,
                           height: config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT, };
-        Scratch::new(Loc { x: -80, y: 80 }, size)
+        hprof::start_frame();
+        hprof::enter("inflate");
+        let s = Scratch::new(Loc { x: -80, y: 80 }, size).inflate(&world.chunks);
+        hprof::end_frame();
+        s
     };
+
+    hprof::profiler().print_timing();
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
@@ -180,7 +187,7 @@ fn main() {
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
             stream.clear(clear_data);
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
-            println!("fps: {:?}", fps.tick()); // 41-ish
+            //println!("fps: {:?}", fps.tick()); // 41-ish
         });
 
         e.update(|_| {

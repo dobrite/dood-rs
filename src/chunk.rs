@@ -2,10 +2,11 @@ use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
 
-use dood::Dood;
-use food::Food;
+use rand;
+
 use has_loc::HasLoc;
 use loc::Loc;
+use food::Food;
 use loc_map::LocMap;
 use renderable::Renderable;
 use terrain::Terrain;
@@ -14,17 +15,25 @@ use terrain::Terrain;
 pub struct Chunk {
     width: i32,
     height: i32,
-    terrain: Vec<Terrain>,
+    pub terrain: Vec<Terrain>,
     foods: LocMap<Food>,
     renderables: LocMap<Renderable>,
 }
 
 impl Chunk {
     pub fn new(width: i32, height: i32) -> Chunk {
+        let mut terrain = vec![Terrain::Dirt; (width * height) as usize];
+
+        for terr in &mut terrain {
+            if rand::random::<bool>() {
+                *terr = Terrain::Grass;
+            }
+        }
+
         Chunk {
             width: width,
             height: height,
-            terrain: vec![Terrain::Dirt; (width*height) as usize],
+            terrain: terrain,
             foods: HashMap::new(),
             renderables: HashMap::new(),
         }

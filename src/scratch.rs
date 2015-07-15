@@ -1,6 +1,11 @@
-use config;
+use std::collections::HashMap;
+
 use rand;
+
+use config;
 use camera::Camera;
+use chunk::Chunk;
+use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
 use terrain::Terrain;
@@ -37,7 +42,7 @@ impl Scratch {
     pub fn new(loc: Loc, size: Size) -> Scratch {
         let len = (size.width * size.height) as usize;
         // scratch is 36864 (192 x 192)
-        // camera  is 96 x 64 (x: -50, y: -50)
+        // camera  is 96 x 64 (x: -32, y: 16)
         Scratch {
             loc: loc,
             size: size,
@@ -46,6 +51,44 @@ impl Scratch {
             //vertices: vec![NONE; len * 4],
             indices:  indices(len * 4),
         }
+    }
+
+    pub fn inflate(mut self, chunks: &HashMap<ChunkLoc, Chunk>) -> Scratch {
+        let loc_box = self.to_loc_box();
+        let size = Size { width: 16, height: 16 }; // TODO gross
+        let tl = WorldCoord::from_loc(&size, &self.loc).get_chunk_loc();
+        let br = WorldCoord::from_loc(&size, &loc_box.1).get_chunk_loc();
+
+        let width = size.width as usize;
+        let mut offset_start: usize = 0;
+        let mut offset_end: usize = width;
+
+        for y in (br.y..tl.y + 1).rev() {
+            for row in 0..size.height {
+                for x in tl.x..br.x + 1 {
+                    let chunk = chunks.get(&ChunkLoc { x: x, y: y }).unwrap();
+                    let source = &chunk.terrain[(row * size.width) as usize..((row + 1) * size.width) as usize];
+                    self.terrain[offset_start..offset_end].clone_from_slice(source);
+                    offset_start = offset_end;
+                    offset_end = offset_start + width;
+                }
+            }
+        }
+
+        self
+    }
+
+    fn to_loc_box(&self) -> (Loc, Loc) {
+        (
+            Loc {
+                x: self.loc.x,
+                y: self.loc.y,
+            },
+            Loc {
+                x: self.loc.x + self.size.width - 1,
+                y: self.loc.y - self.size.height + 1,
+            }
+        )
     }
 
     //struct WC(i32, i32);

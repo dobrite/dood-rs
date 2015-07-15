@@ -34,12 +34,12 @@ impl World {
             chunks: chunks,
         };
 
-        for x in 0..12 { // TODO better number
-            for y in 0..12 {
-                // -6, -6, to 5, 5
+        for x in 0..config::SCRATCH_CHUNKS_WIDTH * 2 {
+            for y in 0..config::SCRATCH_CHUNKS_HEIGHT * 2 {
+                // -12, -12, to 11, 11
                 world.create(ChunkLoc {
-                    x: x - (12 / 2), // TODO better numbers
-                    y: y - (12 / 2),
+                    x: x - config::SCRATCH_CHUNKS_WIDTH,
+                    y: y - config::SCRATCH_CHUNKS_HEIGHT,
                 });
             }
         }

@@ -76,6 +76,7 @@ impl Camera {
         }
     }
 
+    // TODO extract to a trait?
     pub fn to_loc_box(&self) -> (Loc, Loc) {
         (
             Loc {
@@ -83,8 +84,8 @@ impl Camera {
                 y: self.loc.y,
             },
             Loc {
-                x: self.loc.x + self.dim.width,  /* might need - 1 */
-                y: self.loc.y - self.dim.height, /* might need + 1 */
+                x: self.loc.x + self.dim.width - 1,
+                y: self.loc.y - self.dim.height + 1,
             }
         )
     }
