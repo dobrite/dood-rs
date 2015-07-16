@@ -261,10 +261,9 @@ mod tests {
     use world_coord::WorldCoord;
 
     #[test]
+    // TODO finish me
     fn it_returns_() {
-        let size = Size { width: config::SCRATCH_CHUNKS_WIDTH * config::CHUNK_WIDTH,
-                          height: config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT };
-        Scratch::new(Loc { x: -80, y: 80 }, size)
+        Scratch::new(Loc { x: -80, y: 80 }, Size { width: 192, height: 192 })
             .render(Loc { x: -50, y: 50 }, Size { width: 96, height: 64 }, &Pixset::new(16));
         assert!(true == false);
     }

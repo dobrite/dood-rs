@@ -157,12 +157,13 @@ fn main() {
     let mut world = World::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
+    let camera_dim = camera.get_dim();
     let scratch = {
-        let size = Size { width:  config::SCRATCH_CHUNKS_WIDTH  * config::CHUNK_WIDTH,
-                          height: config::SCRATCH_CHUNKS_HEIGHT * config::CHUNK_HEIGHT, };
+        let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
+        let loc = Loc { x: -80, y: 80 };
         hprof::start_frame();
         hprof::enter("inflate");
-        let s = Scratch::new(Loc { x: -80, y: 80 }, size).inflate(&world.chunks);
+        let s = Scratch::new(loc, size).inflate(&world.chunks);
         hprof::end_frame();
         s
     };

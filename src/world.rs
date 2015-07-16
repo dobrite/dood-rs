@@ -34,12 +34,12 @@ impl World {
             chunks: chunks,
         };
 
-        for x in 0..config::SCRATCH_CHUNKS_WIDTH * 2 {
-            for y in 0..config::SCRATCH_CHUNKS_HEIGHT * 2 {
+        for x in 0..24 {
+            for y in 0..24 {
                 // -12, -12, to 11, 11
                 world.create(ChunkLoc {
-                    x: x - config::SCRATCH_CHUNKS_WIDTH,
-                    y: y - config::SCRATCH_CHUNKS_HEIGHT,
+                    x: x - 12,
+                    y: y - 12,
                 });
             }
         }
