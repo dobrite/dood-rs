@@ -12,7 +12,6 @@ extern crate gfx_device_gl;
 extern crate gfx_texture;
 extern crate image;
 extern crate fps_counter;
-extern crate hprof;
 extern crate camera_controllers;
 extern crate rand;
 
@@ -54,7 +53,6 @@ use piston_window::{
     WindowSettings,
 };
 
-use hprof::*;
 use fps_counter::FPSCounter;
 use camera_controllers::model_view_projection;
 use gfx::device::Factory;
@@ -161,14 +159,8 @@ fn main() {
     let scratch = {
         let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
         let loc = Loc { x: -80, y: 80 };
-        hprof::start_frame();
-        hprof::enter("inflate");
-        let s = Scratch::new(loc, size).inflate(&world.chunks);
-        hprof::end_frame();
-        s
+        Scratch::new(loc, size).inflate(&world.chunks)
     };
-
-    hprof::profiler().print_timing();
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
