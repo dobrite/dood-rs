@@ -44,6 +44,16 @@ impl WorldCoord {
         WorldCoord::new(*size, ChunkLoc { x: chunk_x, y: chunk_y }, Indices::new(row, col))
     }
 
+    pub fn from_chunk_loc(size: &Size, chunk_loc: &ChunkLoc) -> WorldCoord {
+        WorldCoord::new(*size, *chunk_loc, Indices::new(0, 0))
+    }
+
+    pub fn to_loc(&self, size: &Size) -> Loc {
+        let x = self.size.width  * self.chunk_loc.x + self.indices.col;
+        let y = self.size.height * self.chunk_loc.y - self.indices.row;
+        Loc { x: x, y: y }
+    }
+
     pub fn get_chunk_loc(&self) -> ChunkLoc {
         self.chunk_loc
     }
@@ -64,6 +74,36 @@ mod tests {
     use size::Size;
     use indices::Indices;
     use world_coord::WorldCoord;
+
+    #[test]
+    fn to_loc_it_round_trip_for_0_0() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: 0, y: 0 };
+        assert!(WorldCoord::from_loc(&size, &loc).to_loc(&size) == loc)
+    }
+
+    #[test]
+    fn to_loc_it_round_trip_for_16_16() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: 16, y: 16 };
+        assert!(WorldCoord::from_loc(&size, &loc).to_loc(&size) == loc)
+    }
+
+    #[test]
+    fn to_loc_it_round_trip_for_1_1() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: 1, y: 1 };
+        assert!(WorldCoord::from_loc(&size, &loc).to_loc(&size) == loc)
+    }
+
+    #[test]
+    fn to_loc_it_round_trip_for_minus_47_120() {
+        let size = Size { width: 16, height: 16 };
+        let loc = Loc { x: -47, y: 120 };
+        println!("{:?}", WorldCoord::from_loc(&size, &loc));
+        println!("{:?}", WorldCoord::from_loc(&size, &loc).to_loc(&size));
+        assert!(WorldCoord::from_loc(&size, &loc).to_loc(&size) == loc)
+    }
 
     // Upper Right Quadrant
 
