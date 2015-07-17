@@ -53,6 +53,14 @@ impl Scratch {
         }
     }
 
+    pub fn get_loc(&self) -> Loc {
+        self.loc
+    }
+
+    pub fn get_size(&self) -> Size {
+        self.size
+    }
+
     pub fn inflate(mut self, chunks: &HashMap<ChunkLoc, Chunk>) -> Scratch {
         let loc_box = self.to_loc_box();
         let size = Size { width: 16, height: 16 }; // TODO gross
