@@ -160,7 +160,7 @@ fn main() {
     let mut scratch = {
         let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
         let loc = Loc { x: -80, y: 80 };
-        Scratch::new(loc, size).inflate(&world.chunks)
+        Scratch::new(loc, size).inflate(&mut world)
     };
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
@@ -201,7 +201,7 @@ fn main() {
                     if w.abs() == 16 || h.abs() == 16 {
                         let size = Size { width: 16, height: 16 };
                         let loc = WorldCoord::from_chunk_loc(&size, &WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc()).to_loc(&size);
-                        scratch = Scratch::new(loc - Loc { x: 48, y: -64 }, scratch_size).inflate(&world.chunks);
+                        scratch = Scratch::new(loc - Loc { x: 48, y: -64 }, scratch_size).inflate(&mut world);
                     }
                 },
                 Output::Nothing => {}

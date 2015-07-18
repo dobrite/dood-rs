@@ -20,8 +20,7 @@ use wall::Wall;
 use world_coord::WorldCoord;
 
 pub struct World {
-    chunk_width: i32,
-    chunk_height: i32,
+    chunk_size: Size,
     pub chunks: HashMap<ChunkLoc, Chunk>,
 }
 
@@ -29,8 +28,7 @@ impl World {
     pub fn new(chunk_size: Size) -> World {
         let mut chunks = HashMap::new();
         let mut world = World {
-            chunk_width:  chunk_size.width,
-            chunk_height: chunk_size.height,
+            chunk_size:  chunk_size,
             chunks: chunks,
         };
 
@@ -48,17 +46,18 @@ impl World {
     }
 
     fn create(&mut self, cl: ChunkLoc) {
-        let chunk = Chunk::new(self.chunk_width, self.chunk_height);
+        let chunk = Chunk::new(self.chunk_size);
         self.chunks.insert(cl, chunk);
     }
 
-    fn get_chunk(&mut self, cl: ChunkLoc) -> &mut Chunk {
-        self.chunks.entry(cl).or_insert(Chunk::new(self.chunk_width, self.chunk_height))
+    pub fn get_chunk(&mut self, cl: &ChunkLoc) -> &mut Chunk {
+        let chunk_size = self.chunk_size;
+        self.chunks.entry(*cl).or_insert_with(|| Chunk::new(chunk_size))
     }
 
     pub fn spawn_food(&mut self, loc: Loc) {
         let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
-        let ref mut chunk = *self.get_chunk(WorldCoord::from_loc(&size, &loc).get_chunk_loc());
+        let ref mut chunk = *self.get_chunk(&WorldCoord::from_loc(&size, &loc).get_chunk_loc());
         let food = Rc::new(RefCell::new(Food::new(loc, config::SQUARE_SIZE))); // TODO get rid of config
         chunk.insert_food(loc, food.clone());
         chunk.insert_renderable(loc, food.clone() as Rc<RefCell<Renderable>>);

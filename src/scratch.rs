@@ -10,6 +10,7 @@ use loc::Loc;
 use size::Size;
 use terrain::Terrain;
 use renderable::Vertex;
+use world::World;
 use world_coord::WorldCoord;
 use pixset::{
     Pix,
@@ -61,7 +62,7 @@ impl Scratch {
         self.size
     }
 
-    pub fn inflate(mut self, chunks: &HashMap<ChunkLoc, Chunk>) -> Scratch {
+    pub fn inflate(mut self, world: &mut World) -> Scratch {
         let loc_box = self.to_loc_box();
         let size = Size { width: 16, height: 16 }; // TODO gross
         let tl = WorldCoord::from_loc(&size, &self.loc).get_chunk_loc();
@@ -74,7 +75,7 @@ impl Scratch {
         for y in (br.y..tl.y + 1).rev() {
             for row in 0..size.height {
                 for x in tl.x..br.x + 1 {
-                    let chunk = chunks.get(&ChunkLoc { x: x, y: y }).unwrap();
+                    let chunk = world.get_chunk(&ChunkLoc { x: x, y: y });
                     let source = &chunk.terrain[(row * size.width) as usize..((row + 1) * size.width) as usize];
                     self.terrain[offset_start..offset_end].clone_from_slice(source);
                     offset_start = offset_end;
