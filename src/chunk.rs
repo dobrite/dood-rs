@@ -15,7 +15,7 @@ use terrain::Terrain;
 #[derive(Debug)]
 pub struct Chunk {
     size: Size,
-    pub terrain: Vec<Terrain>,
+    terrain: Vec<Terrain>,
     foods: LocMap<Food>,
     renderables: LocMap<Renderable>,
 }
@@ -44,5 +44,9 @@ impl Chunk {
 
     pub fn insert_renderable(&mut self, loc: Loc, renderable: Rc<RefCell<Renderable>>) {
         self.renderables.insert(loc, renderable.clone());
+    }
+
+    pub fn get_terrain(&self) -> &Vec<Terrain> {
+        &self.terrain
     }
 }

@@ -76,7 +76,7 @@ impl Scratch {
             for row in 0..size.height {
                 for x in tl.x..br.x + 1 {
                     let chunk = world.get_chunk(&ChunkLoc { x: x, y: y });
-                    let source = &chunk.terrain[(row * size.width) as usize..((row + 1) * size.width) as usize];
+                    let source = &chunk.get_terrain()[(row * size.width) as usize..((row + 1) * size.width) as usize];
                     self.terrain[offset_start..offset_end].clone_from_slice(source);
                     offset_start = offset_end;
                     offset_end = offset_start + width;
