@@ -75,6 +75,7 @@ use input::Input;
 use input::Output;
 use scratch::Scratch;
 use screen_size::ScreenSize;
+use world_coord::WorldCoord;
 
 use piston_window::{
     EventLoop,
@@ -156,7 +157,7 @@ fn main() {
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
     let camera_dim = camera.get_dim();
-    let scratch = {
+    let mut scratch = {
         let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
         let loc = Loc { x: -80, y: 80 };
         Scratch::new(loc, size).inflate(&world.chunks)
@@ -166,11 +167,6 @@ fn main() {
     window.set_ups(config::UPDATES_PER_SECOND);
 
     let mut fps = FPSCounter::new();
-
-    // WorldCoord { chunk_loc: ChunkLoc { x: -5, y: 5 }, indices: Indices { row: 0, col: 0 } }
-    // WorldCoord { chunk_loc: ChunkLoc { x: 7, y: 5 }, indices: Indices { row: 0, col: 0 } }
-    // WorldCoord { chunk_loc: ChunkLoc { x: 7, y: -7 }, indices: Indices { row: 0, col: 0 } }
-    // WorldCoord { chunk_loc: ChunkLoc { x: -5, y: -7 }, indices: Indices { row: 0, col: 0 } }
 
     for e in window {
         e.draw_3d(|stream| {
@@ -195,7 +191,19 @@ fn main() {
                     println!("{:?}", camera.to_game_loc(window_loc));
                 },
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
-                Output::CameraMove(dir)       => camera.pan(dir),
+                Output::CameraMove(dir)       => {
+                    camera.pan(dir);
+                    let camera_loc = camera.get_loc();
+                    let camera_offset = camera_loc - scratch.get_loc();
+                    let scratch_size = scratch.get_size();
+                    let w = (scratch_size.width  - camera_dim.width)  / 2 - camera_offset.x;
+                    let h = (scratch_size.height - camera_dim.height) / 2 + camera_offset.y;
+                    if w.abs() == 16 || h.abs() == 16 {
+                        let size = Size { width: 16, height: 16 };
+                        let loc = WorldCoord::from_chunk_loc(&size, &WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc()).to_loc(&size);
+                        scratch = Scratch::new(loc - Loc { x: 48, y: -64 }, scratch_size).inflate(&world.chunks);
+                    }
+                },
                 Output::Nothing => {}
             }
         });
