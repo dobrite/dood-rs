@@ -21,7 +21,7 @@ use world_coord::WorldCoord;
 
 pub struct World {
     chunk_size: Size,
-    pub chunks: HashMap<ChunkLoc, Chunk>,
+    chunks: HashMap<ChunkLoc, Chunk>,
 }
 
 impl World {
