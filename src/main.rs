@@ -22,6 +22,7 @@ mod config;
 mod dir;
 mod dist;
 mod dood;
+mod cascadecs;
 mod food;
 mod fov;
 mod grid;
