@@ -5,17 +5,17 @@ use cascadecs::entity::Entity;
 use cascadecs::process::Process;
 use cascadecs::position_component::PositionComponent;
 
-pub struct PositionProcess {
+pub struct MovementProcess {
     components: HashMap<Entity, PositionComponent>
 }
 
-impl PositionProcess {
-    pub fn new() -> PositionProcess {
+impl MovementProcess {
+    pub fn new() -> MovementProcess {
         components: HashMap::new(),
     }
 }
 
-impl Process for PositionProcess {
+impl Process for MovementProcess {
     fn process(&self) -> Vec<Event> {
         println!("positioning!");
         vec![]
