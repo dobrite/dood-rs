@@ -11,6 +11,12 @@ pub enum Pix {
     RightArrow,
     LeftArrow,
     Wall,
+    Period,
+    Comma,
+    Quotes,
+    Apostrophe,
+    Colon,
+    SemiColon,
     Empty,
 }
 
@@ -46,7 +52,13 @@ impl Pixset {
         tiles.insert(Pix::UpArrow,    get_tex_coords(total_tiles, vec![0, 2]));
         tiles.insert(Pix::RightArrow, get_tex_coords(total_tiles, vec![1, 2]));
         tiles.insert(Pix::Wall,       get_tex_coords(total_tiles, vec![2, 2]));
-        tiles.insert(Pix::Empty,      get_tex_coords(total_tiles, vec![3, 2]));
+        tiles.insert(Pix::Period,     get_tex_coords(total_tiles, vec![3, 2]));
+        tiles.insert(Pix::Comma,      get_tex_coords(total_tiles, vec![0, 1]));
+        tiles.insert(Pix::Quotes,     get_tex_coords(total_tiles, vec![1, 1]));
+        tiles.insert(Pix::Apostrophe, get_tex_coords(total_tiles, vec![2, 1]));
+        tiles.insert(Pix::Colon,      get_tex_coords(total_tiles, vec![3, 1]));
+        tiles.insert(Pix::SemiColon,  get_tex_coords(total_tiles, vec![0, 0]));
+        tiles.insert(Pix::Empty,      get_tex_coords(total_tiles, vec![1, 0]));
 
         Pixset {
             tiles: tiles,

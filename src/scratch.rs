@@ -145,7 +145,7 @@ impl Scratch {
                         // bottom left
                         vertex_data.push(Vertex {
                             vertex_position: [0.0, 0.0],
-                            tex_coords: tiles.get(&Pix::Food)[0],
+                            tex_coords: tiles.get(&Pix::Period)[0],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.4784, 0.3215, 0.1882]
@@ -153,7 +153,7 @@ impl Scratch {
                         // bottom right
                         vertex_data.push(Vertex {
                             vertex_position: [1.0, 0.0],
-                            tex_coords: tiles.get(&Pix::Food)[1],
+                            tex_coords: tiles.get(&Pix::Period)[1],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.4784, 0.3215, 0.1882]
@@ -161,7 +161,7 @@ impl Scratch {
                         // top right
                         vertex_data.push(Vertex {
                             vertex_position: [1.0, 1.0],
-                            tex_coords: tiles.get(&Pix::Food)[2],
+                            tex_coords: tiles.get(&Pix::Period)[2],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.4784, 0.3215, 0.1882]
@@ -169,7 +169,7 @@ impl Scratch {
                         // top left
                         vertex_data.push(Vertex {
                             vertex_position: [0.0, 1.0],
-                            tex_coords: tiles.get(&Pix::Food)[3],
+                            tex_coords: tiles.get(&Pix::Period)[3],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.4784, 0.3215, 0.1882]
@@ -179,7 +179,7 @@ impl Scratch {
                         // bottom left
                         vertex_data.push(Vertex {
                             vertex_position: [0.0, 0.0],
-                            tex_coords: tiles.get(&Pix::Food)[0],
+                            tex_coords: tiles.get(&Pix::Period)[0],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.0, 255.0, 0.0]
@@ -187,7 +187,7 @@ impl Scratch {
                         // bottom right
                         vertex_data.push(Vertex {
                             vertex_position: [1.0, 0.0],
-                            tex_coords: tiles.get(&Pix::Food)[1],
+                            tex_coords: tiles.get(&Pix::Period)[1],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.0, 255.0, 0.0]
@@ -195,7 +195,7 @@ impl Scratch {
                         // top right
                         vertex_data.push(Vertex {
                             vertex_position: [1.0, 1.0],
-                            tex_coords: tiles.get(&Pix::Food)[2],
+                            tex_coords: tiles.get(&Pix::Period)[2],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.0, 255.0, 0.0]
@@ -203,7 +203,7 @@ impl Scratch {
                         // top left
                         vertex_data.push(Vertex {
                             vertex_position: [0.0, 1.0],
-                            tex_coords: tiles.get(&Pix::Food)[3],
+                            tex_coords: tiles.get(&Pix::Period)[3],
                             loc: [x, y],
                             scale: 16.0,
                             color: [0.0, 255.0, 0.0]
