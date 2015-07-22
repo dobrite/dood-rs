@@ -11,7 +11,9 @@ pub struct RenderProcess {
 
 impl RenderProcess {
     pub fn new() -> RenderProcess {
-        components: HashMap::new(),
+        RenderProcess {
+            components: HashMap::new(),
+        }
     }
 }
 

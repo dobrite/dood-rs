@@ -11,7 +11,9 @@ pub struct MovementProcess {
 
 impl MovementProcess {
     pub fn new() -> MovementProcess {
-        components: HashMap::new(),
+        MovementProcess {
+            components: HashMap::new(),
+        }
     }
 }
 

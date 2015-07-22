@@ -78,6 +78,8 @@ use scratch::Scratch;
 use screen_size::ScreenSize;
 use world_coord::WorldCoord;
 
+use cascadecs::components::Components;
+
 use piston_window::{
     EventLoop,
     MouseCursorEvent,
@@ -155,6 +157,7 @@ fn main() {
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
     let mut world = World::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
+    let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
     let camera_dim = camera.get_dim();
@@ -188,7 +191,7 @@ fn main() {
         e.press(|button| {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
-                    world.spawn_food(camera.to_game_loc(window_loc));
+                    world.spawn_food(&mut components, camera.to_game_loc(window_loc));
                     println!("{:?}", camera.to_game_loc(window_loc));
                 },
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),

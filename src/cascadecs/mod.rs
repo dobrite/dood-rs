@@ -1,8 +1,12 @@
-mod entity;
-mod event;
+pub mod entity;
+pub mod components;
+
 mod hunger_component;
 mod position_component;
-mod movement_process;
-mod process;
 mod render_component;
+
+mod event;
+
+mod process;
+mod movement_process;
 mod render_process;

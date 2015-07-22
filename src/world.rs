@@ -5,7 +5,11 @@ use std::rc::{
     Weak,
 };
 
+use cascadecs::entity::Entity;
+use cascadecs::components::Components;
+
 use config;
+
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use food::Food;
@@ -13,6 +17,7 @@ use fov::Fov;
 use has_loc::HasLoc;
 use loc::Loc;
 use loc_map::LocMap;
+use pixset::Pix;
 use renderable::Renderable;
 use size::Size;
 use updatable::Updatable;
@@ -55,12 +60,14 @@ impl World {
         self.chunks.entry(*cl).or_insert_with(|| Chunk::new(chunk_size))
     }
 
-    pub fn spawn_food(&mut self, loc: Loc) {
+    pub fn spawn_food(&mut self, components: &mut Components, loc: Loc) {
         let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
         let ref mut chunk = *self.get_chunk(&WorldCoord::from_loc(&size, &loc).get_chunk_loc());
-        let food = Rc::new(RefCell::new(Food::new(loc, config::SQUARE_SIZE))); // TODO get rid of config
-        chunk.insert_food(loc, food.clone());
-        chunk.insert_renderable(loc, food.clone() as Rc<RefCell<Renderable>>);
+        let entity = Entity::new();
+        let color = [0.2313725, 0.3254902, 0.1372549];
+        components.new_render_component(entity, Pix::Food, color);
+        components.new_position_component(entity, loc);
+        chunk.insert_entity(entity);
     }
 
     pub fn spawn_wall(&mut self, loc: Loc) {

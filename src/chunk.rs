@@ -4,6 +4,8 @@ use std::collections::HashMap;
 
 use rand;
 
+use cascadecs::entity::Entity;
+
 use has_loc::HasLoc;
 use loc::Loc;
 use food::Food;
@@ -12,12 +14,10 @@ use loc_map::LocMap;
 use renderable::Renderable;
 use terrain::Terrain;
 
-#[derive(Debug)]
 pub struct Chunk {
     size: Size,
     terrain: Vec<Terrain>,
-    foods: LocMap<Food>,
-    renderables: LocMap<Renderable>,
+    entities: Vec<Entity>,
 }
 
 impl Chunk {
@@ -33,17 +33,12 @@ impl Chunk {
         Chunk {
             size: size,
             terrain: terrain,
-            foods: HashMap::new(),
-            renderables: HashMap::new(),
+            entities: vec![],
         }
     }
 
-    pub fn insert_food(&mut self, loc: Loc, food: Rc<RefCell<Food>>) {
-        self.foods.insert(loc, food.clone());
-    }
-
-    pub fn insert_renderable(&mut self, loc: Loc, renderable: Rc<RefCell<Renderable>>) {
-        self.renderables.insert(loc, renderable.clone());
+    pub fn insert_entity(&mut self, entity: Entity) {
+        self.entities.push(entity);
     }
 
     pub fn get_terrain(&self) -> &Vec<Terrain> {
