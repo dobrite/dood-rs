@@ -41,11 +41,13 @@ impl WorldCoord {
         let chunk_y = chunk(loc.y - 1, size.height) + 1;
         let row = modulo(size.height - loc.y, size.height);
         let col = modulo(loc.x, size.width);
-        WorldCoord::new(*size, ChunkLoc { x: chunk_x, y: chunk_y }, Indices::new(row, col))
+        // TODO fix with factory
+        WorldCoord::new(*size, ChunkLoc { x: chunk_x, y: chunk_y }, Indices::new(row, col, size.width))
     }
 
     pub fn from_chunk_loc(size: &Size, chunk_loc: &ChunkLoc) -> WorldCoord {
-        WorldCoord::new(*size, *chunk_loc, Indices::new(0, 0))
+        // TODO fix with factory
+        WorldCoord::new(*size, *chunk_loc, Indices::new(0, 0, size.width))
     }
 
     pub fn to_loc(&self, size: &Size) -> Loc {
@@ -112,7 +114,7 @@ mod tests {
         let loc = Loc { x: 0, y: 1 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 0, width: 8 } });
     }
 
     #[test]
@@ -120,7 +122,7 @@ mod tests {
         let loc = Loc { x: 1, y: 1 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 1 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 1, width: 8 } });
     }
 
     #[test]
@@ -128,7 +130,7 @@ mod tests {
         let loc = Loc { x: 0, y: 2 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 6, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 6, col: 0, width: 8 } });
     }
 
     #[test]
@@ -136,7 +138,7 @@ mod tests {
         let loc = Loc { x: 0, y: 8 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 0, width: 8 } });
     }
 
     #[test]
@@ -144,7 +146,7 @@ mod tests {
         let loc = Loc { x: 7, y: 8 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 7, width: 8 } });
     }
 
     #[test]
@@ -152,7 +154,7 @@ mod tests {
         let loc = Loc { x: 7, y: 1 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 7, width: 8 } });
     }
 
     #[test]
@@ -160,7 +162,7 @@ mod tests {
         let loc = Loc { x: 8, y: 1 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 1 }, indices: Indices { row: 7, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 1 }, indices: Indices { row: 7, col: 0, width: 8 } });
     }
 
     #[test]
@@ -168,7 +170,7 @@ mod tests {
         let loc = Loc { x: 8, y: 9 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 7, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 7, col: 0, width: 8 } });
     }
 
     #[test]
@@ -176,7 +178,7 @@ mod tests {
         let loc = Loc { x: 15, y: 16 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 0, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 0, col: 7, width: 8 } });
     }
 
     // Lower Right Quadrant
@@ -186,7 +188,7 @@ mod tests {
         let loc = Loc { x: 0, y: 0 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 0 }, indices: Indices { row: 0, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 0 }, indices: Indices { row: 0, col: 0, width: 8 } });
     }
 
     #[test]
@@ -194,7 +196,7 @@ mod tests {
         let loc = Loc { x: 8, y: -8 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 0, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 0, col: 0, width: 8 } });
     }
 
     #[test]
@@ -202,7 +204,7 @@ mod tests {
         let loc = Loc { x: 15, y: -15 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 7, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 7, col: 7, width: 8 } });
     }
 
     // Upper Left Quadrant
@@ -212,7 +214,7 @@ mod tests {
         let loc = Loc { x: -1, y: 1 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 1 }, indices: Indices { row: 7, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 1 }, indices: Indices { row: 7, col: 7, width: 8 } });
     }
 
     // Lower Left Quadrant
@@ -222,7 +224,7 @@ mod tests {
         let loc = Loc { x: -1, y: 0 };
         let size = Size { width: 8, height: 8 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 0 }, indices: Indices { row: 0, col: 7 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 0 }, indices: Indices { row: 0, col: 7, width: 8 } });
     }
 
     // 16x16
@@ -233,7 +235,7 @@ mod tests {
         let loc = Loc { x: 0, y: 1 };
         let size = Size { width: 16, height: 16 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 15, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 15, col: 0, width: 16 } });
     }
 
     #[test]
@@ -241,7 +243,7 @@ mod tests {
         let loc = Loc { x: 16, y: 17 };
         let size = Size { width: 16, height: 16 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 15, col: 0 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 15, col: 0, width: 16 } });
     }
 
     // Lower Left Quadrant
@@ -251,6 +253,6 @@ mod tests {
         let loc = Loc { x: -17, y: -16 };
         let size = Size { width: 16, height: 16 };
         assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -2, y: -1 }, indices: Indices { row: 0, col: 15 } });
+                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -2, y: -1 }, indices: Indices { row: 0, col: 15, width: 16 } });
     }
 }
