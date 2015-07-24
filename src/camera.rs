@@ -56,14 +56,16 @@ impl Camera {
         ]
     }
 
-    pub fn pan(&mut self, dir: Dir) {
+    pub fn pan(&mut self, dir: Dir) -> &mut Self {
         match dir {
             Dir::Right => self.loc.x += 1,
             Dir::Left  => self.loc.x -= 1,
-            Dir::Up    => self.loc.y -= 1,
-            Dir::Down  => self.loc.y += 1,
+            Dir::Up    => self.loc.y += 1,
+            Dir::Down  => self.loc.y -= 1,
             _ => {}
         }
+
+        self
     }
 
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
@@ -94,6 +96,7 @@ impl Camera {
 #[cfg(test)]
 mod tests {
     use loc::Loc;
+    use dir::Dir;
     use window_loc::WindowLoc;
     use screen_size::ScreenSize;
     use super::Camera;
@@ -102,8 +105,40 @@ mod tests {
     fn to_loc_box() {
         let screen_size = ScreenSize { width: 1536.0, height: 1024.0 };
         assert!(Camera::new(screen_size, Loc { x: -50, y: 50 }, 16)
-            .to_loc_box() == (Loc { x: -50, y: 50 }, Loc { x: 46, y: -14 }));
+            .to_loc_box() == (Loc { x: -50, y: 50 }, Loc { x: 45, y: -13 }));
     }
+
+    #[test]
+    fn to_loc_box_four_four() {
+        let screen_size = ScreenSize { width: 64.0, height: 64.0 };
+        assert!(Camera::new(screen_size, Loc { x: 10, y: 10 }, 16)
+            .to_loc_box() == (Loc { x: 10, y: 10 }, Loc { x: 13, y: 7 }));
+    }
+
+    #[test]
+    fn pan_up() {
+        let screen_size = ScreenSize { width: 64.0, height: 64.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Up).get_loc() == Loc { x: 0, y: 1 });
+    }
+
+    #[test]
+    fn pan_down() {
+        let screen_size = ScreenSize { width: 64.0, height: 64.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Down).get_loc() == Loc { x: 0, y: -1 });
+    }
+
+    #[test]
+    fn pan_right() {
+        let screen_size = ScreenSize { width: 64.0, height: 64.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Right).get_loc() == Loc { x: 1, y: 0 });
+    }
+
+    #[test]
+    fn pan_left() {
+        let screen_size = ScreenSize { width: 64.0, height: 64.0 };
+        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Left).get_loc() == Loc { x: -1, y: 0 });
+    }
+
 
     #[test]
     fn it_returns_game_coords_for_window_loc_zero_zero_bottom_right_four() {
