@@ -2,12 +2,19 @@ use std::collections::HashMap;
 
 use rand;
 
+use cascadecs::entity::Entity;
+use cascadecs::components::Components;
+use cascadecs::position_component::PositionComponent;
+use cascadecs::render_component::RenderComponent;
+
 use config;
+
 use camera::Camera;
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
+use indices::Indices;
 use terrain::Terrain;
 use renderable::Vertex;
 use world::World;
@@ -36,6 +43,7 @@ pub struct Scratch {
     terrain:  Vec<Terrain>,
     flags:    Vec<Flags>,
     //vertices: Vec<Vertex>,
+    entities: Vec<Entity>,
     indices:  Vec<u32>,
 }
 
@@ -50,6 +58,7 @@ impl Scratch {
             terrain: vec![Terrain::None; len],
             flags: vec![NONE; len],
             //vertices: vec![NONE; len * 4],
+            entities: vec![],
             indices:  indices(len * 4),
         }
     }
@@ -84,7 +93,21 @@ impl Scratch {
             }
         }
 
+        // FIXME obv less than ideal
+        for y in (br.y..tl.y + 1).rev() {
+            for x in tl.x..br.x + 1 {
+                let chunk = world.get_chunk(&ChunkLoc { x: x, y: y });
+                for entity in chunk.get_entities() {
+                    self.entities.push(*entity);
+                }
+            }
+        }
+
         self
+    }
+
+    pub fn insert_into_entities(&mut self, entity: Entity) {
+        self.entities.push(entity);
     }
 
     fn to_loc_box(&self) -> (Loc, Loc) {
@@ -123,23 +146,31 @@ impl Scratch {
     //    }
     //}
 
+    fn loc_to_indices(&self, loc: Loc) -> Indices {
+        let (tl, br) = self.to_loc_box();
+        assert!(loc.x >= tl.x);
+        assert!(loc.y <= tl.y);
+        assert!(loc.x <= br.x);
+        assert!(loc.y >= br.y);
+        let y_offset = self.loc.y - loc.y;
+        let x_offset = loc.x - self.loc.x;
+        Indices { row: y_offset, col: x_offset, width: self.size.width }
+    }
+
     // TODO return &[Vertex] using vec as_slice?
-    pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset) -> (Vec<Vertex>, &Vec<u32>) {
+    pub fn render(&self, camera_loc: Loc, camera_dim: Size, tiles: &Pixset, components: &Components) -> (Vec<Vertex>, &Vec<u32>) {
         let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4);
 
-        let start = ((camera_loc.y - self.loc.y) * -1 * self.size.width + camera_loc.x - self.loc.x) as usize;
-        let end = (camera_dim.height * 2) as usize;
-        let x_offset =  (camera_loc.x * config::SQUARE_SIZE) as f32;
-        let y_offset = ((camera_dim.height - camera_loc.y - 1) * config::SQUARE_SIZE) as f32;
-        let square_size = config::SQUARE_SIZE as usize;
+        let start = ((self.loc.y - camera_loc.y) * self.size.width + camera_loc.x - self.loc.x) as usize;
+        let end_camera_row = (camera_dim.height * 2) as usize;
 
-        for (i, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
-            if i % 2 == 1 { continue };
-            if i == end { break };
-            let row = i / 2;
+        for (camera_row, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
+            if camera_row % 2 == 1 { continue };
+            if camera_row == end_camera_row { break };
+            let row = camera_row / 2;
             for (col, terrain) in row_terrain.iter().enumerate() {
-                let x = (col * square_size) as f32 + x_offset;
-                let y = (row * square_size) as f32 - y_offset;
+                let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE) as f32;
+                let y = ((camera_loc.y - row as i32) * config::SQUARE_SIZE) as f32;
                 let vertices = match terrain {
                     &Terrain::Dirt => {
                         // bottom left
@@ -248,6 +279,45 @@ impl Scratch {
             }
         }
 
+        for entity in self.entities.iter() {
+            if let Some(&PositionComponent { loc: loc }) = components.get_position_component(*entity) {
+                // TODO maybe implement loc.contains(loc) and loc.outside(loc)
+                if loc.x < camera_loc.x || loc.x > camera_loc.x + camera_dim.width || loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height { continue };
+                if let Some(&RenderComponent { pix: ref pix, color: color }) = components.get_render_component(*entity) {
+                    let x = (loc.x * config::SQUARE_SIZE) as f32;
+                    let y = (loc.y * config::SQUARE_SIZE) as f32;
+                    vertex_data.push(Vertex {
+                        vertex_position: [0.0, 0.0],
+                        tex_coords: tiles.get(&pix)[0],
+                        loc: [x, y],
+                        scale: 16.0,
+                        color: color,
+                    });
+                    vertex_data.push(Vertex {
+                        vertex_position: [1.0, 0.0],
+                        tex_coords: tiles.get(&pix)[1],
+                        loc: [x, y],
+                        scale: 16.0,
+                        color: color,
+                    });
+                    vertex_data.push(Vertex {
+                        vertex_position: [1.0, 1.0],
+                        tex_coords: tiles.get(&pix)[2],
+                        loc: [x, y],
+                        scale: 16.0,
+                        color: color,
+                    });
+                    vertex_data.push(Vertex {
+                        vertex_position: [0.0, 1.0],
+                        tex_coords: tiles.get(&pix)[3],
+                        loc: [x, y],
+                        scale: 16.0,
+                        color: color,
+                    });
+                }
+            }
+        }
+
         (vertex_data, &self.indices)
     }
 }
@@ -269,21 +339,45 @@ mod tests {
     use chunk_loc::ChunkLoc;
     use world_coord::WorldCoord;
 
+    //#[test]
+    //// TODO finish me
+    //fn it_returns_() {
+    //    Scratch::new(Loc { x: -80, y: 80 }, Size { width: 192, height: 192 })
+    //        .render(Loc { x: -50, y: 50 }, Size { width: 96, height: 64 }, &Pixset::new(16));
+    //    assert!(true == false);
+    //}
+
     #[test]
-    // TODO finish me
-    fn it_returns_() {
-        Scratch::new(Loc { x: -80, y: 80 }, Size { width: 192, height: 192 })
-            .render(Loc { x: -50, y: 50 }, Size { width: 96, height: 64 }, &Pixset::new(16));
-        assert!(true == false);
+    fn loc_to_indices_it_returns_for_zero_zero() {
+        let scratch = Scratch::new(Loc { x: 0, y: 0 }, Size { width: 192, height: 192 });
+        assert!(scratch.loc_to_indices(Loc { x: 0, y: 0 }) == Indices { row: 0, col: 0, width: 192  });
     }
 
     #[test]
-    fn it_returns_indices_for_len_four() {
-        assert!(indices(4) == [0u32, 1, 2, 0, 2, 3]);
+    fn loc_to_indices_it_returns_for_zero_one() {
+        let scratch = Scratch::new(Loc { x: 0, y: 0 }, Size { width: 192, height: 192 });
+        assert!(scratch.loc_to_indices(Loc { x: 1, y: 0 }) == Indices { row: 0, col: 1, width: 192  });
     }
 
     #[test]
-    fn it_returns_indices_for_len_eight() {
-        assert!(indices(8) == [0u32, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7]);
+    fn loc_to_indices_it_returns_for_one_one() {
+        let scratch = Scratch::new(Loc { x: 0, y: 0 }, Size { width: 192, height: 192 });
+        assert!(scratch.loc_to_indices(Loc { x: 0, y: -1 }) == Indices { row: 1, col: 0, width: 192  });
+    }
+
+    #[test]
+    fn loc_to_indices_it_returns_for_two_two() {
+        let scratch = Scratch::new(Loc { x: -1, y: 1 }, Size { width: 192, height: 192 });
+        assert!(scratch.loc_to_indices(Loc { x: 2, y: -2 }) == Indices { row: 3, col: 3, width: 192  });
+    }
+
+    #[test]
+    fn indices_it_returns_for_len_four() {
+        assert_eq!(indices(4), [0u32, 1, 2, 0, 2, 3]);
+    }
+
+    #[test]
+    fn indices_it_returns_for_len_eight() {
+        assert_eq!(indices(8), [0u32, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7]);
     }
 }

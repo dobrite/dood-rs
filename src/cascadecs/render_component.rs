@@ -1,8 +1,8 @@
 use pixset::Pix;
 
 pub struct RenderComponent {
-    pix: Pix,
-    color: [f32; 3],
+    pub pix: Pix,
+    pub color: [f32; 3],
 }
 
 impl RenderComponent {

@@ -44,4 +44,8 @@ impl Chunk {
     pub fn get_terrain(&self) -> &Vec<Terrain> {
         &self.terrain
     }
+
+    pub fn get_entities(&self) -> &Vec<Entity> {
+        &self.entities
+    }
 }

@@ -74,10 +74,12 @@ use pixset::Pixset;
 use world::World;
 use input::Input;
 use input::Output;
+use pixset::Pix;
 use scratch::Scratch;
 use screen_size::ScreenSize;
 use world_coord::WorldCoord;
 
+use cascadecs::entity::Entity;
 use cascadecs::components::Components;
 
 use piston_window::{
@@ -174,7 +176,7 @@ fn main() {
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = scratch.render(camera.get_loc(), camera.get_dim(), &pixset);
+            let (vertices, indices) = scratch.render(camera.get_loc(), camera.get_dim(), &pixset, &components);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
@@ -191,8 +193,17 @@ fn main() {
         e.press(|button| {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
-                    world.spawn_food(&mut components, camera.to_game_loc(window_loc));
-                    println!("{:?}", camera.to_game_loc(window_loc));
+                    let loc = camera.to_game_loc(window_loc);
+                    let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
+                    let ref mut chunk = world.get_chunk(&WorldCoord::from_loc(&size, &loc).get_chunk_loc());
+                    // TODO some sort of "blueprint"
+                    let entity = Entity::new();
+                    let color = [0.2313725, 0.3254902, 0.1372549];
+                    components.new_render_component(entity, Pix::Food, color);
+                    components.new_position_component(entity, loc);
+                    chunk.insert_entity(entity); // maybe world.add_entity_to_chunk?
+                    // TODO do bounds checking
+                    scratch.insert_into_entities(entity);
                 },
                 Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir)       => {

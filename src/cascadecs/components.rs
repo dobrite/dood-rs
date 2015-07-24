@@ -31,4 +31,12 @@ impl Components {
     pub fn new_position_component(&mut self, entity: Entity, loc: Loc) {
         self.position_components.insert(entity, PositionComponent::new(loc));
     }
+
+    pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {
+        self.render_components.get(&entity)
+    }
+
+    pub fn get_position_component(&self, entity: Entity) -> Option<&PositionComponent> {
+        self.position_components.get(&entity)
+    }
 }

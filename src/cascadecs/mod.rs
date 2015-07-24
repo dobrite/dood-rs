@@ -1,9 +1,9 @@
 pub mod entity;
 pub mod components;
-
-mod hunger_component;
-mod position_component;
-mod render_component;
+// TODO namespace all components under components (read the modules chapter in the book)
+pub mod hunger_component;
+pub mod position_component;
+pub mod render_component;
 
 mod event;
 

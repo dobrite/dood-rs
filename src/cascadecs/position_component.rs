@@ -1,7 +1,7 @@
 use loc::Loc;
 
 pub struct PositionComponent {
-    loc: Loc,
+    pub loc: Loc,
 }
 
 impl PositionComponent {

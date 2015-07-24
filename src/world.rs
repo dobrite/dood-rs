@@ -60,16 +60,6 @@ impl World {
         self.chunks.entry(*cl).or_insert_with(|| Chunk::new(chunk_size))
     }
 
-    pub fn spawn_food(&mut self, components: &mut Components, loc: Loc) {
-        let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
-        let ref mut chunk = *self.get_chunk(&WorldCoord::from_loc(&size, &loc).get_chunk_loc());
-        let entity = Entity::new();
-        let color = [0.2313725, 0.3254902, 0.1372549];
-        components.new_render_component(entity, Pix::Food, color);
-        components.new_position_component(entity, loc);
-        chunk.insert_entity(entity);
-    }
-
     pub fn spawn_wall(&mut self, loc: Loc) {
         //let wall = Rc::new(RefCell::new(Wall::new(loc)));
         //self.renderables.insert(loc, wall.clone() as Rc<RefCell<Renderable>>);
