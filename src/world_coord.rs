@@ -20,7 +20,6 @@ use indices::Indices;
 ///             |       |       |
 ///           - - - - - - - - - - -
 ///           -1,-1     |      1,-1
-
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct WorldCoord {
     size: Size,
