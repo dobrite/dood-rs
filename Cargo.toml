@@ -6,7 +6,6 @@ authors = ["Dave O <davidobrite@gmail.com>"]
 [dependencies]
 bitflags = "*"
 camera_controllers = "*"
-fps_counter = "*"
 gfx = "*"
 gfx_device_gl = "*"
 hprof = "*"

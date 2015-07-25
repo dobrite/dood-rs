@@ -11,7 +11,6 @@ extern crate piston_window;
 extern crate gfx_device_gl;
 extern crate gfx_texture;
 extern crate image;
-//extern crate fps_counter;
 extern crate camera_controllers;
 extern crate rand;
 
@@ -51,7 +50,6 @@ use std::io::Cursor;
 
 use piston_window::{PistonWindow, WindowSettings};
 
-//use fps_counter::FPSCounter;
 use camera_controllers::model_view_projection;
 use gfx::device::Factory;
 use gfx::extra::stream::Stream;
@@ -161,8 +159,6 @@ fn main() {
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
 
-    //let mut fps = FPSCounter::new();
-
     for e in window {
         e.draw_3d(|stream| {
             let (vertices, indices) = scratch.render(
@@ -172,12 +168,11 @@ fn main() {
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
             stream.clear(clear_data);
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
-            //println!("fps: {:?}", fps.tick()); // 41-ish
         });
 
         e.update(|_| {
-            //world.update();
-            //world.vacuum();
+            // world.update();
+            // world.vacuum();
         });
 
         e.press(|button| {

@@ -4,7 +4,6 @@ version = "0.0.1"
 dependencies = [
  "bitflags 0.3.2 (registry+https://github.com/rust-lang/crates.io-index)",
  "camera_controllers 0.5.0 (registry+https://github.com/rust-lang/crates.io-index)",
- "fps_counter 0.1.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "gfx 0.6.5 (registry+https://github.com/rust-lang/crates.io-index)",
  "gfx_device_gl 0.4.1 (registry+https://github.com/rust-lang/crates.io-index)",
  "hprof 0.1.2 (registry+https://github.com/rust-lang/crates.io-index)",
@@ -143,14 +142,6 @@ version = "0.0.1"
 source = "registry+https://github.com/rust-lang/crates.io-index"
 dependencies = [
  "num 0.1.25 (registry+https://github.com/rust-lang/crates.io-index)",
-]
-
-[[package]]
-name = "fps_counter"
-version = "0.1.1"
-source = "registry+https://github.com/rust-lang/crates.io-index"
-dependencies = [
- "clock_ticks 0.0.6 (registry+https://github.com/rust-lang/crates.io-index)",
 ]
 
 [[package]]

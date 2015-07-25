@@ -99,8 +99,6 @@ mod tests {
     fn to_loc_it_round_trip_for_minus_47_120() {
         let size = Size { width: 16, height: 16 };
         let loc = Loc { x: -47, y: 120 };
-        println!("{:?}", WorldCoord::from_loc(&size, &loc));
-        println!("{:?}", WorldCoord::from_loc(&size, &loc).to_loc());
         assert!(WorldCoord::from_loc(&size, &loc).to_loc() == loc)
     }
 
