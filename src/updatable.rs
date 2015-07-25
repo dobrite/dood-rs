@@ -1,6 +1,6 @@
 
-use world::World;
+use chunks::Chunks;
 
 pub trait Updatable {
-    fn update(&mut self, world: &World);
+    fn update(&mut self, chunks: &Chunks);
 }

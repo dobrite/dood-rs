@@ -12,7 +12,7 @@ use size::Size;
 use indices::Indices;
 use terrain::Terrain;
 use renderable::Vertex;
-use world::World;
+use chunks::Chunks;
 use world_coord::WorldCoord;
 use pixset::{Pix, Pixset};
 
@@ -63,7 +63,7 @@ impl Scratch {
         self.size
     }
 
-    pub fn inflate(mut self, world: &mut World) -> Scratch {
+    pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {
         let loc_box = self.to_loc_box();
         let size = Size { width: 16, height: 16 }; // TODO gross
         let tl = WorldCoord::from_loc(&size, &self.loc).get_chunk_loc();
@@ -76,7 +76,7 @@ impl Scratch {
         for y in (br.y..tl.y + 1).rev() {
             for row in 0..size.height {
                 for x in tl.x..br.x + 1 {
-                    let chunk = world.get_chunk(&ChunkLoc { x: x, y: y });
+                    let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
                     let start = (row * size.width) as usize;
                     let end = ((row + 1) * size.width) as usize;
                     let source = &chunk.get_terrain()[start..end];
@@ -90,7 +90,7 @@ impl Scratch {
         // FIXME obv less than ideal
         for y in (br.y..tl.y + 1).rev() {
             for x in tl.x..br.x + 1 {
-                let chunk = world.get_chunk(&ChunkLoc { x: x, y: y });
+                let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
                 for entity in chunk.get_entities() {
                     self.entities.push(*entity);
                 }

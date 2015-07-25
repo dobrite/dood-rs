@@ -43,7 +43,7 @@ mod updatable;
 mod utils;
 mod wall;
 mod window_loc;
-mod world;
+mod chunks;
 mod world_coord;
 
 use std::io::Cursor;
@@ -63,7 +63,7 @@ use loc::Loc;
 use size::Size;
 use camera::Camera;
 use pixset::Pixset;
-use world::World;
+use chunks::Chunks;
 use input::Input;
 use input::Output;
 use pixset::Pix;
@@ -145,7 +145,7 @@ fn main() {
     let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut world = World::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
+    let mut chunks = Chunks::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
@@ -153,7 +153,7 @@ fn main() {
     let mut scratch = {
         let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
         let loc = Loc { x: -80, y: 80 };
-        Scratch::new(loc, size).inflate(&mut world)
+        Scratch::new(loc, size).inflate(&mut chunks)
     };
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
@@ -171,8 +171,8 @@ fn main() {
         });
 
         e.update(|_| {
-            // world.update();
-            // world.vacuum();
+            // chunks.update();
+            // chunks.vacuum();
         });
 
         e.press(|button| {
@@ -181,18 +181,18 @@ fn main() {
                     let loc = camera.to_game_loc(window_loc);
                     // TODO fix with WorldCoordFactory or some such
                     let size = Size { width: 16, height: 16 };
-                    let ref mut chunk = world.get_chunk(
+                    let ref mut chunk = chunks.get_chunk(
                         &WorldCoord::from_loc(&size, &loc).get_chunk_loc());
                     // TODO some sort of "blueprint"
                     let entity = Entity::new();
                     let color = [0.2313725, 0.3254902, 0.1372549];
                     components.new_render_component(entity, Pix::Food, color);
                     components.new_position_component(entity, loc);
-                    chunk.insert_entity(entity); // maybe world.add_entity_to_chunk?
+                    chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
                     // TODO do bounds checking
                     scratch.insert_into_entities(entity);
                 },
-                Output::SpawnWall(_) => {}, //world.spawn_wall(camera.to_game_loc(window_loc)),
+                Output::SpawnWall(_) => {}, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir) => {
                     camera.pan(dir);
                     let camera_loc = camera.get_loc();
@@ -206,7 +206,7 @@ fn main() {
                         let loc = WorldCoord::from_chunk_loc(&size, &wc).to_loc();
                         // TODO dont hardcode this
                         let scratch_dim = Loc { x: 48, y: -64 };
-                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut world);
+                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut chunks);
                     }
                 },
                 Output::Nothing => {}

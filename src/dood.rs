@@ -8,7 +8,7 @@ use renderable::{Vertex, Renderable};
 use loc::Loc;
 use has_loc::HasLoc;
 use updatable::Updatable;
-use world::World;
+use chunks::Chunks;
 
 #[derive(Debug)]
 pub struct Dood {
@@ -42,18 +42,18 @@ impl HasLoc for Dood {
 impl Paths for Dood {}
 
 impl Updatable for Dood {
-    fn update(&mut self, world: &World) {
+    fn update(&mut self, chunks: &Chunks) {
         //self.hunger -= 1.0;
 
         //if self.path.is_empty() && self.hunger < 50.0 {
         //    if let Some(food_loc) = get_closest(
-        //            self.loc, world.foods.keys().collect::<Vec<_>>()) {
+        //            self.loc, chunks.foods.keys().collect::<Vec<_>>()) {
         //        if food_loc == self.loc {
-        //            if let Some(food) = world.foods.get(&food_loc) {
+        //            if let Some(food) = chunks.foods.get(&food_loc) {
         //                self.hunger += food.borrow_mut().eat(20.0);
         //            }
         //        } else {
-        //            self.path = self.path(&world.grid, self.loc, food_loc);
+        //            self.path = self.path(&chunks.grid, self.loc, food_loc);
         //        }
         //    }
         //}

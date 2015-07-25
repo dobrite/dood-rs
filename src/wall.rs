@@ -5,7 +5,7 @@ use renderable::{Vertex, Renderable};
 
 use loc::Loc;
 use updatable::Updatable;
-use world::World;
+use chunks::Chunks;
 
 #[derive(Debug)]
 pub struct Wall {
@@ -22,7 +22,7 @@ impl Wall {
 }
 
 impl Updatable for Wall {
-    fn update(&mut self, _: &World) {
+    fn update(&mut self, _: &Chunks) {
     }
 }
 

@@ -37,7 +37,7 @@ use renderable::{Renderable, Vertex};
 
 use updatable::Updatable;
 use has_loc::HasLoc;
-use world::World;
+use chunks::Chunks;
 
 // TODO maybe one day
 // http://stackoverflow.com/a/29531983
@@ -329,7 +329,7 @@ impl Fov {
 }
 
 impl Updatable for Fov {
-    fn update(&mut self, _: &World) {
+    fn update(&mut self, _: &Chunks) {
         let rc_option = self.entity.upgrade();
         let ref_cell  = rc_option.unwrap();
         let ent       = ref_cell.borrow();

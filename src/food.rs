@@ -5,7 +5,7 @@ use renderable::{Vertex, Renderable};
 
 use loc::Loc;
 use updatable::Updatable;
-use world::World;
+use chunks::Chunks;
 
 #[derive(Debug)]
 pub struct Food {
@@ -43,7 +43,7 @@ impl Food {
 }
 
 impl Updatable for Food {
-    fn update(&mut self, _: &World) {
+    fn update(&mut self, _: &Chunks) {
         self.noms -= 1.0;
     }
 }

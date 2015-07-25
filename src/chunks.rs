@@ -5,26 +5,26 @@ use chunk::Chunk;
 use chunk_loc::ChunkLoc;
 use size::Size;
 
-pub struct World {
+pub struct Chunks {
     chunk_size: Size,
     chunks: HashMap<ChunkLoc, Chunk>,
 }
 
-impl World {
-    pub fn new(chunk_size: Size) -> World {
-        let mut world = World { chunk_size: chunk_size, chunks: HashMap::new() };
+impl Chunks {
+    pub fn new(chunk_size: Size) -> Chunks {
+        let mut chunks = Chunks { chunk_size: chunk_size, chunks: HashMap::new() };
 
         for x in 0..24 {
             for y in 0..24 {
                 // -12, -12, to 11, 11
-                world.create(ChunkLoc {
+                chunks.create(ChunkLoc {
                     x: x - 12,
                     y: y - 12,
                 });
             }
         }
 
-        world
+        chunks
     }
 
     fn create(&mut self, cl: ChunkLoc) {
