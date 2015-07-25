@@ -66,8 +66,8 @@ impl Scratch {
     pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {
         let loc_box = self.to_loc_box();
         let size = Size { width: 16, height: 16 }; // TODO gross
-        let tl = WorldCoord::from_loc(&size, &self.loc).get_chunk_loc();
-        let br = WorldCoord::from_loc(&size, &loc_box.1).get_chunk_loc();
+        let tl = WorldCoord::from_loc(&self.loc).get_chunk_loc();
+        let br = WorldCoord::from_loc(&loc_box.1).get_chunk_loc();
 
         let width = size.width as usize;
         let mut offset_start: usize = 0;

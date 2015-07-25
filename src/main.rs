@@ -179,10 +179,7 @@ fn main() {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    // TODO fix with WorldCoordFactory or some such
-                    let size = Size { width: 16, height: 16 };
-                    let ref mut chunk = chunks.get_chunk(
-                        &WorldCoord::from_loc(&size, &loc).get_chunk_loc());
+                    let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
                     // TODO some sort of "blueprint"
                     let entity = Entity::new();
                     let color = [0.2313725, 0.3254902, 0.1372549];
@@ -201,9 +198,8 @@ fn main() {
                     let w = (scratch_size.width  - camera_dim.width)  / 2 - camera_offset.x;
                     let h = (scratch_size.height - camera_dim.height) / 2 + camera_offset.y;
                     if w.abs() == 16 || h.abs() == 16 {
-                        let size = Size { width: 16, height: 16 };
-                        let wc = WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc();
-                        let loc = WorldCoord::from_chunk_loc(&size, &wc).to_loc();
+                        let wc = WorldCoord::from_loc(&camera_loc).get_chunk_loc();
+                        let loc = WorldCoord::from_chunk_loc(&wc).to_loc();
                         // TODO dont hardcode this
                         let scratch_dim = Loc { x: 48, y: -64 };
                         scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut chunks);
