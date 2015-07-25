@@ -87,7 +87,7 @@ impl Scratch {
             }
         }
 
-        // FIXME obv less than ideal
+        // TODO obv less than ideal
         for y in (br.y..tl.y + 1).rev() {
             for x in tl.x..br.x + 1 {
                 let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
