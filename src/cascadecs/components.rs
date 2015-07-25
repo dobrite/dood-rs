@@ -33,11 +33,19 @@ impl Components {
         self.position_components.insert(entity, PositionComponent::new(loc));
     }
 
+    pub fn new_hunger_component(&mut self, initial: i32) {
+        self.hunger_components.insert(entity, HungerComponent::new(initial));
+    }
+
     pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {
         self.render_components.get(&entity)
     }
 
     pub fn get_position_component(&self, entity: Entity) -> Option<&PositionComponent> {
         self.position_components.get(&entity)
+    }
+
+    pub fn get_hunger_component(&self, entity: Entity) -> Option<&HungerComponent> {
+        self.hunger_components.get(&entity)
     }
 }

@@ -145,10 +145,7 @@ fn main() {
     let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut chunks = Chunks::new(Size {
-            width: config::CHUNK_WIDTH,
-            height: config::CHUNK_HEIGHT,
-        });
+    let mut chunks = Chunks::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
@@ -158,6 +155,20 @@ fn main() {
         let loc = Loc { x: -80, y: 80 };
         Scratch::new(loc, size).inflate(&mut chunks)
     };
+
+    {
+        let loc = Loc { x: 20, y: 0 };
+        let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
+        // TODO some sort of "blueprint"
+        let entity = Entity::new();
+        let color = [1.0, 1.0, 1.0];
+        components.new_render_component(entity, Pix::Dood, color);
+        components.new_position_component(entity, loc);
+        components.new_hunger_component(entity, 100.0);
+        chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
+        // TODO do bounds checking
+        scratch.insert_into_entities(entity);
+    }
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
