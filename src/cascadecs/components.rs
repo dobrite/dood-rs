@@ -33,7 +33,7 @@ impl Components {
         self.position_components.insert(entity, PositionComponent::new(loc));
     }
 
-    pub fn new_hunger_component(&mut self, initial: i32) {
+    pub fn new_hunger_component(&mut self, entity: Entity, initial: u16) {
         self.hunger_components.insert(entity, HungerComponent::new(initial));
     }
 

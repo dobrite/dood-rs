@@ -11,3 +11,4 @@ mod event;
 mod process;
 mod movement_process;
 mod render_process;
+mod hunger_process;
