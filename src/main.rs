@@ -123,10 +123,12 @@ fn main() {
         factory.link_program_source(vertex, fragment).unwrap()
     };
 
-    let image = image::load(Cursor::new(&include_bytes!("../assets/tileset.png")[..]), image::PNG).unwrap();
+    let cursor = Cursor::new(&include_bytes!("../assets/tileset.png")[..]);
+    let image = image::load(cursor, image::PNG).unwrap();
     let texture_settings = TextureSettings::new().convert_gamma(true);
     let texture = Texture::from_image(factory, &image.to_rgba(), &texture_settings).unwrap().handle();
-    let sampler_info = gfx::tex::SamplerInfo::new(gfx::tex::FilterMethod::Scale, gfx::tex::WrapMode::Clamp);
+    let sampler_info = gfx::tex::SamplerInfo::new(
+        gfx::tex::FilterMethod::Scale, gfx::tex::WrapMode::Clamp);
     let sampler = factory.create_sampler(sampler_info);
 
     let mat4_id = [
@@ -176,7 +178,8 @@ fn main() {
 
     for e in window {
         e.draw_3d(|stream| {
-            let (vertices, indices) = scratch.render(camera.get_loc(), camera.get_dim(), &pixset, &components);
+            let (vertices, indices) = scratch.render(
+                camera.get_loc(), camera.get_dim(), &pixset, &components);
             let mesh = &factory.create_mesh(&vertices);
             let tri_list = indices.to_slice(factory, PrimitiveType::TriangleList).clone();
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
@@ -194,8 +197,10 @@ fn main() {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    let size = Size { width: 16, height: 16 }; // TODO fix with WorldCoordFactory or some such
-                    let ref mut chunk = world.get_chunk(&WorldCoord::from_loc(&size, &loc).get_chunk_loc());
+                    // TODO fix with WorldCoordFactory or some such
+                    let size = Size { width: 16, height: 16 };
+                    let ref mut chunk = world.get_chunk(
+                        &WorldCoord::from_loc(&size, &loc).get_chunk_loc());
                     // TODO some sort of "blueprint"
                     let entity = Entity::new();
                     let color = [0.2313725, 0.3254902, 0.1372549];
@@ -215,8 +220,11 @@ fn main() {
                     let h = (scratch_size.height - camera_dim.height) / 2 + camera_offset.y;
                     if w.abs() == 16 || h.abs() == 16 {
                         let size = Size { width: 16, height: 16 };
-                        let loc = WorldCoord::from_chunk_loc(&size, &WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc()).to_loc(&size);
-                        scratch = Scratch::new(loc - Loc { x: 48, y: -64 }, scratch_size).inflate(&mut world);
+                        let wc = WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc();
+                        let loc = WorldCoord::from_chunk_loc(&size, &wc).to_loc(&size);
+                        // TODO dont hardcode this
+                        let scratch_dim = Loc { x: 48, y: -64 };
+                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut world);
                     }
                 },
                 Output::Nothing => {}

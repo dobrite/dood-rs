@@ -113,72 +113,90 @@ mod tests {
     fn from_loc_it_returns_correct_for_0_1() {
         let loc = Loc { x: 0, y: 1 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 7, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_1_1() {
         let loc = Loc { x: 1, y: 1 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 1, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 7, col: 1, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_0_2() {
         let loc = Loc { x: 0, y: 2 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 6, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 6, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_0_8() {
         let loc = Loc { x: 0, y: 8 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 0, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_7_8() {
         let loc = Loc { x: 7, y: 8 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 0, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 0, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_7_1() {
         let loc = Loc { x: 7, y: 1 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 7, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 7, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_8_1() {
         let loc = Loc { x: 8, y: 1 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 1 }, indices: Indices { row: 7, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 1, y: 1 };
+        let indices = Indices { row: 7, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_8_9() {
         let loc = Loc { x: 8, y: 9 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 7, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 1, y: 2 };
+        let indices = Indices { row: 7, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_15_16() {
         let loc = Loc { x: 15, y: 16 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 0, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: 1, y: 2 };
+        let indices = Indices { row: 0, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     // Lower Right Quadrant
@@ -187,24 +205,30 @@ mod tests {
     fn from_loc_it_returns_correct_for_0_0() {
         let loc = Loc { x: 0, y: 0 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 0 }, indices: Indices { row: 0, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 0, y: 0 };
+        let indices = Indices { row: 0, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_8_minus_8() {
         let loc = Loc { x: 8, y: -8 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 0, col: 0, width: 8 } });
+        let cl = ChunkLoc { x: 1, y: -1 };
+        let indices = Indices { row: 0, col: 0, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_it_returns_correct_for_15_minus_15() {
         let loc = Loc { x: 15, y: -15 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: -1 }, indices: Indices { row: 7, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: 1, y: -1 };
+        let indices = Indices { row: 7, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     // Upper Left Quadrant
@@ -213,8 +237,10 @@ mod tests {
     fn from_loc_it_returns_correct_for_minus_1_1() {
         let loc = Loc { x: -1, y: 1 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 1 }, indices: Indices { row: 7, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: -1, y: 1 };
+        let indices = Indices { row: 7, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     // Lower Left Quadrant
@@ -223,8 +249,10 @@ mod tests {
     fn from_loc_it_returns_correct_for_minus_1_0() {
         let loc = Loc { x: -1, y: 0 };
         let size = Size { width: 8, height: 8 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -1, y: 0 }, indices: Indices { row: 0, col: 7, width: 8 } });
+        let cl = ChunkLoc { x: -1, y: 0 };
+        let indices = Indices { row: 0, col: 7, width: 8 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     // 16x16
@@ -234,16 +262,20 @@ mod tests {
     fn from_loc_16_16_it_returns_correct_for_0_1() {
         let loc = Loc { x: 0, y: 1 };
         let size = Size { width: 16, height: 16 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 0, y: 1 }, indices: Indices { row: 15, col: 0, width: 16 } });
+        let cl = ChunkLoc { x: 0, y: 1 };
+        let indices = Indices { row: 15, col: 0, width: 16 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     #[test]
     fn from_loc_16_16_it_returns_correct_for_16_17() {
         let loc = Loc { x: 16, y: 17 };
         let size = Size { width: 16, height: 16 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: 1, y: 2 }, indices: Indices { row: 15, col: 0, width: 16 } });
+        let cl = ChunkLoc { x: 1, y: 2 };
+        let indices = Indices { row: 15, col: 0, width: 16 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 
     // Lower Left Quadrant
@@ -252,7 +284,9 @@ mod tests {
     fn from_loc_16_16_it_returns_correct_for_minus_17_minus_16() {
         let loc = Loc { x: -17, y: -16 };
         let size = Size { width: 16, height: 16 };
-        assert!(WorldCoord::from_loc(&size, &loc) ==
-                WorldCoord { size: size, chunk_loc: ChunkLoc { x: -2, y: -1 }, indices: Indices { row: 0, col: 15, width: 16 } });
+        let cl = ChunkLoc { x: -2, y: -1 };
+        let indices = Indices { row: 0, col: 15, width: 16 };
+        let wc = WorldCoord { size: size, chunk_loc: cl, indices: indices };
+        assert!(WorldCoord::from_loc(&size, &loc) == wc);
     }
 }

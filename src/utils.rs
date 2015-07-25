@@ -52,8 +52,11 @@ mod tests {
 
     #[test]
     fn it_returns_the_closest_location_in_array_some() {
-        assert!(get_closest(Loc { x: 0, y: 0 },
-            vec![&Loc { x: 5, y: 5 }, &Loc { x: 1, y: 1 }, &Loc { x: 3, y: -3 }]) == Some(Loc { x: 1, y: 1 }))
+        let l1 = Loc { x: 5, y: 5 };
+        let l2 = Loc { x: 1, y: 1 };
+        let l3 = Loc { x: 3, y: -3 };
+        let vec = vec![&l1, &l2, &l3];
+        assert!(get_closest(Loc { x: 0, y: 0 }, vec) == Some(Loc { x: 1, y: 1 }))
     }
 
     #[test]

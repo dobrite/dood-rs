@@ -120,9 +120,10 @@ pub trait Paths {
 
         while !frontier.is_empty() {
             let current = frontier.pop().unwrap();
-            if current.loc == goal { break }
+            if current.loc == goal { break; };
             for next in grid.neighbors(current.loc, &blocked).iter() {
-                let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1; // TODO implement costs for terrain
+                // TODO implement costs for terrain
+                let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1;
                 if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).unwrap() {
                     cost_so_far.insert(*next, new_cost);
                     frontier.push(State { cost: new_cost, loc: *next });

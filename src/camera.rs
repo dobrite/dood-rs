@@ -118,25 +118,29 @@ mod tests {
     #[test]
     fn pan_up() {
         let screen_size = ScreenSize { width: 64.0, height: 64.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Up).get_loc() == Loc { x: 0, y: 1 });
+        let mut camera = Camera::new(screen_size, Loc { x: 0, y: 0 }, 16);
+        assert!(camera.pan(Dir::Up).get_loc() == Loc { x: 0, y: 1 });
     }
 
     #[test]
     fn pan_down() {
         let screen_size = ScreenSize { width: 64.0, height: 64.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Down).get_loc() == Loc { x: 0, y: -1 });
+        let mut camera = Camera::new(screen_size, Loc { x: 0, y: 0 }, 16);
+        assert!(camera.pan(Dir::Down).get_loc() == Loc { x: 0, y: -1 });
     }
 
     #[test]
     fn pan_right() {
         let screen_size = ScreenSize { width: 64.0, height: 64.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Right).get_loc() == Loc { x: 1, y: 0 });
+        let mut camera = Camera::new(screen_size, Loc { x: 0, y: 0 }, 16);
+        assert!(camera.pan(Dir::Right).get_loc() == Loc { x: 1, y: 0 });
     }
 
     #[test]
     fn pan_left() {
         let screen_size = ScreenSize { width: 64.0, height: 64.0 };
-        assert!(Camera::new(screen_size, Loc { x: 0, y: 0 }, 16).pan(Dir::Left).get_loc() == Loc { x: -1, y: 0 });
+        let mut camera = Camera::new(screen_size, Loc { x: 0, y: 0 }, 16);
+        assert!(camera.pan(Dir::Left).get_loc() == Loc { x: -1, y: 0 });
     }
 
 
