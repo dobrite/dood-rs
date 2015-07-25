@@ -1,3 +1,4 @@
+
 use std::cmp::Ordering;
 
 use dist::Dist;
@@ -25,10 +26,7 @@ pub fn get_closest(start: Loc, collection: Vec<&Loc>) -> Option<Loc> {
 #[cfg(test)]
 mod tests {
     use loc::Loc;
-    use super::{
-        distance,
-        get_closest,
-    };
+    use super::{distance, get_closest};
 
     #[test]
     fn it_returns_distance_for_zero_zero() {

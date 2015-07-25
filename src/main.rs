@@ -49,10 +49,7 @@ mod world_coord;
 
 use std::io::Cursor;
 
-use piston_window::{
-    PistonWindow,
-    WindowSettings,
-};
+use piston_window::{PistonWindow, WindowSettings};
 
 use fps_counter::FPSCounter;
 use camera_controllers::model_view_projection;
@@ -62,10 +59,7 @@ use gfx::render::mesh::ToIndexSlice;
 use gfx::extra::factory::FactoryExt;
 use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
-use gfx_texture::{
-    Texture,
-    TextureSettings,
-};
+use gfx_texture::{Texture, TextureSettings};
 
 use loc::Loc;
 use size::Size;
@@ -82,16 +76,9 @@ use world_coord::WorldCoord;
 use cascadecs::entity::Entity;
 use cascadecs::components::Components;
 
-use piston_window::{
-    EventLoop,
-    MouseCursorEvent,
-    MouseRelativeEvent,
-    MouseScrollEvent,
-    PressEvent,
-    ReleaseEvent,
-    TextEvent,
-    UpdateEvent,
-};
+use piston_window::{EventLoop, MouseCursorEvent, MouseRelativeEvent,
+                    MouseScrollEvent, PressEvent, ReleaseEvent, TextEvent,
+                    UpdateEvent};
 
 gfx_parameters!(Params {
     mvp@ mvp: [[f32; 4]; 4],
@@ -99,10 +86,7 @@ gfx_parameters!(Params {
 });
 
 fn main() {
-    let screen_size = ScreenSize {
-        width: 1536.0,  // 96
-        height: 1024.0, // 64
-    };
+    let screen_size = ScreenSize { width: 1536.0 /* 96 */, height: 1024.0 /* 64 */ };
 
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
@@ -114,11 +98,13 @@ fn main() {
     let program = {
         let vertex = gfx::ShaderSource {
             glsl_140: Some(shaders::VERTEX),
-            .. gfx::ShaderSource::empty()
+            // .
+            ..gfx::ShaderSource::empty()
         };
         let fragment = gfx::ShaderSource {
             glsl_140: Some(shaders::FRAGMENT),
-            .. gfx::ShaderSource::empty()
+            // .
+            ..gfx::ShaderSource::empty()
         };
         factory.link_program_source(vertex, fragment).unwrap()
     };
@@ -126,9 +112,10 @@ fn main() {
     let cursor = Cursor::new(&include_bytes!("../assets/tileset.png")[..]);
     let image = image::load(cursor, image::PNG).unwrap();
     let texture_settings = TextureSettings::new().convert_gamma(true);
-    let texture = Texture::from_image(factory, &image.to_rgba(), &texture_settings).unwrap().handle();
-    let sampler_info = gfx::tex::SamplerInfo::new(
-        gfx::tex::FilterMethod::Scale, gfx::tex::WrapMode::Clamp);
+    let texture = Texture::from_image(
+        factory, &image.to_rgba(), &texture_settings).unwrap().handle();
+    let sampler_info = gfx::tex::SamplerInfo::new(gfx::tex::FilterMethod::Scale,
+                                                  gfx::tex::WrapMode::Clamp);
     let sampler = factory.create_sampler(sampler_info);
 
     let mat4_id = [

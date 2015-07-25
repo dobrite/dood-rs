@@ -1,17 +1,9 @@
-use pixset::{
-    Pix,
-    Pixset,
-};
 
-use paths::{
-    Path,
-    Paths,
-};
+use pixset::{Pix, Pixset};
 
-use renderable::{
-    Vertex,
-    Renderable,
-};
+use paths::{Path, Paths};
+
+use renderable::{Vertex, Renderable};
 
 use loc::Loc;
 use has_loc::HasLoc;
@@ -55,7 +47,8 @@ impl Updatable for Dood {
         //self.hunger -= 1.0;
 
         //if self.path.is_empty() && self.hunger < 50.0 {
-        //    if let Some(food_loc) = get_closest(self.loc, world.foods.keys().collect::<Vec<_>>()) {
+        //    if let Some(food_loc) = get_closest(
+        //            self.loc, world.foods.keys().collect::<Vec<_>>()) {
         //        if food_loc == self.loc {
         //            if let Some(food) = world.foods.get(&food_loc) {
         //                self.hunger += food.borrow_mut().eat(20.0);

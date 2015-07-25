@@ -1,12 +1,7 @@
-use pixset::{
-    Pix,
-    Pixset,
-};
 
-use renderable::{
-    Vertex,
-    Renderable,
-};
+use pixset::{Pix, Pixset};
+
+use renderable::{Vertex, Renderable};
 
 use loc::Loc;
 use updatable::Updatable;
@@ -22,17 +17,13 @@ pub struct Wall {
 
 impl Wall {
     pub fn new(loc: Loc, square_size: i32) -> Wall {
-        Wall {
-            loc: loc,
-            scale: square_size as f32,
-            color: [1.0; 3],
-            pix: Pix::Wall,
-        }
+        Wall { loc: loc, scale: square_size as f32, color: [1.0; 3], pix: Pix::Wall }
     }
 }
 
 impl Updatable for Wall {
-    fn update(&mut self, world: &World) {}
+    fn update(&mut self, world: &World) {
+    }
 }
 
 impl Renderable for Wall {

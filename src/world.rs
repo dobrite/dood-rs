@@ -1,9 +1,7 @@
+
 use std::cell::RefCell;
 use std::collections::HashMap;
-use std::rc::{
-    Rc,
-    Weak,
-};
+use std::rc::{Rc, Weak};
 
 use cascadecs::entity::Entity;
 use cascadecs::components::Components;
@@ -32,10 +30,7 @@ pub struct World {
 impl World {
     pub fn new(chunk_size: Size) -> World {
         let mut chunks = HashMap::new();
-        let mut world = World {
-            chunk_size:  chunk_size,
-            chunks: chunks,
-        };
+        let mut world = World { chunk_size: chunk_size, chunks: chunks };
 
         for x in 0..24 {
             for y in 0..24 {

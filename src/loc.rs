@@ -1,7 +1,5 @@
-use std::ops::{
-    Add,
-    Sub,
-};
+
+use std::ops::{Add, Sub};
 
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Loc {

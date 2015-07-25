@@ -1,3 +1,4 @@
+
 use std::rc::Rc;
 use std::cell::RefCell;
 use std::collections::HashMap;
@@ -30,11 +31,7 @@ impl Chunk {
             }
         }
 
-        Chunk {
-            size: size,
-            terrain: terrain,
-            entities: vec![],
-        }
+        Chunk { size: size, terrain: terrain, entities: vec![] }
     }
 
     pub fn insert_entity(&mut self, entity: Entity) {

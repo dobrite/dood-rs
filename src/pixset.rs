@@ -1,3 +1,4 @@
+
 use std::collections::HashMap;
 
 pub type TexCoords = [[f32; 2]; 4];
@@ -60,10 +61,7 @@ impl Pixset {
         tiles.insert(Pix::SemiColon,  get_tex_coords(total_tiles, vec![0, 0]));
         tiles.insert(Pix::Empty,      get_tex_coords(total_tiles, vec![1, 0]));
 
-        Pixset {
-            tiles: tiles,
-            total_tiles: total_tiles,
-        }
+        Pixset { tiles: tiles, total_tiles: total_tiles }
     }
 
     pub fn get(&self, pix: &Pix) -> [[f32; 2]; 4] {

@@ -1,3 +1,4 @@
+
 use dir::Dir;
 use loc::Loc;
 use size::Size;
@@ -18,9 +19,9 @@ impl Camera {
             screen_size: screen_size,
             loc: loc,
             dim: Size {
-                width:  (screen_size.width  as i32 / square_size),
+                width: (screen_size.width  as i32 / square_size),
                 height: (screen_size.height as i32 / square_size),
-            }
+            },
         }
     }
 
@@ -45,7 +46,7 @@ impl Camera {
         let x_offset =  (self.loc.x      * self.square_size()) as f32;
         let y_offset = ((self.loc.y + 1) * self.square_size()) as f32;
 
-        let x_o = -(self.screen_size.width  / 2.0) - x_offset;
+        let x_o = -(self.screen_size.width / 2.0) - x_offset;
         let y_o =  (self.screen_size.height / 2.0) - y_offset;
 
         [
@@ -72,24 +73,13 @@ impl Camera {
         let x = window_loc.x as f32 / self.square_size() as f32;
         let y = window_loc.y as f32 / self.square_size() as f32;
 
-        Loc {
-            x:   x as i32 + self.loc.x,
-            y: -(y as i32 - self.loc.y),
-        }
+        Loc { x: x as i32 + self.loc.x, y: -(y as i32 - self.loc.y) }
     }
 
     // TODO extract to a trait?
     pub fn to_loc_box(&self) -> (Loc, Loc) {
-        (
-            Loc {
-                x: self.loc.x,
-                y: self.loc.y,
-            },
-            Loc {
-                x: self.loc.x + self.dim.width - 1,
-                y: self.loc.y - self.dim.height + 1,
-            }
-        )
+        (Loc { x: self.loc.x, y: self.loc.y },
+         Loc { x: self.loc.x + self.dim.width - 1, y: self.loc.y - self.dim.height + 1 })
     }
 }
 
@@ -211,13 +201,15 @@ mod tests {
     }
 
     #[test]
-    fn it_returns_x_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
+    fn it_returns_x_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six
+        () {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
         assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }, 16).as_mat()[3][0] == -112.0);
     }
 
     #[test]
-    fn it_returns_y_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six() {
+    fn it_returns_y_for_loc_minus_one_minus_one_square_size_sixteen_and_two_fifty_six
+        () {
         let screen_size = ScreenSize { width: 256.0, height: 256.0 };
         assert!(Camera::new(screen_size, Loc { x: -1, y: -1 }, 16).as_mat()[3][1] == 128.0);
     }

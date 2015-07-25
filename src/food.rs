@@ -1,12 +1,7 @@
-use pixset::{
-    Pix,
-    Pixset,
-};
 
-use renderable::{
-    Vertex,
-    Renderable,
-};
+use pixset::{Pix, Pixset};
+
+use renderable::{Vertex, Renderable};
 
 use loc::Loc;
 use updatable::Updatable;
@@ -33,7 +28,11 @@ impl Food {
     }
 
     pub fn eat(&mut self, usage: f32) -> f32 {
-        let ate = if self.noms - usage <= 0.0 { self.noms } else { usage };
+        let ate = if self.noms - usage <= 0.0 {
+            self.noms
+        } else {
+            usage
+        };
         self.noms -= usage;
         ate
     }

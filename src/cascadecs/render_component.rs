@@ -1,3 +1,4 @@
+
 use pixset::Pix;
 
 pub struct RenderComponent {
@@ -7,9 +8,6 @@ pub struct RenderComponent {
 
 impl RenderComponent {
     pub fn new(pix: Pix, color: [f32; 3]) -> RenderComponent {
-        RenderComponent {
-            pix: pix,
-            color: color,
-        }
+        RenderComponent { pix: pix, color: color }
     }
 }

@@ -1,7 +1,5 @@
-use std::collections::{
-    HashMap,
-    BinaryHeap,
-};
+
+use std::collections::{HashMap, BinaryHeap};
 
 use loc::Loc;
 use grid::Grid;
@@ -120,7 +118,9 @@ pub trait Paths {
 
         while !frontier.is_empty() {
             let current = frontier.pop().unwrap();
-            if current.loc == goal { break; };
+            if current.loc == goal {
+                break;
+            };
             for next in grid.neighbors(current.loc, &blocked).iter() {
                 // TODO implement costs for terrain
                 let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1;

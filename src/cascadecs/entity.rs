@@ -1,3 +1,4 @@
+
 extern crate snowflake;
 
 #[derive(Clone, Copy, Eq, Hash, PartialEq)]

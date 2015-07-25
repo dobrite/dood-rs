@@ -31,15 +31,9 @@ use std::cmp;
 use std::fmt;
 use std::rc::Weak;
 
-use pixset::{
-    Pix,
-    Pixset,
-};
+use pixset::{Pix, Pixset};
 
-use renderable::{
-    Renderable,
-    Vertex,
-};
+use renderable::{Renderable, Vertex};
 
 use updatable::Updatable;
 use has_loc::HasLoc;
@@ -48,13 +42,13 @@ use world::World;
 // TODO maybe one day
 // http://stackoverflow.com/a/29531983
 pub struct Fov {
-    entity:      Weak<RefCell<HasLoc>>,
+    entity: Weak<RefCell<HasLoc>>,
     transparent: Vec<Vec<bool>>,
-    in_fov:      Vec<Vec<bool>>,
+    in_fov: Vec<Vec<bool>>,
     start_angle: Vec<f64>,
-    end_angle:   Vec<f64>,
-    width:       i32,
-    height:      i32,
+    end_angle: Vec<f64>,
+    width: i32,
+    height: i32,
 }
 
 impl fmt::Debug for Fov {
@@ -143,7 +137,13 @@ impl Fov {
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, -1);
     }
 
-    fn compute_quadrant_vertical(&mut self, x_pov: i32, y_pov: i32, max_radius: i32, light_walls: bool, dx: i32, dy: i32) {
+    fn compute_quadrant_vertical(&mut self,
+                                 x_pov: i32,
+                                 y_pov: i32,
+                                 max_radius: i32,
+                                 light_walls: bool,
+                                 dx: i32,
+                                 dy: i32) {
         let mut y = y_pov + dy;
         let mut done = false;
         let mut iteration = 1;
@@ -166,19 +166,23 @@ impl Fov {
                 let mut extended = false;
                 if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x, y - dy) && x - dx >= 0 && x - dx < self.width && !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x, y - dy) && x - dx >= 0 &&
+                       x - dx < self.width && !self.can_see(x - dx, y - dy) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
-                            if self.start_angle[idx] > end_slope || self.end_angle[idx] < start_slope {
+                            if self.start_angle[idx] > end_slope ||
+                               self.end_angle[idx] < start_slope {
                                 idx += 1;
                             } else {
                                 if self.is_transparent(x, y) {
-                                    if center_slope > self.start_angle[idx] && center_slope < self.end_angle[idx] {
+                                    if center_slope > self.start_angle[idx] &&
+                                       center_slope < self.end_angle[idx] {
                                         visible = false;
                                     }
                                 } else {
-                                    if start_slope >= self.start_angle[idx] && end_slope <= self.end_angle[idx] {
+                                    if start_slope >= self.start_angle[idx] &&
+                                       end_slope <= self.end_angle[idx] {
                                         visible = false;
                                     } else {
                                         self.start_angle[idx] = self.start_angle[idx].min(start_slope);
@@ -228,7 +232,13 @@ impl Fov {
         }
     }
 
-    fn compute_quadrant_horizontal(&mut self, x_pov: i32, y_pov: i32, max_radius: i32, light_walls: bool, dx: i32, dy: i32) {
+    fn compute_quadrant_horizontal(&mut self,
+                                   x_pov: i32,
+                                   y_pov: i32,
+                                   max_radius: i32,
+                                   light_walls: bool,
+                                   dx: i32,
+                                   dy: i32) {
         let mut x = x_pov + dx;
         let mut done = false;
         let mut iteration = 1;
@@ -249,21 +259,25 @@ impl Fov {
                 let end_slope = center_slope + half_slope;
                 let mut visible = true;
                 let mut extended = false;
-                if last_line_obstacle_count > 0 && ! self.is_in_fov(x, y) {
+                if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x - dx, y) && y - dy >= 0 && y - dy < self.height && !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x - dx, y) && y - dy >= 0 &&
+                       y - dy < self.height && !self.can_see(x - dx, y - dy) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
-                            if self.start_angle[idx] > end_slope || self.end_angle[idx] < start_slope {
+                            if self.start_angle[idx] > end_slope ||
+                               self.end_angle[idx] < start_slope {
                                 idx += 1;
                             } else {
                                 if self.is_transparent(x, y) {
-                                    if center_slope > self.start_angle[idx] && center_slope < self.end_angle[idx] {
+                                    if center_slope > self.start_angle[idx] &&
+                                       center_slope < self.end_angle[idx] {
                                         visible = false;
                                     }
                                 } else {
-                                    if start_slope >= self.start_angle[idx] && end_slope <= self.end_angle[idx] {
+                                    if start_slope >= self.start_angle[idx] &&
+                                       end_slope <= self.end_angle[idx] {
                                         visible = false;
                                     } else {
                                         self.start_angle[idx] = self.start_angle[idx].min(start_slope);
@@ -333,13 +347,21 @@ impl Renderable for Fov {
 
         for y in &self.transparent {
             for x in y {
-                if *x { print!(" ") } else { print!(".") }
+                if *x {
+                    print!(" ")
+                } else {
+                    print!(".")
+                }
             }
             print!("\n");
         }
         for y in &self.in_fov {
             for x in y {
-                if *x { print!(" ") } else { print!("X") }
+                if *x {
+                    print!(" ")
+                } else {
+                    print!("X")
+                }
             }
             print!("\n");
         }
@@ -407,45 +429,59 @@ mod tests {
 
     #[test]
     fn clear_fov_it_clears_fov() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         fov.clear_fov();
         assert!(fov.in_fov.iter().all(|ref row| row.iter().all(|&elem| !elem)));
     }
 
     #[test]
     fn get_width_it_gets_the_width() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         assert!(fov.get_width() == 2);
     }
 
     #[test]
     fn get_height_it_gets_the_height() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         assert!(fov.get_height() == 2);
     }
 
     #[test]
     fn is_transparent_it_gets_transparency_for_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn set_transparent_it_sets_transparency_for_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         fov.set_transparent(1, 1, true);
         assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn is_in_fov_it_returns_value_at_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         assert!(fov.is_in_fov(1, 1) == true);
     }
 
     #[test]
     fn can_see_it_returns_and_of_is_in_fov_and_is_transparent() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
+                               2,
+                               2);
         assert!(fov.can_see(1, 1) == true);
     }
 }

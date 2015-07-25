@@ -1,3 +1,4 @@
+
 use loc::Loc;
 
 pub struct PositionComponent {
@@ -6,8 +7,6 @@ pub struct PositionComponent {
 
 impl PositionComponent {
     pub fn new(loc: Loc) -> PositionComponent {
-        PositionComponent {
-            loc: loc,
-        }
+        PositionComponent { loc: loc }
     }
 }

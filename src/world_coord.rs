@@ -1,3 +1,4 @@
+
 use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
@@ -17,9 +18,7 @@ use indices::Indices;
 ///             |       |       |
 ///           - - - - - - - - - - -
 ///           -1,-1     |      1,-1
-
 // TODO make a WorldCoord Factory that knows size
-
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct WorldCoord {
     size: Size,
@@ -29,11 +28,7 @@ pub struct WorldCoord {
 
 impl WorldCoord {
     fn new(size: Size, chunk_loc: ChunkLoc, indices: Indices) -> WorldCoord {
-        WorldCoord {
-            size: size,
-            chunk_loc: chunk_loc,
-            indices: indices,
-        }
+        WorldCoord { size: size, chunk_loc: chunk_loc, indices: indices }
     }
 
     pub fn from_loc(size: &Size, loc: &Loc) -> WorldCoord {
@@ -42,7 +37,9 @@ impl WorldCoord {
         let row = modulo(size.height - loc.y, size.height);
         let col = modulo(loc.x, size.width);
         // TODO fix with factory
-        WorldCoord::new(*size, ChunkLoc { x: chunk_x, y: chunk_y }, Indices::new(row, col, size.width))
+        WorldCoord::new(*size,
+                        ChunkLoc { x: chunk_x, y: chunk_y },
+                        Indices::new(row, col, size.width))
     }
 
     pub fn from_chunk_loc(size: &Size, chunk_loc: &ChunkLoc) -> WorldCoord {
@@ -51,7 +48,7 @@ impl WorldCoord {
     }
 
     pub fn to_loc(&self, size: &Size) -> Loc {
-        let x = self.size.width  * self.chunk_loc.x + self.indices.col;
+        let x = self.size.width * self.chunk_loc.x + self.indices.col;
         let y = self.size.height * self.chunk_loc.y - self.indices.row;
         Loc { x: x, y: y }
     }

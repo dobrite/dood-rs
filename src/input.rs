@@ -1,12 +1,9 @@
+
 use loc::Loc;
 use window_loc::WindowLoc;
 use dir::Dir;
 
-use piston::input::{
-    Button,
-    Key,
-    MouseButton
-};
+use piston::input::{Button, Key, MouseButton};
 
 pub enum Output {
     CameraMove(Dir),
@@ -16,7 +13,7 @@ pub enum Output {
 }
 
 #[derive(Debug)]
-pub struct Input{
+pub struct Input {
     mouse_loc: WindowLoc,
     mouse_left: bool,
     mouse_right: bool,
@@ -24,11 +21,7 @@ pub struct Input{
 
 impl Input{
     pub fn new() -> Input {
-        Input {
-            mouse_loc: WindowLoc { x: 0.0, y: 0.0 },
-            mouse_left: false,
-            mouse_right: false,
-        }
+        Input { mouse_loc: WindowLoc { x: 0.0, y: 0.0 }, mouse_left: false, mouse_right: false }
     }
 
     pub fn press(&mut self, button: Button) -> Output {

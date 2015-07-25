@@ -1,16 +1,14 @@
+
 use loc::Loc;
 
 pub struct Grid {
     pub height: i32,
-    pub width:  i32,
+    pub width: i32,
 }
 
 impl Grid {
     pub fn new(width: i32, height: i32) -> Grid {
-        Grid {
-            height: height,
-            width:  width,
-        }
+        Grid { height: height, width: width }
     }
 
     pub fn in_bounds(&self, loc: &Loc) -> bool {

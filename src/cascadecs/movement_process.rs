@@ -1,3 +1,4 @@
+
 use std::collections::HashMap;
 
 use cascadecs::event::Event;
@@ -6,14 +7,12 @@ use cascadecs::process::Process;
 use cascadecs::position_component::PositionComponent;
 
 pub struct MovementProcess {
-    components: HashMap<Entity, PositionComponent>
+    components: HashMap<Entity, PositionComponent>,
 }
 
 impl MovementProcess {
     pub fn new() -> MovementProcess {
-        MovementProcess {
-            components: HashMap::new(),
-        }
+        MovementProcess { components: HashMap::new() }
     }
 }
 

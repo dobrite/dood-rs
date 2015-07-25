@@ -1,3 +1,4 @@
+
 #[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct ChunkLoc {
     pub x: i32,
