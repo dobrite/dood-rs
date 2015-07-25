@@ -1,26 +1,9 @@
 
-use std::cell::RefCell;
 use std::collections::HashMap;
-use std::rc::{Rc, Weak};
-
-use cascadecs::entity::Entity;
-use cascadecs::components::Components;
-
-use config;
 
 use chunk::Chunk;
 use chunk_loc::ChunkLoc;
-use food::Food;
-use fov::Fov;
-use has_loc::HasLoc;
-use loc::Loc;
-use loc_map::LocMap;
-use pixset::Pix;
-use renderable::Renderable;
 use size::Size;
-use updatable::Updatable;
-use wall::Wall;
-use world_coord::WorldCoord;
 
 pub struct World {
     chunk_size: Size,
@@ -29,8 +12,7 @@ pub struct World {
 
 impl World {
     pub fn new(chunk_size: Size) -> World {
-        let mut chunks = HashMap::new();
-        let mut world = World { chunk_size: chunk_size, chunks: chunks };
+        let mut world = World { chunk_size: chunk_size, chunks: HashMap::new() };
 
         for x in 0..24 {
             for y in 0..24 {
@@ -55,22 +37,22 @@ impl World {
         self.chunks.entry(*cl).or_insert_with(|| Chunk::new(chunk_size))
     }
 
-    pub fn spawn_wall(&mut self, loc: Loc) {
+    //pub fn spawn_wall(&mut self, loc: Loc) {
         //let wall = Rc::new(RefCell::new(Wall::new(loc)));
         //self.renderables.insert(loc, wall.clone() as Rc<RefCell<Renderable>>);
         //self.walls.insert(loc, wall.clone());
         //for fov in &self.fovs {
         //    fov.borrow_mut().set_transparent(loc.x, loc.y, false)
         //}
-    }
+    //}
 
-    pub fn update(&self) {
+    //pub fn update(&self) {
         //for (_, entity) in self.updatables.iter() {
         //    entity.borrow_mut().update(self);
         //}
-    }
+    //}
 
-    pub fn vacuum(&mut self) {
+    //pub fn vacuum(&mut self) {
         //let mut remove = vec![];
         //self.to_remove(&mut remove);
         //for loc in remove.iter() {
@@ -78,13 +60,13 @@ impl World {
         //    self.renderables.remove(loc);
         //    self.updatables.remove(loc);
         //}
-    }
+    //}
 
-    fn to_remove(&self, remove: &mut &[Loc]) {
+    //fn to_remove(&self, remove: &mut &[Loc]) {
         //for (loc, food) in self.foods.iter() {
         //    if food.borrow().get_noms() <= 0.0 {
         //        remove.push(*loc);
         //    }
         //}
-    }
+    //}
 }

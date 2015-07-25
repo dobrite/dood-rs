@@ -1,5 +1,4 @@
 
-use loc::Loc;
 use window_loc::WindowLoc;
 use dir::Dir;
 

@@ -8,7 +8,6 @@ use renderable::{Vertex, Renderable};
 use loc::Loc;
 use has_loc::HasLoc;
 use updatable::Updatable;
-use utils::get_closest;
 use world::World;
 
 #[derive(Debug)]

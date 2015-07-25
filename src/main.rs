@@ -11,7 +11,7 @@ extern crate piston_window;
 extern crate gfx_device_gl;
 extern crate gfx_texture;
 extern crate image;
-extern crate fps_counter;
+//extern crate fps_counter;
 extern crate camera_controllers;
 extern crate rand;
 
@@ -51,7 +51,7 @@ use std::io::Cursor;
 
 use piston_window::{PistonWindow, WindowSettings};
 
-use fps_counter::FPSCounter;
+//use fps_counter::FPSCounter;
 use camera_controllers::model_view_projection;
 use gfx::device::Factory;
 use gfx::extra::stream::Stream;
@@ -161,7 +161,7 @@ fn main() {
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
 
-    let mut fps = FPSCounter::new();
+    //let mut fps = FPSCounter::new();
 
     for e in window {
         e.draw_3d(|stream| {
@@ -176,8 +176,8 @@ fn main() {
         });
 
         e.update(|_| {
-            world.update();
-            world.vacuum();
+            //world.update();
+            //world.vacuum();
         });
 
         e.press(|button| {
@@ -197,8 +197,8 @@ fn main() {
                     // TODO do bounds checking
                     scratch.insert_into_entities(entity);
                 },
-                Output::SpawnWall(window_loc) => world.spawn_wall(camera.to_game_loc(window_loc)),
-                Output::CameraMove(dir)       => {
+                Output::SpawnWall(_) => {}, //world.spawn_wall(camera.to_game_loc(window_loc)),
+                Output::CameraMove(dir) => {
                     camera.pan(dir);
                     let camera_loc = camera.get_loc();
                     let camera_offset = camera_loc - scratch.get_loc();
@@ -208,7 +208,7 @@ fn main() {
                     if w.abs() == 16 || h.abs() == 16 {
                         let size = Size { width: 16, height: 16 };
                         let wc = WorldCoord::from_loc(&size, &camera_loc).get_chunk_loc();
-                        let loc = WorldCoord::from_chunk_loc(&size, &wc).to_loc(&size);
+                        let loc = WorldCoord::from_chunk_loc(&size, &wc).to_loc();
                         // TODO dont hardcode this
                         let scratch_dim = Loc { x: 48, y: -64 };
                         scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut world);

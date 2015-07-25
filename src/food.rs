@@ -43,7 +43,7 @@ impl Food {
 }
 
 impl Updatable for Food {
-    fn update(&mut self, world: &World) {
+    fn update(&mut self, _: &World) {
         self.noms -= 1.0;
     }
 }

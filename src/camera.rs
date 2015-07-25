@@ -4,7 +4,6 @@ use loc::Loc;
 use size::Size;
 use screen_size::ScreenSize;
 use window_loc::WindowLoc;
-use world_coord::WorldCoord;
 
 #[derive(Debug)]
 pub struct Camera {
@@ -63,7 +62,6 @@ impl Camera {
             Dir::Left  => self.loc.x -= 1,
             Dir::Up    => self.loc.y += 1,
             Dir::Down  => self.loc.y -= 1,
-            _ => {}
         }
 
         self

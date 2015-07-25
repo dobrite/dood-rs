@@ -11,7 +11,7 @@ impl Grid {
         Grid { height: height, width: width }
     }
 
-    pub fn in_bounds(&self, loc: &Loc) -> bool {
+    pub fn in_bounds(&self, _: &Loc) -> bool {
         // TODO fix
         //let (x, y) = *loc;
         //0 <= x && x < self.width && 0 <= y && y < self.height

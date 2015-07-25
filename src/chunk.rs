@@ -1,18 +1,9 @@
 
-use std::rc::Rc;
-use std::cell::RefCell;
-use std::collections::HashMap;
-
 use rand;
 
 use cascadecs::entity::Entity;
 
-use has_loc::HasLoc;
-use loc::Loc;
-use food::Food;
 use size::Size;
-use loc_map::LocMap;
-use renderable::Renderable;
 use terrain::Terrain;
 
 pub struct Chunk {

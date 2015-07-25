@@ -31,7 +31,7 @@ use std::cmp;
 use std::fmt;
 use std::rc::Weak;
 
-use pixset::{Pix, Pixset};
+use pixset::Pixset;
 
 use renderable::{Renderable, Vertex};
 
@@ -54,8 +54,8 @@ pub struct Fov {
 impl fmt::Debug for Fov {
     fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
         let rc_option = self.entity.upgrade();
-        let refCell   = rc_option.unwrap();
-        let ent       = refCell.borrow();
+        let ref_cell   = rc_option.unwrap();
+        let ent       = ref_cell.borrow();
         write!(f, "{:?}", ent.get_loc())
     }
 }
@@ -329,21 +329,21 @@ impl Fov {
 }
 
 impl Updatable for Fov {
-    fn update(&mut self, world: &World) {
+    fn update(&mut self, _: &World) {
         let rc_option = self.entity.upgrade();
-        let refCell   = rc_option.unwrap();
-        let ent       = refCell.borrow();
+        let ref_cell  = rc_option.unwrap();
+        let ent       = ref_cell.borrow();
         let loc       = ent.get_loc();
         self.compute_fov(loc.x, loc.y, 10, false);
     }
 }
 
 impl Renderable for Fov {
-    fn render(&self, tiles: &Pixset) -> Vec<Vertex> {
-        let rc_option = self.entity.upgrade();
-        let refCell   = rc_option.unwrap();
-        let ent       = refCell.borrow();
-        let loc       = ent.get_loc();
+    fn render(&self, _: &Pixset) -> Vec<Vertex> {
+        //let rc_option = self.entity.upgrade();
+        //let ref_cell  = rc_option.unwrap();
+        //let ent       = ref_cell.borrow();
+        //let loc       = ent.get_loc();
 
         for y in &self.transparent {
             for x in y {
@@ -365,40 +365,6 @@ impl Renderable for Fov {
             }
             print!("\n");
         }
-        //vec![
-        //    // bottom left
-        //    Vertex {
-        //        vertex_position: [-0.5, -0.5],
-        //        tex_coords: tiles.get(Pix::Empty)[0],
-        //        loc: [x, y],
-        //        scale: self.scale,
-        //        color: self.color
-        //    },
-        //    // bottom right
-        //    Vertex {
-        //        vertex_position: [0.5, -0.5],
-        //        tex_coords: tiles.get(Pix::Empty)[1],
-        //        loc: [x, y],
-        //        scale: self.scale,
-        //        color: self.color
-        //    },
-        //    // top right
-        //    Vertex {
-        //        vertex_position: [0.5, 0.5],
-        //        tex_coords: tiles.get(Pix::Empty)[2],
-        //        loc: [x, y],
-        //        scale: self.scale,
-        //        color: self.color
-        //    },
-        //    // top left
-        //    Vertex {
-        //        vertex_position: [-0.5, 0.5],
-        //        tex_coords: tiles.get(Pix::Empty)[3],
-        //        loc: [x, y],
-        //        scale: self.scale,
-        //        color: self.color
-        //    },
-        //]
 
         vec![]
     }

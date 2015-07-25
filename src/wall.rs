@@ -22,7 +22,7 @@ impl Wall {
 }
 
 impl Updatable for Wall {
-    fn update(&mut self, world: &World) {
+    fn update(&mut self, _: &World) {
     }
 }
 
