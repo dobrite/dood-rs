@@ -165,8 +165,8 @@ impl Scratch {
         let end_camera_row = (camera_dim.height * 2) as usize;
 
         for (camera_row, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
-            if camera_row % 2 == 1 { continue };
-            if camera_row == end_camera_row { break };
+            if camera_row % 2 == 1 { continue; };
+            if camera_row == end_camera_row { break; };
             let row = camera_row / 2;
             for (col, terrain) in row_terrain.iter().enumerate() {
                 let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE) as f32;
@@ -282,7 +282,7 @@ impl Scratch {
         for entity in self.entities.iter() {
             if let Some(&PositionComponent { loc: loc }) = components.get_position_component(*entity) {
                 // TODO maybe implement loc.contains(loc) and loc.outside(loc)
-                if loc.x < camera_loc.x || loc.x > camera_loc.x + camera_dim.width || loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height { continue };
+                if loc.x < camera_loc.x || loc.x > camera_loc.x + camera_dim.width || loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height { continue; };
                 if let Some(&RenderComponent { pix: ref pix, color: color }) = components.get_render_component(*entity) {
                     let x = (loc.x * config::SQUARE_SIZE) as f32;
                     let y = (loc.y * config::SQUARE_SIZE) as f32;
