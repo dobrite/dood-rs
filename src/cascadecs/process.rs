@@ -1,6 +1,7 @@
 
 use cascadecs::event::Event;
+use cascadecs::components::Components;
 
 pub trait Process {
-    fn process(&self) -> Vec<Event>;
+    fn process(&self, components: &Components) -> Vec<Event>;
 }

@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use cascadecs::event::Event;
 use cascadecs::entity::Entity;
 use cascadecs::process::Process;
+use cascadecs::components::Components;
 use cascadecs::hunger_component::HungerComponent;
 
 pub struct HungerProcess {
@@ -17,8 +18,9 @@ impl HungerProcess {
 }
 
 impl Process for HungerProcess {
-    fn process(&self) -> Vec<Event> {
-        println!("hungering!");
-        vec![]
+    fn process(&self, components: &Components) -> Vec<Event> {
+        components.hunger_components.iter().map(|(&entity, ref hunger)| {
+            Event::Hunger { entity: entity, minus_hunger: hunger.rate }
+        }).collect()
     }
 }

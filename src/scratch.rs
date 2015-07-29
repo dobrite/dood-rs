@@ -29,6 +29,8 @@ bitflags! {
     }
 }
 
+// better Matrix set-up
+// http://www.reddit.com/r/rust/comments/3exten/typechecked_matrix_operations_in_rust/ctk0pb4
 pub struct Scratch {
     loc: Loc,
     size: Size,

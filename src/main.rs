@@ -73,6 +73,7 @@ use world_coord::WorldCoord;
 
 use cascadecs::entity::Entity;
 use cascadecs::components::Components;
+use cascadecs::processes::Processes;
 
 use piston_window::{EventLoop, MouseCursorEvent, MouseRelativeEvent,
                     MouseScrollEvent, PressEvent, ReleaseEvent, TextEvent,
@@ -149,6 +150,7 @@ fn main() {
     let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
+    let processes = Processes::new();
     let camera_dim = camera.get_dim();
     let mut scratch = {
         let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
@@ -164,7 +166,7 @@ fn main() {
         let color = [1.0, 1.0, 1.0];
         components.new_render_component(entity, Pix::Dood, color);
         components.new_position_component(entity, loc);
-        components.new_hunger_component(entity, 100 as u16);
+        components.new_hunger_component(entity, 100 as u16, 1 as u8);
         chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
         // TODO do bounds checking
         scratch.insert_into_entities(entity);
@@ -174,6 +176,10 @@ fn main() {
     window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
+        e.update(|_| {
+            let delta = processes.update(&components);
+            components.apply(delta);
+        });
         e.draw_3d(|stream| {
             let (vertices, indices) = scratch.render(
                 camera.get_loc(), camera.get_dim(), &pixset, &components);
@@ -182,11 +188,6 @@ fn main() {
             uniforms.mvp = model_view_projection(mat4_id, camera.as_mat(), ortho_projection);
             stream.clear(clear_data);
             stream.draw(&(mesh, tri_list, &program, &uniforms, &state)).unwrap();
-        });
-
-        e.update(|_| {
-            // chunks.update();
-            // chunks.vacuum();
         });
 
         e.press(|button| {

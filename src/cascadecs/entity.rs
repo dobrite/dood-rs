@@ -1,7 +1,7 @@
 
 extern crate snowflake;
 
-#[derive(Clone, Copy, Eq, Hash, PartialEq)]
+#[derive(Clone, Copy, Debug, Eq, Hash, PartialEq)]
 pub struct Entity(snowflake::ProcessUniqueId);
 
 impl Entity {

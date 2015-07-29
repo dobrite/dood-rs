@@ -4,7 +4,10 @@ use std::collections::HashMap;
 use cascadecs::event::Event;
 use cascadecs::entity::Entity;
 use cascadecs::process::Process;
+use cascadecs::components::Components;
 use cascadecs::position_component::PositionComponent;
+
+use dir::Dir;
 
 pub struct MovementProcess {
     components: HashMap<Entity, PositionComponent>,
@@ -17,8 +20,9 @@ impl MovementProcess {
 }
 
 impl Process for MovementProcess {
-    fn process(&self) -> Vec<Event> {
-        println!("positioning!");
-        vec![]
+    fn process(&self, components: &Components) -> Vec<Event> {
+        components.position_components.iter().map(|(&entity, _)| {
+            Event::Movement { entity: entity, dir: Dir::Down }
+        }).collect()
     }
 }
