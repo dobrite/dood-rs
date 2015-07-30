@@ -21,6 +21,14 @@ impl DenormalizedHashMap {
         self.hm.insert(entity, pc)
     }
 
+    pub fn remove(&mut self, entity: &Entity) -> Option<PositionComponent> {
+        if let Some(pc) = self.hm.remove(entity) {
+            self.rhm.remove(&pc.loc);
+            return Some(pc)
+        }
+        None
+    }
+
     pub fn get(&self, entity: &Entity) -> Option<&PositionComponent> {
         self.hm.get(entity)
     }

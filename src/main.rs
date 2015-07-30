@@ -14,6 +14,7 @@ extern crate image;
 extern crate camera_controllers;
 extern crate rand;
 
+mod brain;
 mod camera;
 mod chunk;
 mod chunk_loc;
@@ -59,6 +60,7 @@ use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
 use gfx_texture::{Texture, TextureSettings};
 
+use brain::Brain;
 use loc::Loc;
 use size::Size;
 use camera::Camera;
@@ -164,6 +166,7 @@ fn main() {
         // TODO some sort of "blueprint"
         let entity = Entity::new();
         let color = [1.0, 1.0, 1.0];
+        components.new_brain_component(entity, Brain::Dood);
         components.new_render_component(entity, Pix::Dood, color);
         components.new_position_component(entity, loc);
         components.new_hunger_component(entity, 100 as u16, 1 as u8);

@@ -1,12 +1,15 @@
 
 use std::collections::HashMap;
 
+use brain::Brain;
 use dir::Dir;
 use loc::Loc;
 use pixset::Pix;
 
 use cascadecs::event::Event;
 use cascadecs::entity::Entity;
+
+use cascadecs::brain_component::BrainComponent;
 use cascadecs::hunger_component::HungerComponent;
 use cascadecs::render_component::RenderComponent;
 use cascadecs::position_component::PositionComponent;
@@ -14,6 +17,7 @@ use cascadecs::denormalized_hash_map::DenormalizedHashMap;
 
 pub struct Components {
     // TODO fixme
+    pub brain_components: HashMap<Entity, BrainComponent>,
     pub hunger_components: HashMap<Entity, HungerComponent>,
     pub render_components: HashMap<Entity, RenderComponent>,
     pub position_components: DenormalizedHashMap,
@@ -22,6 +26,7 @@ pub struct Components {
 impl Components {
     pub fn new() -> Components {
         Components {
+            brain_components: HashMap::new(),
             hunger_components: HashMap::new(),
             render_components: HashMap::new(),
             position_components: DenormalizedHashMap::new(),
@@ -44,8 +49,13 @@ impl Components {
                         }
                     }
                 }
+                _ => {}
             }
         }
+    }
+
+    pub fn new_brain_component(&mut self, entity: Entity, brain: Brain) {
+        self.brain_components.insert(entity, BrainComponent::new(brain));
     }
 
     pub fn new_render_component(&mut self, entity: Entity, pix: Pix, color: [f32; 3]) {
