@@ -1,6 +1,7 @@
 
 
-use cascadecs::brain::Brain;
+use brain::Brain;
+
 use cascadecs::event::Event;
 use cascadecs::components::Components;
 

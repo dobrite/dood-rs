@@ -4,8 +4,8 @@ use std::collections::HashMap;
 use dir::Dir;
 use loc::Loc;
 use pixset::Pix;
+use brain::Brain;
 
-use cascadecs::brain::Brain;
 use cascadecs::event::Event;
 use cascadecs::entity::Entity;
 
