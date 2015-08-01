@@ -73,9 +73,8 @@ use cascadecs::entity::Entity;
 use cascadecs::components::Components;
 use cascadecs::processes::Processes;
 
-use piston_window::{EventLoop, MouseCursorEvent, MouseRelativeEvent,
-                    MouseScrollEvent, PressEvent, ReleaseEvent, TextEvent,
-                    UpdateEvent};
+use piston_window::{EventLoop, MouseCursorEvent, MouseRelativeEvent, MouseScrollEvent, PressEvent,
+                    ReleaseEvent, TextEvent, UpdateEvent};
 
 gfx_parameters!(Params {
     mvp@ mvp: [[f32; 4]; 4],
@@ -144,7 +143,10 @@ fn main() {
     let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut chunks = Chunks::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
+    let mut chunks = Chunks::new(Size {
+            width: config::CHUNK_WIDTH,
+            height: config::CHUNK_HEIGHT,
+        });
     let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);

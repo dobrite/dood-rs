@@ -166,8 +166,8 @@ impl Fov {
                 let mut extended = false;
                 if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x, y - dy) && x - dx >= 0 &&
-                       x - dx < self.width && !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x, y - dy) && x - dx >= 0 && x - dx < self.width &&
+                       !self.can_see(x - dx, y - dy) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
@@ -261,8 +261,8 @@ impl Fov {
                 let mut extended = false;
                 if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x - dx, y) && y - dy >= 0 &&
-                       y - dy < self.height && !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x - dx, y) && y - dy >= 0 && y - dy < self.height &&
+                       !self.can_see(x - dx, y - dy) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
