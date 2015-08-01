@@ -9,13 +9,11 @@ use cascadecs::position_component::PositionComponent;
 
 use dir::Dir;
 
-pub struct MovementProcess {
-    components: HashMap<Entity, PositionComponent>,
-}
+pub struct MovementProcess;
 
 impl MovementProcess {
-    pub fn new() -> MovementProcess {
-        MovementProcess { components: HashMap::new() }
+    pub fn new() -> Self {
+        MovementProcess
     }
 }
 

@@ -1,5 +1,8 @@
 
-use brain::Brain;
+
+use cascadecs::brain::Brain;
+use cascadecs::event::Event;
+use cascadecs::components::Components;
 
 pub struct BrainComponent {
     pub brain: Brain,
@@ -8,6 +11,10 @@ pub struct BrainComponent {
 impl BrainComponent {
     pub fn new(brain: Brain) -> Self {
         BrainComponent { brain: brain }
+    }
+
+    pub fn update(&self, components: &Components) -> Event {
+        self.brain.update(components)
     }
 }
 

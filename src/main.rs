@@ -14,7 +14,6 @@ extern crate image;
 extern crate camera_controllers;
 extern crate rand;
 
-mod brain;
 mod camera;
 mod chunk;
 mod chunk_loc;
@@ -57,7 +56,6 @@ use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
 use gfx_texture::{Texture, TextureSettings};
 
-use brain::Brain;
 use loc::Loc;
 use size::Size;
 use camera::Camera;
@@ -70,6 +68,7 @@ use scratch::Scratch;
 use screen_size::ScreenSize;
 use world_coord::WorldCoord;
 
+use cascadecs::brain::Brain;
 use cascadecs::entity::Entity;
 use cascadecs::components::Components;
 use cascadecs::processes::Processes;
