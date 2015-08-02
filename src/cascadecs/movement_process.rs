@@ -19,12 +19,13 @@ impl MovementProcess {
 
 impl Process for MovementProcess {
     fn process(&self, components: &Components) -> Vec<Event> {
-        components.position_components.iter().map(|(&entity, _)| {
-            if let Some(brain) = components.brain_components.get(&entity) {
-                Event::Movement { entity: entity, dir: Dir::Down }
-            } else {
-                Event::None
-            }
-        }).filter(|event| *event != Event::None).collect()
+        //components.position_components.iter().map(|(&entity, _)| {
+        //    if let Some(brain) = components.brain_components.get(&entity) {
+        //        Event::Movement { entity: entity, dir: Dir::Down }
+        //    } else {
+        //        Event::None
+        //    }
+        //}).filter(|event| *event != Event::None).collect()
+        vec![]
     }
 }

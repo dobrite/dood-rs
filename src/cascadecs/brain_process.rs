@@ -1,11 +1,9 @@
 
-use std::collections::HashMap;
+use std::sync::mpsc;
 
-use cascadecs::event::Event;
-use cascadecs::entity::Entity;
-use cascadecs::process::Process;
-use cascadecs::components::Components;
-use cascadecs::brain_component::BrainComponent;
+use cascadecs::event;
+use cascadecs::process;
+use cascadecs::components;
 
 use dir::Dir;
 
@@ -17,13 +15,11 @@ impl BrainProcess {
     }
 }
 
-impl Process for BrainProcess {
-    fn process(&self, components: &Components) -> Vec<Event> {
-        components
-            .brain_components
-            .iter()
-            .map(|(&entity, brain_component)| brain_component.update(components))
-            .filter(|event| *event != Event::None)
-            .collect()
+impl process::Process for BrainProcess {
+    fn process(&self, comps: &components::Components) -> Vec<event::Event> {
+        let (send, recv) = mpsc::channel();
+        comps.brain_components.iter().map(|(&ent, bc)| bc.update(ent, comps, send.clone())).collect::<Vec<_>>();
+        drop(send);
+        recv.iter().collect()
     }
 }

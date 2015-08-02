@@ -1,21 +1,23 @@
 
+use std::sync::mpsc;
 
-use brain::Brain;
+use cascadecs::entity;
 
-use cascadecs::event::Event;
-use cascadecs::components::Components;
+use brain;
+use cascadecs::{event, components};
 
+#[derive(Debug)]
 pub struct BrainComponent {
-    pub brain: Brain,
+    pub brain: brain::Brain,
 }
 
 impl BrainComponent {
-    pub fn new(brain: Brain) -> Self {
+    pub fn new(brain: brain::Brain) -> Self {
         BrainComponent { brain: brain }
     }
 
-    pub fn update(&self, components: &Components) -> Event {
-        self.brain.update(components)
+    pub fn update(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+        self.brain.update(entity, components, send)
     }
 }
 

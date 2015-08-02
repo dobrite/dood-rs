@@ -1,6 +1,9 @@
 
-use cascadecs::event::Event;
-use cascadecs::components::Components;
+use std::sync::mpsc;
+
+use cascadecs::{entity, event, components};
+
+use dir;
 
 #[derive(Clone, Debug)]
 pub enum Brain {
@@ -9,11 +12,18 @@ pub enum Brain {
 }
 
 impl Brain {
-    pub fn update(&self, components: &Components) -> Event {
+    pub fn update(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         match *self {
-            Brain::None => println!("nothing"),
-            Brain::Dood => println!("pathing!")
+            Brain::None => self.none(entity, send),
+            Brain::Dood => self.dood(entity, send),
         }
-        Event::None
+    }
+
+    fn none(&self, entity: entity::Entity, send: mpsc::Sender<event::Event>) {
+        send.send(event::Event::None);
+    }
+
+    fn dood(&self, entity: entity::Entity, send: mpsc::Sender<event::Event>) {
+        send.send(event::Event::Movement { entity: entity, dir: dir::Dir::Down });
     }
 }
