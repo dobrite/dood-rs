@@ -180,7 +180,7 @@ fn main() {
     window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
-        e.update(|_| {
+        e.update(|_dt| {
             let delta = processes.update(&components);
             components.apply(delta);
         });
