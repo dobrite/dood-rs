@@ -1,19 +1,32 @@
 
+use std::fmt;
 use std::sync::mpsc;
+
+use ai_behavior;
 
 use cascadecs::entity;
 
+use action;
 use brain;
 use cascadecs::{event, components};
 
-#[derive(Debug)]
 pub struct BrainComponent {
     pub brain: brain::Brain,
+    pub brain_state: ai_behavior::State<action::Action, ()>,
+}
+
+impl fmt::Debug for BrainComponent {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        write!(f, "{:?}", self.brain)
+    }
 }
 
 impl BrainComponent {
     pub fn new(brain: brain::Brain) -> Self {
-        BrainComponent { brain: brain }
+        BrainComponent {
+            brain: brain,
+            brain_state: brain::Brain::new_state(brain),
+        }
     }
 
     pub fn update(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {

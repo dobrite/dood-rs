@@ -6,14 +6,16 @@ extern crate bitflags;
 #[macro_use]
 extern crate gfx;
 
-extern crate piston;
-extern crate piston_window;
+extern crate ai_behavior;
+extern crate camera_controllers;
 extern crate gfx_device_gl;
 extern crate gfx_texture;
 extern crate image;
-extern crate camera_controllers;
+extern crate piston;
+extern crate piston_window;
 extern crate rand;
 
+mod action;
 mod brain;
 mod camera;
 mod chunk;
