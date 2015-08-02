@@ -5,7 +5,6 @@ use cascadecs::components::Components;
 
 use cascadecs::brain_process::BrainProcess;
 use cascadecs::hunger_process::HungerProcess;
-use cascadecs::movement_process::MovementProcess;
 
 pub struct Processes {
     processes: Vec<Box<Process>>,
@@ -16,7 +15,6 @@ impl Processes {
         let mut processes: Vec<Box<Process>> = vec![];
         processes.push(Box::new(BrainProcess::new()));
         processes.push(Box::new(HungerProcess::new()));
-        processes.push(Box::new(MovementProcess::new()));
         Processes { processes: processes }
     }
 

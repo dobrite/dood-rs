@@ -14,6 +14,5 @@ pub mod event;
 mod process;
 mod brain_process;
 mod hunger_process;
-mod movement_process;
 
 mod denormalized_hash_map;
