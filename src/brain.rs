@@ -27,15 +27,15 @@ impl Brain {
 
     pub fn update(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         match *self {
-            Brain::Dood => self.dood(entity, send),
+            Brain::Dood => self.dood(entity, components, send),
         }
     }
 
-    fn none(&self, entity: entity::Entity, send: mpsc::Sender<event::Event>) {
+    fn none(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         send.send(event::Event::None);
     }
 
-    fn dood(&self, entity: entity::Entity, send: mpsc::Sender<event::Event>) {
+    fn dood(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         send.send(event::Event::Movement { entity: entity, dir: dir::Dir::Down });
     }
 }
