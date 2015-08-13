@@ -1,6 +1,8 @@
 
 use std::sync::mpsc;
 
+use piston::input::GenericEvent;
+
 use cascadecs::event;
 use cascadecs::process;
 use cascadecs::components;
@@ -15,10 +17,12 @@ impl BrainProcess {
     }
 }
 
-impl process::Process for BrainProcess {
-    fn process(&self, comps: &components::Components) -> Vec<event::Event> {
+impl BrainProcess {
+    fn process_brain(&self, e: &GenericEvent, comps: &components::Components) -> Vec<event::Event> {
         let (send, recv) = mpsc::channel();
-        comps.brain_components.iter().map(|(&ent, bc)| bc.update(ent, comps, send.clone())).collect::<Vec<_>>();
+        comps.brain_components.iter().map(|(&ent, bc)|
+            bc.update(e, ent, comps, send.clone())
+        ).collect::<Vec<_>>();
         drop(send);
         recv.iter().collect()
     }

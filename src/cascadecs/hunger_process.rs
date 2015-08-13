@@ -1,4 +1,6 @@
 
+use piston::input::GenericEvent;
+
 use std::collections::HashMap;
 
 use cascadecs::event::Event;

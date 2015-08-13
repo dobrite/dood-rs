@@ -1,17 +1,22 @@
 
-use cascadecs::entity::Entity;
+use ai_behavior;
 
-use dir::Dir;
+use cascadecs::entity;
 
-#[derive(Debug, PartialEq)]
+use action;
+use dir;
+
 pub enum Event {
-    None,
     Hunger {
-        entity: Entity,
+        entity: entity::Entity,
         minus_hunger: u8,
     },
     Movement {
-        entity: Entity,
-        dir: Dir,
+        entity: entity::Entity,
+        dir: dir::Dir,
     },
+    UpdateBrainState {
+        entity: entity::Entity,
+        state: ai_behavior::State<action::Action, ()>,
+    }
 }

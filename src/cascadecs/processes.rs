@@ -1,4 +1,6 @@
 
+use piston::input::generic_event::GenericEvent;
+
 use cascadecs::event::Event;
 use cascadecs::process::Process;
 use cascadecs::components::Components;
@@ -8,14 +10,22 @@ use cascadecs::hunger_process::HungerProcess;
 
 pub struct Processes {
     processes: Vec<Box<Process>>,
+    brain: Box<BrainProcess>,
 }
 
 impl Processes {
     pub fn new() -> Processes {
         let mut processes: Vec<Box<Process>> = vec![];
-        processes.push(Box::new(BrainProcess::new()));
         processes.push(Box::new(HungerProcess::new()));
-        Processes { processes: processes }
+        Processes {
+            processes: processes,
+            brain: Box::new(BrainProcess::new()),
+        }
+    }
+
+
+    pub fn update_brain<E: GenericEvent>(&self, e: &E, components: &Components) -> Vec<Event> {
+        self.brain.process_brain(e, components)
     }
 
     pub fn update(&self, components: &Components) -> Vec<Event> {

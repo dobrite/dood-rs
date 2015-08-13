@@ -180,10 +180,16 @@ fn main() {
     window.set_ups(config::UPDATES_PER_SECOND);
 
     for e in window {
-        e.update(|_dt| {
+        e.update(|dt| {
             let delta = processes.update(&components);
             components.apply(delta);
         });
+
+        {
+            let brain_delta = processes.update_brain(&e, &components);
+            components.apply(brain_delta);
+        }
+
         e.draw_3d(|stream| {
             let (vertices, indices) = scratch.render(
                 camera.get_loc(), camera.get_dim(), &pixset, &components);

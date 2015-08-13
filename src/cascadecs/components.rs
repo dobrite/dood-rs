@@ -40,16 +40,21 @@ impl Components {
                     if let Some(hc) = self.hunger_components.get_mut(&entity) {
                         hc.value -= minus_hunger as u16;
                     }
-                }
+                },
                 Event::Movement { entity, dir } => {
                     if let Some(pc) = self.position_components.get_mut(&entity) {
                         match dir {
                             Dir::Down => { pc.loc.y -= 1 },
+                            Dir::Up   => { pc.loc.y += 1 },
                             _ => {}
                         }
                     }
-                }
-                _ => {}
+                },
+                Event::UpdateBrainState { entity, state } => {
+                    if let Some(bc) = self.brain_components.get_mut(&entity) {
+                        bc.state = state
+                    }
+                },
             }
         }
     }

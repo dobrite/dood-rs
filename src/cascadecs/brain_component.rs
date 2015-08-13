@@ -1,18 +1,21 @@
 
+use piston::input;
+
 use std::fmt;
 use std::sync::mpsc;
 
 use ai_behavior;
 
 use cascadecs::entity;
+use cascadecs::{event, components};
 
 use action;
 use brain;
-use cascadecs::{event, components};
 
 pub struct BrainComponent {
+    // TODO rename to type or something
     pub brain: brain::Brain,
-    pub brain_state: ai_behavior::State<action::Action, ()>,
+    pub state: ai_behavior::State<action::Action, ()>,
 }
 
 impl fmt::Debug for BrainComponent {
@@ -25,12 +28,12 @@ impl BrainComponent {
     pub fn new(brain: brain::Brain) -> Self {
         BrainComponent {
             brain: brain,
-            brain_state: brain::Brain::new_state(brain),
+            state: brain::Brain::new_state(brain),
         }
     }
 
-    pub fn update(&self, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
-        self.brain.update(entity, components, send)
+    pub fn update(&self, e: &input::GenericEvent, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+        self.brain.update(e, entity, components, send)
     }
 }
 
