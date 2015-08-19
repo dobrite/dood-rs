@@ -44,9 +44,10 @@ impl Components {
                 Event::Movement { entity, dir } => {
                     if let Some(pc) = self.position_components.get_mut(&entity) {
                         match dir {
-                            Dir::Down => { pc.loc.y -= 1 },
-                            Dir::Up   => { pc.loc.y += 1 },
-                            _ => {}
+                            Dir::Down  => { pc.loc.y -= 1 },
+                            Dir::Up    => { pc.loc.y += 1 },
+                            Dir::Left  => { pc.loc.x -= 1 },
+                            Dir::Right => { pc.loc.x += 1 },
                         }
                     }
                 },
@@ -55,6 +56,7 @@ impl Components {
                         bc.state = state
                     }
                 },
+                _ => {}
             }
         }
     }

@@ -31,6 +31,9 @@ bitflags! {
 
 // better Matrix set-up
 // http://www.reddit.com/r/rust/comments/3exten/typechecked_matrix_operations_in_rust/ctk0pb4
+// apparently you can do [u8, ..N]
+// and associated consts:
+// https://www.reddit.com/r/rust/comments/1z3dnx/ints_in_generic_type_parameters/
 pub struct Scratch {
     loc: Loc,
     size: Size,

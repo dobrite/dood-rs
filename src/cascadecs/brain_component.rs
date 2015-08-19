@@ -32,7 +32,7 @@ impl BrainComponent {
         }
     }
 
-    pub fn update(&self, e: &input::GenericEvent, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+    pub fn update<E: input::GenericEvent>(&self, e: &E, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         self.brain.update(e, entity, components, send)
     }
 }

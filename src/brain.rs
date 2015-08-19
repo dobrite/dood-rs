@@ -1,10 +1,10 @@
 
-use piston::input;
+use piston::input::GenericEvent;
 
 use std::sync::mpsc;
 
 use ai_behavior;
-use ai_behavior::{Action, Fail, Sequence, Wait, WaitForever, While};
+use ai_behavior::{Action, If, Fail, Sequence, Wait, WaitForever, While};
 
 use cascadecs::{entity, event, components};
 
@@ -41,15 +41,15 @@ impl Brain {
     pub fn new_state(brain: Brain) -> ai_behavior::State<Action, ()> {
         match brain {
             Brain::Dood => {
-                let behavior = While(Box::new(WaitForever), vec![Sequence(vec![
-                    Action(Action::GoDown), Action(Action::ComeUp)
-                ])]);
-                ai_behavior::State::new(behavior)
+                // abtract travelTo(X), eat(X)?
+                let find_food = Sequence(vec![Action(Action::TravelToFood), Action(Action::EatFood)]);
+                let dood_behavior = If(Box::new(Action(Action::Content)), Box::new(Action(Action::Idle)), Box::new(find_food));
+                ai_behavior::State::new(While(Box::new(WaitForever), vec![dood_behavior]))
             }
         }
     }
 
-    pub fn update(&self, e: &input::GenericEvent, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+    pub fn update<E: GenericEvent>(&self, e: &E, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
         match *self {
             Brain::Dood => self.dood(e, entity, components, send),
         }
@@ -59,22 +59,46 @@ impl Brain {
         //send.send(event::Event::None);
     }
 
-    fn dood(&self, e: &input::GenericEvent, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+
+    fn dood<E: GenericEvent>(&self, e: &E, entity: entity::Entity, components: &components::Components, send: mpsc::Sender<event::Event>) {
+        use rand;
+        use rand::Rng;
+        use rand::distributions::{IndependentSample, Range};
+
         if let Some(bc) = components.brain_components.get(&entity) {
             let mut state = bc.state.clone(); // TODO dumb
-            //let e = Input::Focus(true); // TODO dumb
-            //let e = input::Event::Update(*dt);
-            //let upd = e.update(|args| Some(args.dt)).unwrap_or(None);
-            //println!("{:?}", upd);
             state.event(e, &mut |action_args| {
-                send.send(event::Event::Movement {
-                    entity: entity,
-                    dir: match *action_args.action {
-                        Action::GoDown => dir::Dir::Down,
-                        Action::ComeUp => dir::Dir::Up,
-                    }
-                });
-                (ai_behavior::Success, 1.0)
+                let mut result = (ai_behavior::Success, 0.0);
+                let event = match *action_args.action {
+                    Action::Idle => {
+                        match Range::new(0, 11).ind_sample(&mut rand::thread_rng()) {
+                            0 => event::Event::Movement { entity: entity, dir: dir::Dir::Up },
+                            1 => event::Event::Movement { entity: entity, dir: dir::Dir::Down },
+                            2 => event::Event::Movement { entity: entity, dir: dir::Dir::Left },
+                            3 => event::Event::Movement { entity: entity, dir: dir::Dir::Right },
+                            4...10 => event::Event::None,
+                            _ => unreachable!()
+                        }
+                    },
+                    Action::Content => {
+                        if let Some(hc) = components.hunger_components.get(&entity) {
+                            if hc.value < 80 {
+                                result = (ai_behavior::Failure, 0.0);
+                            }
+                        }
+                        event::Event::None
+                    },
+                    Action::TravelToFood => {
+                        println!("traveling");
+                        event::Event::None
+                    },
+                    Action::EatFood => {
+                        println!("eating");
+                        event::Event::None
+                    },
+                };
+                send.send(event);
+                result
             });
             send.send(event::Event::UpdateBrainState { entity: entity, state: state.clone() });
         }

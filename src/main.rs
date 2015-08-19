@@ -90,7 +90,7 @@ fn main() {
     let mut window: PistonWindow = WindowSettings::new(
         "Dood! gets the food!",
         [screen_size.width as u32, screen_size.height as u32]
-    ).exit_on_esc(true).into();
+    ).exit_on_esc(true).build().unwrap();
 
     let ref mut factory = window.factory.borrow().clone();
 
@@ -179,16 +179,15 @@ fn main() {
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
 
+    // maybe a less magic event loop?
+    // http://jadpole.github.io/arcaders/arcaders-1-3/
     for e in window {
         e.update(|dt| {
             let delta = processes.update(&components);
             components.apply(delta);
-        });
-
-        {
             let brain_delta = processes.update_brain(&e, &components);
             components.apply(brain_delta);
-        }
+        });
 
         e.draw_3d(|stream| {
             let (vertices, indices) = scratch.render(

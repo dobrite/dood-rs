@@ -18,7 +18,7 @@ impl BrainProcess {
 }
 
 impl BrainProcess {
-    fn process_brain(&self, e: &GenericEvent, comps: &components::Components) -> Vec<event::Event> {
+    pub fn process_brain<E: GenericEvent>(&self, e: &E, comps: &components::Components) -> Vec<event::Event> {
         let (send, recv) = mpsc::channel();
         comps.brain_components.iter().map(|(&ent, bc)|
             bc.update(e, ent, comps, send.clone())

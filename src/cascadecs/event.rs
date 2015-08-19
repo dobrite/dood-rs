@@ -7,6 +7,7 @@ use action;
 use dir;
 
 pub enum Event {
+    None,
     Hunger {
         entity: entity::Entity,
         minus_hunger: u8,
