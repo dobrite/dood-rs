@@ -30,7 +30,6 @@ mod grid;
 mod indices;
 mod input;
 mod loc;
-mod loc_map;
 mod path;
 mod pixset;
 mod scratch;
