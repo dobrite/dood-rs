@@ -20,6 +20,7 @@ use cascadecs::render_component::RenderComponent;
 use cascadecs::position_component::PositionComponent;
 use cascadecs::path_component::PathComponent;
 use cascadecs::food_component::FoodComponent;
+use cascadecs::fov_component::FovComponent;
 
 use cascadecs::denormalized_hash_map::DenormalizedHashMap;
 
@@ -30,6 +31,7 @@ pub struct Components {
     pub render_components: HashMap<Entity, RenderComponent>,
     pub path_components: HashMap<Entity, PathComponent>,
     pub food_components: HashMap<Entity, FoodComponent>,
+    pub fov_components: HashMap<Entity, FovComponent>,
     pub position_components: DenormalizedHashMap,
 }
 
@@ -41,6 +43,7 @@ impl Components {
             render_components: HashMap::new(),
             path_components: HashMap::new(),
             food_components: HashMap::new(),
+            fov_components: HashMap::new(),
             position_components: DenormalizedHashMap::new(),
         }
     }
@@ -164,6 +167,10 @@ impl Components {
 
     pub fn new_path_component(&mut self, entity: Entity, path: Path, target: PathTarget) {
         self.path_components.insert(entity, PathComponent::new(path, target));
+    }
+
+    pub fn new_fov_component(&mut self, entity: Entity, range: i32) {
+        self.fov_components.insert(entity, FovComponent::new(range));
     }
 
     pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {

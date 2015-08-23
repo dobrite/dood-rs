@@ -10,6 +10,7 @@ pub mod hunger_component;
 pub mod path_component;
 pub mod position_component;
 pub mod render_component;
+pub mod fov_component;
 
 pub mod event;
 
