@@ -1,12 +1,12 @@
 dood! gets the food!
 
 1. Install Cargo
-2. Install Nightlies (`rustc 1.3.0-nightly (912ab64a0 2015-06-25)` works)
+2. Install Nightlies
 3. `cargo run`
 4. Give dat dood some food!
 
 - left mouse click to drop food
-- right mouse click to create wall
 - arrow keys to pan camera
 
-based on [conway_rs](https://github.com/camjackson/conway_rs)
+initially based on [conway_rs](https://github.com/camjackson/conway_rs),
+thanks!
