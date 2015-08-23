@@ -41,7 +41,6 @@ mod shaders;
 mod size;
 mod state;
 mod terrain;
-mod updatable;
 mod utils;
 mod window_loc;
 mod chunks;

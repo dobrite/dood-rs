@@ -35,14 +35,12 @@ use pixset::Pixset;
 
 use renderable::{Renderable, Vertex};
 
-use updatable::Updatable;
 use has_loc::HasLoc;
 use chunks::Chunks;
 
 // TODO maybe one day
-// http://stackoverflow.com/a/29531983
+// http://stackoverflow.com/a/29531983 (accept mix of vecs and slices)
 pub struct Fov {
-    entity: Weak<RefCell<HasLoc>>,
     transparent: Vec<Vec<bool>>,
     in_fov: Vec<Vec<bool>>,
     start_angle: Vec<f64>,
@@ -51,18 +49,18 @@ pub struct Fov {
     height: i32,
 }
 
-impl fmt::Debug for Fov {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        let rc_option = self.entity.upgrade();
-        let ref_cell   = rc_option.unwrap();
-        let ent       = ref_cell.borrow();
-        write!(f, "{:?}", ent.get_loc())
-    }
-}
+//impl fmt::Debug for Fov {
+//    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+//        let rc_option = self.entity.upgrade();
+//        let ref_cell   = rc_option.unwrap();
+//        let ent       = ref_cell.borrow();
+//        write!(f, "{:?}", ent.get_loc())
+//    }
+//}
 
 
 impl Fov {
-    pub fn new(entity: Weak<RefCell<HasLoc>>, width: i32, height: i32) -> Fov {
+    pub fn new(width: i32, height: i32) -> Fov {
         // TODO use vec![1; 3];
         // variables works i.e. vec![1; width];
 
@@ -82,7 +80,6 @@ impl Fov {
         end_angle.resize(1000, 1.0); // TODO fix
 
         Fov {
-            entity: entity,
             transparent: transparent_x.clone(),
             in_fov: transparent_x.clone(),
             start_angle: start_angle,
@@ -328,16 +325,6 @@ impl Fov {
     }
 }
 
-impl Updatable for Fov {
-    fn update(&mut self, _: &Chunks) {
-        let rc_option = self.entity.upgrade();
-        let ref_cell  = rc_option.unwrap();
-        let ent       = ref_cell.borrow();
-        let loc       = ent.get_loc();
-        self.compute_fov(loc.x, loc.y, 10, false);
-    }
-}
-
 impl Renderable for Fov {
     fn render(&self, _: &Pixset) -> Vec<Vertex> {
         //let rc_option = self.entity.upgrade();
@@ -395,59 +382,45 @@ mod tests {
 
     #[test]
     fn clear_fov_it_clears_fov() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         fov.clear_fov();
         assert!(fov.in_fov.iter().all(|ref row| row.iter().all(|&elem| !elem)));
     }
 
     #[test]
     fn get_width_it_gets_the_width() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.get_width() == 2);
     }
 
     #[test]
     fn get_height_it_gets_the_height() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.get_height() == 2);
     }
 
     #[test]
     fn is_transparent_it_gets_transparency_for_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn set_transparent_it_sets_transparency_for_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         fov.set_transparent(1, 1, true);
         assert!(fov.is_transparent(1, 1) == true);
     }
 
     #[test]
     fn is_in_fov_it_returns_value_at_indices() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.is_in_fov(1, 1) == true);
     }
 
     #[test]
     fn can_see_it_returns_and_of_is_in_fov_and_is_transparent() {
-        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(),
-                               2,
-                               2);
+        let mut fov = Fov::new((Rc::new(RefCell::new(Dummy)) as Rc<RefCell<HasLoc>>).downgrade(), 2, 2);
         assert!(fov.can_see(1, 1) == true);
     }
 }
