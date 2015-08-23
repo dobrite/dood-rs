@@ -27,7 +27,6 @@ mod cascadecs;
 mod food;
 mod fov;
 mod grid;
-mod has_loc;
 mod indices;
 mod input;
 mod loc;
