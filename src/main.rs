@@ -24,6 +24,7 @@ mod config;
 mod dir;
 mod dist;
 mod cascadecs;
+mod food;
 mod fov;
 mod grid;
 mod has_loc;
@@ -31,7 +32,7 @@ mod indices;
 mod input;
 mod loc;
 mod loc_map;
-mod paths;
+mod path;
 mod pixset;
 mod renderable;
 mod scratch;
@@ -63,6 +64,7 @@ use loc::Loc;
 use size::Size;
 use brain::Brain;
 use camera::Camera;
+use food::Food;
 use pixset::Pixset;
 use chunks::Chunks;
 use input::Input;
@@ -184,9 +186,10 @@ fn main() {
     for e in window {
         e.update(|dt| {
             let delta = processes.update(&components);
-            components.apply(delta);
+            components.apply(delta, &scratch);
+            // TODO can I unify this again?
             let brain_delta = processes.update_brain(&e, &components);
-            components.apply(brain_delta);
+            components.apply(brain_delta, &scratch);
         });
 
         e.draw_3d(|stream| {
@@ -209,6 +212,7 @@ fn main() {
                     let color = [0.2313725, 0.3254902, 0.1372549];
                     components.new_render_component(entity, Pix::Food, color);
                     components.new_position_component(entity, loc);
+                    components.new_food_component(entity, Food::Meat, 100.0);
                     chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
                     // TODO do bounds checking
                     scratch.insert_into_entities(entity);

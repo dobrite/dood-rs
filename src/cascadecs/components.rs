@@ -3,8 +3,13 @@ use std::collections::HashMap;
 
 use dir::Dir;
 use loc::Loc;
+use food::Food;
 use pixset::Pix;
 use brain::Brain;
+use scratch::Scratch;
+use path::{path, Path, PathTarget};
+
+use utils::get_closest;
 
 use cascadecs::event::Event;
 use cascadecs::entity::Entity;
@@ -13,6 +18,9 @@ use cascadecs::brain_component::BrainComponent;
 use cascadecs::hunger_component::HungerComponent;
 use cascadecs::render_component::RenderComponent;
 use cascadecs::position_component::PositionComponent;
+use cascadecs::path_component::PathComponent;
+use cascadecs::food_component::FoodComponent;
+
 use cascadecs::denormalized_hash_map::DenormalizedHashMap;
 
 pub struct Components {
@@ -20,6 +28,8 @@ pub struct Components {
     pub brain_components: HashMap<Entity, BrainComponent>,
     pub hunger_components: HashMap<Entity, HungerComponent>,
     pub render_components: HashMap<Entity, RenderComponent>,
+    pub path_components: HashMap<Entity, PathComponent>,
+    pub food_components: HashMap<Entity, FoodComponent>,
     pub position_components: DenormalizedHashMap,
 }
 
@@ -29,11 +39,13 @@ impl Components {
             brain_components: HashMap::new(),
             hunger_components: HashMap::new(),
             render_components: HashMap::new(),
+            path_components: HashMap::new(),
+            food_components: HashMap::new(),
             position_components: DenormalizedHashMap::new(),
         }
     }
 
-    pub fn apply(&mut self, events: Vec<Event>) {
+    pub fn apply(&mut self, mut events: Vec<Event>, scratch: &Scratch) {
         for event in events.into_iter() {
             match event {
                 Event::Hunger { entity, minus_hunger } => {
@@ -56,7 +68,76 @@ impl Components {
                         bc.state = state
                     }
                 },
-                _ => {}
+                Event::PathToFood { entity } => {
+                    let loc = match self.position_components.get(&entity) {
+                        None => return,
+                        Some(pc) => pc.loc
+                    };
+
+                    let mut hm = HashMap::new();
+
+                    for entity in self.food_components.keys() {
+                        hm.insert(self.position_components.get(&entity).unwrap().loc, *entity);
+                    }
+
+                    if let Some(goal) = get_closest(loc, hm.keys().collect::<Vec<_>>()) {
+                        let path = path(scratch.get_grid(), loc, goal);
+                        let target = *hm.get(&goal).unwrap();
+                        self.new_path_component(entity, path, PathTarget::Entity(target));
+                        self.brain_components.get_mut(&entity).unwrap().target = Some(target);
+                    }
+                },
+                Event::PopPath { entity } => {
+                    let loc_opt = {
+                        let mut pc = self.path_components.get_mut(&entity).unwrap();
+                        pc.path.pop()
+                    };
+
+                    if let Some(loc) = loc_opt {
+                        if let Some(pc) = self.position_components.get_mut(&entity) {
+                            pc.loc = loc;
+                        };
+                    } else {
+                        self.path_components.remove(&entity);
+                        return
+                    };
+                },
+                Event::EatFood { entity, target } => {
+                    let dood_loc = match self.position_components.get_mut(&entity) {
+                        None => return,
+                        Some(pc) => pc.loc,
+                    };
+
+                    let food_loc = match self.position_components.get_mut(&target) {
+                        None => return,
+                        Some(pc) => pc.loc,
+                    };
+
+                    assert_eq!(food_loc, dood_loc);
+
+                    let (done, ate) = match self.food_components.get_mut(&target) {
+                        None => return,
+                        Some(fc) => {
+                            let usage = fc.noms.min(20.0);
+                            fc.noms -= usage;
+                            (fc.noms == 0.0, usage)
+                        }
+                    };
+
+                    match self.hunger_components.get_mut(&entity) {
+                        None => return,
+                        Some(hc) => hc.value += ate as u16
+                    }
+
+                    if done {
+                        self.remove_entity(target);
+                        match self.brain_components.get_mut(&entity) {
+                            Some(bc) => bc.target = None,
+                            _ => unreachable!(),
+                        };
+                    };
+                },
+                Event::None => {},
             }
         }
     }
@@ -77,6 +158,14 @@ impl Components {
         self.hunger_components.insert(entity, HungerComponent::new(initial, rate));
     }
 
+    pub fn new_food_component(&mut self, entity: Entity, kind: Food, noms: f32) {
+        self.food_components.insert(entity, FoodComponent::new(kind, noms));
+    }
+
+    pub fn new_path_component(&mut self, entity: Entity, path: Path, target: PathTarget) {
+        self.path_components.insert(entity, PathComponent::new(path, target));
+    }
+
     pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {
         self.render_components.get(&entity)
     }
@@ -87,5 +176,14 @@ impl Components {
 
     pub fn get_hunger_component(&self, entity: Entity) -> Option<&HungerComponent> {
         self.hunger_components.get(&entity)
+    }
+
+    pub fn remove_entity(&mut self, entity: Entity) {
+        self.brain_components.remove(&entity);
+        self.hunger_components.remove(&entity);
+        self.render_components.remove(&entity);
+        self.path_components.remove(&entity);
+        self.food_components.remove(&entity);
+        self.position_components.remove(&entity);
     }
 }

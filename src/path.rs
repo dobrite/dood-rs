@@ -4,8 +4,70 @@ use std::collections::{HashMap, BinaryHeap};
 use loc::Loc;
 use grid::Grid;
 use state::State;
+use cascadecs::entity::Entity;
+
+pub enum PathTarget {
+    Entity(Entity),
+    Loc(Loc),
+    None,
+}
 
 pub type Path = Vec<Loc>;
+
+pub fn path(grid: &Grid, start: Loc, goal: Loc) -> Path {
+    let blocked = vec![]; // TODO do something with this
+
+    let mut frontier = BinaryHeap::new();
+    frontier.push(State { cost: 0, loc: start });
+    let mut came_from = HashMap::new();
+    let mut cost_so_far = HashMap::new();
+    came_from.insert(start, Loc { x: -1, y: -1 });
+    cost_so_far.insert(start, 0);
+
+    while !frontier.is_empty() {
+        let current = frontier.pop().unwrap();
+        if current.loc == goal {
+            break;
+        };
+        for next in grid.neighbors(current.loc, &blocked).iter() {
+            // TODO implement costs for terrain
+            let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1;
+            if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).unwrap() {
+                cost_so_far.insert(*next, new_cost);
+                frontier.push(State { cost: new_cost, loc: *next });
+                came_from.insert(*next, current.loc);
+            }
+        }
+    }
+
+    came_from.to_path(start, goal)
+}
+
+pub type PathContour = HashMap<Loc, Loc>;
+
+pub trait ToPath {
+    fn to_path(&self, from: Loc, to: Loc) -> Path;
+}
+
+impl ToPath for PathContour {
+    fn to_path(&self, start: Loc, goal: Loc) -> Path {
+        let mut current = goal;
+        let mut path = vec![current];
+
+        while current != start {
+            match self.get(&current) {
+                Some(next) => {
+                    path.push(*next);
+                    current = *next
+                }
+                None => {}
+            }
+        }
+
+        // TODO reverse?
+        path
+    }
+}
 
 //trait Mult<T> {
 //  fn mult(&self) -> i32;
@@ -104,60 +166,4 @@ pub type Path = Vec<Loc>;
 //
 //    return came_from.to_path(start, goal)
 //}
-
-pub trait Paths {
-    fn path(&self, grid: &Grid, start: Loc, goal: Loc) -> Path {
-        let blocked = vec![]; // TODO do something with this
-
-        let mut frontier = BinaryHeap::new();
-        frontier.push(State { cost: 0, loc: start });
-        let mut came_from = HashMap::new();
-        let mut cost_so_far = HashMap::new();
-        came_from.insert(start, Loc { x: -1, y: -1 });
-        cost_so_far.insert(start, 0);
-
-        while !frontier.is_empty() {
-            let current = frontier.pop().unwrap();
-            if current.loc == goal {
-                break;
-            };
-            for next in grid.neighbors(current.loc, &blocked).iter() {
-                // TODO implement costs for terrain
-                let new_cost: usize = cost_so_far.get(&current.loc).unwrap() + 1;
-                if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).unwrap() {
-                    cost_so_far.insert(*next, new_cost);
-                    frontier.push(State { cost: new_cost, loc: *next });
-                    came_from.insert(*next, current.loc);
-                }
-            }
-        }
-
-        came_from.to_path(start, goal)
-    }
-}
-
-pub type PathContour = HashMap<Loc, Loc>;
-
-pub trait PathContourTrait {
-    fn to_path(&self, from: Loc, to: Loc) -> Path;
-}
-
-impl PathContourTrait for PathContour {
-    fn to_path(&self, start: Loc, goal: Loc) -> Path {
-        let mut current = goal;
-        let mut path = vec![current];
-
-        while current != start {
-            match self.get(&current) {
-                Some(next) => {
-                    path.push(*next);
-                    current = *next
-                }
-                None => {}
-            }
-        }
-
-        // TODO reverse?
-        path
-    }
-}
+//

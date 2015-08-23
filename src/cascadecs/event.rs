@@ -1,23 +1,27 @@
 
 use ai_behavior;
 
-use cascadecs::entity;
+use cascadecs::entity::Entity;
+use cascadecs::components::Components;
 
-use action;
-use dir;
+use action::Action;
+use dir::Dir;
 
 pub enum Event {
     None,
     Hunger {
-        entity: entity::Entity,
+        entity: Entity,
         minus_hunger: u8,
     },
     Movement {
-        entity: entity::Entity,
-        dir: dir::Dir,
+        entity: Entity,
+        dir: Dir,
     },
     UpdateBrainState {
-        entity: entity::Entity,
-        state: ai_behavior::State<action::Action, ()>,
-    }
+        entity: Entity,
+        state: ai_behavior::State<Action, ()>,
+    },
+    PathToFood { entity: Entity },
+    PopPath { entity: Entity },
+    EatFood { entity: Entity, target: Entity },
 }

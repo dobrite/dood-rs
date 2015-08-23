@@ -9,6 +9,7 @@ use config;
 use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
+use grid::Grid;
 use indices::Indices;
 use terrain::Terrain;
 use renderable::Vertex;
@@ -37,6 +38,7 @@ bitflags! {
 pub struct Scratch {
     loc: Loc,
     size: Size,
+    grid: Grid,
     terrain: Vec<Terrain>,
     flags: Vec<Flags>,
     // vertices: Vec<Vertex>,
@@ -52,6 +54,7 @@ impl Scratch {
         Scratch {
             loc: loc,
             size: size,
+            grid: Grid::new(size),
             terrain: vec![Terrain::None; len],
             flags: vec![NONE; len],
             // vertices: vec![NONE; len * 4],
@@ -66,6 +69,10 @@ impl Scratch {
 
     pub fn get_size(&self) -> Size {
         self.size
+    }
+
+    pub fn get_grid(&self) -> &Grid {
+        &self.grid
     }
 
     pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {

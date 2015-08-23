@@ -3,6 +3,6 @@
 pub enum Action {
     Idle,
     Content,
-    TravelToFood,
+    PathToFood,
     EatFood,
 }
