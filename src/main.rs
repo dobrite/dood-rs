@@ -34,7 +34,6 @@ mod loc;
 mod loc_map;
 mod path;
 mod pixset;
-mod renderable;
 mod scratch;
 mod screen_size;
 mod shaders;
@@ -44,6 +43,7 @@ mod terrain;
 mod utils;
 mod window_loc;
 mod chunks;
+mod vertex;
 mod world_coord;
 
 use std::io::Cursor;

@@ -32,8 +32,7 @@ use std::fmt;
 use std::rc::Weak;
 
 use pixset::Pixset;
-
-use renderable::{Renderable, Vertex};
+use vertex::Vertex;
 
 use has_loc::HasLoc;
 use chunks::Chunks;
@@ -322,38 +321,6 @@ impl Fov {
                 done = true;
             }
         }
-    }
-}
-
-impl Renderable for Fov {
-    fn render(&self, _: &Pixset) -> Vec<Vertex> {
-        //let rc_option = self.entity.upgrade();
-        //let ref_cell  = rc_option.unwrap();
-        //let ent       = ref_cell.borrow();
-        //let loc       = ent.get_loc();
-
-        for y in &self.transparent {
-            for x in y {
-                if *x {
-                    print!(" ")
-                } else {
-                    print!(".")
-                }
-            }
-            print!("\n");
-        }
-        for y in &self.in_fov {
-            for x in y {
-                if *x {
-                    print!(" ")
-                } else {
-                    print!("X")
-                }
-            }
-            print!("\n");
-        }
-
-        vec![]
     }
 }
 

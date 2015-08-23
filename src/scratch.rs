@@ -12,7 +12,7 @@ use size::Size;
 use grid::Grid;
 use indices::Indices;
 use terrain::Terrain;
-use renderable::Vertex;
+use vertex::Vertex;
 use chunks::Chunks;
 use world_coord::WorldCoord;
 use pixset::{Pix, Pixset};
