@@ -185,45 +185,15 @@ impl Scratch {
         }
 
         for entity in self.entities.iter() {
-            if let Some(&PositionComponent { loc }) = components
-                .get_position_component(*entity) {
+            if let Some(&PositionComponent { loc }) = components.get_position_component(*entity) {
                 // TODO maybe implement loc.contains(loc) and loc.outside(loc)
                 if loc.x < camera_loc.x || loc.x > camera_loc.x + camera_dim.width ||
                    loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height {
                     continue;
                 };
-                if let Some(&RenderComponent { ref pix, color }) = components
-                    .get_render_component(*entity) {
+                if let Some(&RenderComponent { ref pix, color }) = components.get_render_component(*entity) {
                     let x = (loc.x * config::SQUARE_SIZE) as f32;
                     let y = (loc.y * config::SQUARE_SIZE) as f32;
-                    vertex_data.push(Vertex {
-                        vertex_position: [0.0, 0.0],
-                        tex_coords: tiles.get(&pix)[0],
-                        loc: [x, y],
-                        scale: 16.0,
-                        color: color,
-                    });
-                    vertex_data.push(Vertex {
-                        vertex_position: [1.0, 0.0],
-                        tex_coords: tiles.get(&pix)[1],
-                        loc: [x, y],
-                        scale: 16.0,
-                        color: color,
-                    });
-                    vertex_data.push(Vertex {
-                        vertex_position: [1.0, 1.0],
-                        tex_coords: tiles.get(&pix)[2],
-                        loc: [x, y],
-                        scale: 16.0,
-                        color: color,
-                    });
-                    vertex_data.push(Vertex {
-                        vertex_position: [0.0, 1.0],
-                        tex_coords: tiles.get(&pix)[3],
-                        loc: [x, y],
-                        scale: 16.0,
-                        color: color,
-                    });
                 }
             }
         }

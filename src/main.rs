@@ -154,10 +154,10 @@ fn main() {
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
     let processes = Processes::new();
     let camera_dim = camera.get_dim();
+    let scratch_size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
     let mut scratch = {
-        let size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
         let loc = Loc { x: -80, y: 80 };
-        Scratch::new(loc, size).inflate(&mut chunks)
+        Scratch::new(loc, scratch_size).inflate(&mut chunks)
     };
 
     {
