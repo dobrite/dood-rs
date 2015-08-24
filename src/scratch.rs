@@ -191,9 +191,10 @@ impl Scratch {
                    loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height {
                     continue;
                 };
-                if let Some(&RenderComponent { ref pix, color }) = components.get_render_component(*entity) {
+                if let Some(rc) = components.get_render_component(*entity) {
                     let x = (loc.x * config::SQUARE_SIZE) as f32;
                     let y = (loc.y * config::SQUARE_SIZE) as f32;
+                    rc.render(x, y, &mut vertex_data, tiles);
                 }
             }
         }
