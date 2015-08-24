@@ -24,4 +24,5 @@ pub enum Event {
     PathToFood { entity: Entity },
     PopPath { entity: Entity },
     EatFood { entity: Entity, target: Entity },
+    ComputeFov { entity: Entity },
 }

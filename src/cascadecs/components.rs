@@ -4,6 +4,7 @@ use std::collections::HashMap;
 use dir::Dir;
 use loc::Loc;
 use food::Food;
+use size::Size;
 use pixset::Pix;
 use brain::Brain;
 use scratch::Scratch;
@@ -51,6 +52,17 @@ impl Components {
     pub fn apply(&mut self, mut events: Vec<Event>, scratch: &Scratch) {
         for event in events.into_iter() {
             match event {
+                Event::ComputeFov { entity } => {
+                    let loc = match self.position_components.get(&entity) {
+                        None => return,
+                        Some(pc) => pc.loc
+                    };
+
+                    if let Some(fc) = self.fov_components.get_mut(&entity) {
+                        // XXX this is world coords, we need scratch coords
+                        fc.fov.compute_fov(loc.x, loc.y, fc.range, false)
+                    }
+                }
                 Event::Hunger { entity, minus_hunger } => {
                     if let Some(hc) = self.hunger_components.get_mut(&entity) {
                         hc.value -= minus_hunger as u16;
@@ -169,8 +181,8 @@ impl Components {
         self.path_components.insert(entity, PathComponent::new(path, target));
     }
 
-    pub fn new_fov_component(&mut self, entity: Entity, range: i32) {
-        self.fov_components.insert(entity, FovComponent::new(range));
+    pub fn new_fov_component(&mut self, entity: Entity, size: Size, range: i32) {
+        self.fov_components.insert(entity, FovComponent::new(size, range));
     }
 
     pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {

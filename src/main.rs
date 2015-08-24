@@ -170,7 +170,7 @@ fn main() {
         components.new_render_component(entity, Pix::Dood, color);
         components.new_position_component(entity, loc);
         components.new_hunger_component(entity, 100 as u16, 1 as u8);
-        components.new_fov_component(entity, 10);
+        components.new_fov_component(entity, scratch_size, 10);
         chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
         // TODO do bounds checking
         scratch.insert_into_entities(entity);
