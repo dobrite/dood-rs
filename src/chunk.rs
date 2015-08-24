@@ -25,6 +25,8 @@ impl Chunk {
         Chunk { size: size, terrain: terrain, entities: vec![] }
     }
 
+    // TODO terrible hack - inflate should pull from denormalized_hash_map
+    // or some similar rangable data structure
     pub fn insert_entity(&mut self, entity: Entity) {
         self.entities.push(entity);
     }

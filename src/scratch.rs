@@ -99,6 +99,7 @@ impl Scratch {
             }
         }
 
+        // TODO hack
         // TODO obv less than ideal
         for y in (br.y..tl.y + 1).rev() {
             for x in tl.x..br.x + 1 {
@@ -112,6 +113,7 @@ impl Scratch {
         self
     }
 
+    // TODO hack
     pub fn insert_into_entities(&mut self, entity: Entity) {
         self.entities.push(entity);
     }
