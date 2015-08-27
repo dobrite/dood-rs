@@ -17,31 +17,27 @@ extern crate rand;
 
 mod action;
 mod brain;
-mod camera;
+mod cascadecs;
 mod chunk;
 mod chunk_loc;
+mod chunks;
 mod config;
 mod dir;
 mod dist;
-mod cascadecs;
 mod food;
-mod fov;
 mod grid;
 mod indices;
 mod input;
 mod loc;
 mod path;
 mod pixset;
-mod scratch;
+mod render;
 mod screen_size;
-mod shaders;
 mod size;
 mod state;
 mod terrain;
 mod utils;
 mod window_loc;
-mod chunks;
-mod vertex;
 mod world_coord;
 
 use std::io::Cursor;
@@ -57,17 +53,18 @@ use gfx::PrimitiveType::TriangleList;
 use gfx::PrimitiveType;
 use gfx_texture::{Texture, TextureSettings};
 
+use render::Camera;
+use render::Scratch;
+
 use loc::Loc;
 use size::Size;
 use brain::Brain;
-use camera::Camera;
 use food::Food;
 use pixset::Pixset;
 use chunks::Chunks;
 use input::Input;
 use input::Output;
 use pixset::Pix;
-use scratch::Scratch;
 use screen_size::ScreenSize;
 use world_coord::WorldCoord;
 
@@ -95,12 +92,12 @@ fn main() {
 
     let program = {
         let vertex = gfx::ShaderSource {
-            glsl_140: Some(shaders::VERTEX),
+            glsl_140: Some(render::VERTEX),
             // .
             ..gfx::ShaderSource::empty()
         };
         let fragment = gfx::ShaderSource {
-            glsl_140: Some(shaders::FRAGMENT),
+            glsl_140: Some(render::FRAGMENT),
             // .
             ..gfx::ShaderSource::empty()
         };

@@ -1,6 +1,6 @@
 
 use pixset::{Pix, Pixset};
-use vertex::Vertex;
+use render::Vertex;
 
 #[derive(Clone, Debug)]
 pub enum Terrain {

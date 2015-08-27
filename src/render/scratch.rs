@@ -6,13 +6,14 @@ use cascadecs::render_component::RenderComponent;
 
 use config;
 
+use super::vertex::Vertex;
+
 use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
 use grid::Grid;
 use indices::Indices;
 use terrain::Terrain;
-use vertex::Vertex;
 use chunks::Chunks;
 use world_coord::WorldCoord;
 use pixset::{Pix, Pixset};
@@ -25,8 +26,9 @@ bitflags! {
         const NONE            = 0b00000000,
         const HAS_ENTITY      = 0b00000001,
         const HAS_ITEM        = 0b00000010,
-        const BLOCKS_SIGHT    = 0b00000100,
-        const BLOCKS_MOVEMENT = 0b00001000,
+        const BLOCKS_MOVEMENT = 0b00000100,
+        const BLOCKS_SIGHT    = 0b00001000,
+        const IN_FOV          = 0b00010000,
     }
 }
 
@@ -71,8 +73,14 @@ impl Scratch {
         self.size
     }
 
+    // TODO not sure if this is a good idea
     pub fn get_grid(&self) -> &Grid {
         &self.grid
+    }
+
+    // TODO not sure if this is a good idea
+    pub fn get_flags(&self) -> &Vec<Flags> {
+        &self.flags
     }
 
     pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {
@@ -106,6 +114,7 @@ impl Scratch {
                 let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
                 for entity in chunk.get_entities() {
                     self.entities.push(*entity);
+                    self.flags[(self.size.width * x + y) as usize] = HAS_ENTITY;
                 }
             }
         }
@@ -123,30 +132,7 @@ impl Scratch {
          Loc { x: self.loc.x + self.size.width - 1, y: self.loc.y - self.size.height + 1 })
     }
 
-    //struct WC(i32, i32);
-
-    //impl Iterator for WC {
-    //    type Item = (i32, i32);
-    //
-    //    fn next(&mut self) -> Option<(i32, i32)> {
-    //        self.0 -= 1;
-    //        self.1 -= 1;
-
-    //        if self.0 == 0 {
-    //            None
-    //        } else {
-    //            Some((self.0, self.1))
-    //        }
-    //    }
-    //}
-
-    //fn main() {
-    //    for t in WC(4, 4) {
-    //        println!("{:?}", t);
-    //    }
-    //}
-
-    fn loc_to_indices(&self, loc: Loc) -> Indices {
+    pub fn loc_to_indices(&self, loc: Loc) -> Indices {
         let (tl, br) = self.to_loc_box();
         assert!(loc.x >= tl.x);
         assert!(loc.y <= tl.y);
@@ -169,6 +155,12 @@ impl Scratch {
         let start = ((self.loc.y - camera_loc.y) *
                      self.size.width + camera_loc.x - self.loc.x) as usize;
         let end_camera_row = (camera_dim.height * 2) as usize;
+
+        for entity in self.entities.iter() {
+            if let Some(fc) = components.get_fov_component(*entity) {
+                fc.render();
+            }
+        }
 
         for (camera_row, row_terrain) in self.terrain[start..]
             .chunks(camera_dim.width as usize).enumerate() {
@@ -268,3 +260,26 @@ mod tests {
         assert_eq!(indices(8), [0u32, 1, 2, 0, 2, 3, 4, 5, 6, 4, 6, 7]);
     }
 }
+
+//struct WC(i32, i32);
+
+//impl Iterator for WC {
+//    type Item = (i32, i32);
+//
+//    fn next(&mut self) -> Option<(i32, i32)> {
+//        self.0 -= 1;
+//        self.1 -= 1;
+
+//        if self.0 == 0 {
+//            None
+//        } else {
+//            Some((self.0, self.1))
+//        }
+//    }
+//}
+
+//fn main() {
+//    for t in WC(4, 4) {
+//        println!("{:?}", t);
+//    }
+//}

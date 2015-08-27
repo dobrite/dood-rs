@@ -1,5 +1,5 @@
 
-use fov::Fov;
+use render::Fov;
 use size::Size;
 
 pub struct FovComponent {

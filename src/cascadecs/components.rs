@@ -1,13 +1,14 @@
 
 use std::collections::HashMap;
 
+use render::Scratch;
+
 use dir::Dir;
 use loc::Loc;
 use food::Food;
 use size::Size;
 use pixset::Pix;
 use brain::Brain;
-use scratch::Scratch;
 use path::{path, Path, PathTarget};
 
 use utils::get_closest;

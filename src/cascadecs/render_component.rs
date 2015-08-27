@@ -1,6 +1,6 @@
 
+use render::Vertex;
 use pixset::{Pix, Pixset};
-use vertex::Vertex;
 
 pub struct RenderComponent {
     pub pix: Pix,

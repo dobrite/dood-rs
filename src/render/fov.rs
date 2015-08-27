@@ -31,8 +31,11 @@ use std::cmp;
 use std::fmt;
 use std::rc::Weak;
 
+use super::vertex::Vertex;
+use super::scratch::Flags;
+
+use size::Size;
 use pixset::Pixset;
-use vertex::Vertex;
 
 use chunks::Chunks;
 
@@ -95,33 +98,9 @@ impl Fov {
         self.height
     }
 
-    fn clear_fov(&mut self) {
-        for x in self.in_fov.iter_mut() {
-            for y in x.iter_mut() {
-                *y = false;
-            }
-        }
-    }
-
-    pub fn is_transparent(&self, x: i32, y: i32) -> bool {
-        return self.transparent[x as usize][y as usize]
-    }
-
-    pub fn set_transparent(&mut self, x: i32, y: i32, value: bool) {
-        self.transparent[x as usize][y as usize] = value
-    }
-
-    pub fn is_in_fov(&self, x: i32, y: i32) -> bool {
-        self.in_fov[x as usize][y as usize]
-    }
-
-    fn can_see(&self, x: i32, y: i32) -> bool {
-        self.is_in_fov(x, y) && self.is_transparent(x, y)
-    }
-
-    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool) {
+    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, flags: &Vec<Flags>, size: Size) {
         self.clear_fov();
-        self.in_fov[x as usize][y as usize] = true;
+        self.in_fov[(size.width * x + y) as usize] |= IN_FOV;
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1);
@@ -130,6 +109,30 @@ impl Fov {
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, 1);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, -1, -1);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, -1);
+    }
+
+    fn clear_fov(&mut self) {
+        for x in self.in_fov.iter_mut() {
+            for y in x.iter_mut() {
+                *y = false;
+            }
+        }
+    }
+
+    fn is_transparent(&self, x: i32, y: i32) -> bool {
+        return self.transparent[x as usize][y as usize]
+    }
+
+    fn set_transparent(&mut self, x: i32, y: i32, value: bool) {
+        self.transparent[x as usize][y as usize] = value
+    }
+
+    fn is_in_fov(&self, x: i32, y: i32) -> bool {
+        self.in_fov[x as usize][y as usize]
+    }
+
+    fn can_see(&self, x: i32, y: i32) -> bool {
+        self.is_in_fov(x, y) && self.is_transparent(x, y)
     }
 
     fn compute_quadrant_vertical(&mut self,
