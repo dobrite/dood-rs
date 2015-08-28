@@ -24,6 +24,11 @@ use pixset::{Pix, Pixset};
 // apparently you can do [u8, ..N]
 // and associated consts:
 // https://www.reddit.com/r/rust/comments/1z3dnx/ints_in_generic_type_parameters/
+//
+//
+// use array vec or small vec
+// https://github.com/bluss/arrayvec
+// https://crates.io/crates/smallvec
 pub struct Scratch {
     loc: Loc,
     size: Size,
