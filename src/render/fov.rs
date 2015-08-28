@@ -41,9 +41,7 @@ use chunks::Chunks;
 
 // TODO maybe one day
 // http://stackoverflow.com/a/29531983 (accept mix of vecs and slices)
-// make 1d
 pub struct Fov {
-    pub flags: Vec<Flags>, // TODO dont leave pub
     start_angle: Vec<f64>,
     end_angle: Vec<f64>,
     pub width: i32, // TODO dont leave pub and switch to Size
@@ -69,7 +67,6 @@ impl Fov {
 
         // TODO use 1d for FOV
         Fov {
-            flags: vec![TRANSPARENT; height as usize * width as usize],
             start_angle: start_angle,
             end_angle: end_angle,
             width: width as i32,
@@ -85,43 +82,36 @@ impl Fov {
         self.height
     }
 
-    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool) {
-        self.clear_fov();
-        self.flags[(self.width * x + y) as usize].insert(IN_FOV);
-        self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1);
-        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1);
-        self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1);
-        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, -1);
-        self.compute_quadrant_vertical(x, y, max_radius, light_walls, -1, 1);
-        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, 1);
-        self.compute_quadrant_vertical(x, y, max_radius, light_walls, -1, -1);
-        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, -1);
+    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, mut flags: &mut Vec<Flags>) {
+        flags[(self.width * x + y) as usize].insert(IN_FOV);
+        self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1, flags);
+        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1, flags);
+        self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1, flags);
+        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, -1, flags);
+        self.compute_quadrant_vertical(x, y, max_radius, light_walls, -1, 1, flags);
+        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, 1, flags);
+        self.compute_quadrant_vertical(x, y, max_radius, light_walls, -1, -1, flags);
+        self.compute_quadrant_horizontal(x, y, max_radius, light_walls, -1, -1, flags);
     }
 
-    fn clear_fov(&mut self) {
-        for flag in self.flags.iter_mut() {
-            *flag = TRANSPARENT;
-        }
+    fn is_transparent(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
+        flags[(self.width * x + y) as usize].contains(TRANSPARENT)
     }
 
-    fn is_transparent(&self, x: i32, y: i32) -> bool {
-        self.flags[(self.width * x + y) as usize].contains(TRANSPARENT)
-    }
-
-    fn set_transparent(&mut self, x: i32, y: i32, value: bool) {
+    fn set_transparent(&mut self, x: i32, y: i32, value: bool, mut flags: &mut Vec<Flags>) {
         if value {
-            self.flags[(self.width * x + y) as usize].insert(TRANSPARENT)
+            flags[(self.width * x + y) as usize].insert(TRANSPARENT)
         } else {
-            self.flags[(self.width * x + y) as usize].remove(TRANSPARENT)
+            flags[(self.width * x + y) as usize].remove(TRANSPARENT)
         }
     }
 
-    fn is_in_fov(&self, x: i32, y: i32) -> bool {
-        self.flags[(self.width * x + y) as usize].contains(IN_FOV)
+    fn is_in_fov(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
+        flags[(self.width * x + y) as usize].contains(IN_FOV)
     }
 
-    fn can_see(&self, x: i32, y: i32) -> bool {
-        self.is_in_fov(x, y) && self.is_transparent(x, y)
+    fn can_see(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
+        self.is_in_fov(x, y, flags) && self.is_transparent(x, y, flags)
     }
 
     fn compute_quadrant_vertical(&mut self,
@@ -130,7 +120,8 @@ impl Fov {
                                  max_radius: i32,
                                  light_walls: bool,
                                  dx: i32,
-                                 dy: i32) {
+                                 dy: i32,
+                                 mut flags: &mut Vec<Flags>) {
         let mut y = y_pov + dy;
         let mut done = false;
         let mut iteration = 1;
@@ -151,10 +142,10 @@ impl Fov {
                 let end_slope = center_slope + half_slope;
                 let mut visible = true;
                 let mut extended = false;
-                if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
+                if last_line_obstacle_count > 0 && !self.is_in_fov(x, y, flags) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x, y - dy) && x - dx >= 0 && x - dx < self.width &&
-                       !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x, y - dy, flags) && x - dx >= 0 && x - dx < self.width &&
+                       !self.can_see(x - dx, y - dy, flags) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
@@ -162,7 +153,7 @@ impl Fov {
                                self.end_angle[idx] < start_slope {
                                 idx += 1;
                             } else {
-                                if self.is_transparent(x, y) {
+                                if self.is_transparent(x, y, flags) {
                                     if center_slope > self.start_angle[idx] &&
                                        center_slope < self.end_angle[idx] {
                                         visible = false;
@@ -183,10 +174,10 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.flags[(self.width * x + y) as usize].insert(IN_FOV);
+                    flags[(self.width * x + y) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
-                    if !self.is_transparent(x, y) {
+                    if !self.is_transparent(x, y, flags) {
                         if min_angle >= start_slope {
                             min_angle = end_slope;
                             // if min_angle is applied to the last cell in line, nothing more
@@ -200,7 +191,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.flags[(self.width * x + y) as usize].remove(IN_FOV);
+                            flags[(self.width * x + y) as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -225,7 +216,8 @@ impl Fov {
                                    max_radius: i32,
                                    light_walls: bool,
                                    dx: i32,
-                                   dy: i32) {
+                                   dy: i32,
+                                   mut flags: &mut Vec<Flags>) {
         let mut x = x_pov + dx;
         let mut done = false;
         let mut iteration = 1;
@@ -246,10 +238,10 @@ impl Fov {
                 let end_slope = center_slope + half_slope;
                 let mut visible = true;
                 let mut extended = false;
-                if last_line_obstacle_count > 0 && !self.is_in_fov(x, y) {
+                if last_line_obstacle_count > 0 && !self.is_in_fov(x, y, flags) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x - dx, y) && y - dy >= 0 && y - dy < self.height &&
-                       !self.can_see(x - dx, y - dy) {
+                    if visible && !self.can_see(x - dx, y, flags) && y - dy >= 0 && y - dy < self.height &&
+                       !self.can_see(x - dx, y - dy, flags) {
                         visible = false;
                     } else {
                         while visible && idx < last_line_obstacle_count {
@@ -257,7 +249,7 @@ impl Fov {
                                self.end_angle[idx] < start_slope {
                                 idx += 1;
                             } else {
-                                if self.is_transparent(x, y) {
+                                if self.is_transparent(x, y, flags) {
                                     if center_slope > self.start_angle[idx] &&
                                        center_slope < self.end_angle[idx] {
                                         visible = false;
@@ -278,10 +270,10 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.flags[(self.width * x + y) as usize].insert(IN_FOV);
+                    flags[(self.width * x + y) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
-                    if !self.is_transparent(x, y) {
+                    if !self.is_transparent(x, y, flags) {
                         if min_angle >= start_slope {
                             min_angle = end_slope;
                             // if min_angle is applied to the last cell in line, nothing more
@@ -295,7 +287,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.flags[(self.width * x + y) as usize].remove(IN_FOV);
+                            flags[(self.width * x + y) as usize].remove(IN_FOV);
                         }
                     }
                 }

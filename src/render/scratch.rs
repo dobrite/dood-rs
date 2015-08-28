@@ -6,7 +6,7 @@ use cascadecs::render_component::RenderComponent;
 
 use config;
 
-use super::flags::{Flags, HAS_ENTITY, IN_FOV, NONE};
+use super::flags::{Flags, HAS_ENTITY, IN_FOV, TRANSPARENT, NONE};
 use super::vertex::Vertex;
 
 use chunk_loc::ChunkLoc;
@@ -50,7 +50,7 @@ impl Scratch {
             size: size,
             grid: Grid::new(size),
             terrain: vec![Terrain::None; len],
-            flags: vec![NONE; len],
+            flags: vec![TRANSPARENT; len],
             // vertices: vec![NONE; len * 4],
             entities: vec![],
             indices: indices(len * 4),
@@ -71,8 +71,14 @@ impl Scratch {
     }
 
     // TODO not sure if this is a good idea
-    pub fn get_flags(&self) -> &Vec<Flags> {
-        &self.flags
+    pub fn get_flags(&mut self) -> &mut Vec<Flags> {
+        &mut self.flags
+    }
+
+    pub fn clear_fov(&mut self) {
+        for flag in self.flags.iter_mut() {
+            *flag = TRANSPARENT;
+        }
     }
 
     pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {

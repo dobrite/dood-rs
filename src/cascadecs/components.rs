@@ -50,7 +50,9 @@ impl Components {
         }
     }
 
-    pub fn apply(&mut self, mut events: Vec<Event>, scratch: &Scratch) {
+    pub fn apply(&mut self, events: Vec<Event>, mut scratch: &mut Scratch) {
+        scratch.clear_fov(); // TODO soo gross
+
         for event in events.into_iter() {
             match event {
                 Event::ComputeFov { entity } => {
@@ -61,7 +63,7 @@ impl Components {
 
                     if let Some(fc) = self.fov_components.get_mut(&entity) {
                         let indices = scratch.loc_to_indices(loc);
-                        fc.fov.compute_fov(indices.col, indices.row, fc.range, false);
+                        fc.fov.compute_fov(indices.col, indices.row, fc.range, false, scratch.get_flags());
                     }
                 }
                 Event::Hunger { entity, minus_hunger } => {
