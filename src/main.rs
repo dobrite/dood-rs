@@ -6,6 +6,8 @@ extern crate bitflags;
 #[macro_use]
 extern crate gfx;
 
+// TODO might be able to move some of these?
+// http://jadpole.github.io/arcaders/arcaders-1-2/
 extern crate ai_behavior;
 extern crate camera_controllers;
 extern crate gfx_device_gl;
