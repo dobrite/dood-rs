@@ -150,7 +150,7 @@ impl Scratch {
 
         for entity in self.entities.iter() {
             if let Some(fc) = components.get_fov_component(*entity) {
-                //fc.render();
+                fc.render();
             }
         }
 

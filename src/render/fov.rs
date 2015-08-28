@@ -43,10 +43,10 @@ use chunks::Chunks;
 // http://stackoverflow.com/a/29531983 (accept mix of vecs and slices)
 // make 1d
 pub struct Fov {
-    flags: Vec<Vec<Flags>>,
+    pub flags: Vec<Flags>, // TODO dont leave pub
     start_angle: Vec<f64>,
     end_angle: Vec<f64>,
-    width: i32,
+    pub width: i32, // TODO dont leave pub and switch to Size
     height: i32,
 }
 
@@ -69,7 +69,7 @@ impl Fov {
 
         // TODO use 1d for FOV
         Fov {
-            flags: vec![vec![TRANSPARENT; height as usize]; width as usize],
+            flags: vec![TRANSPARENT; height as usize * width as usize],
             start_angle: start_angle,
             end_angle: end_angle,
             width: width as i32,
@@ -87,8 +87,7 @@ impl Fov {
 
     pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool) {
         self.clear_fov();
-        //self.flags[(size.width * x + y) as usize].insert(IN_FOV);
-        self.flags[x as usize][y as usize].insert(IN_FOV);
+        self.flags[(self.width * x + y) as usize].insert(IN_FOV);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1);
@@ -100,27 +99,25 @@ impl Fov {
     }
 
     fn clear_fov(&mut self) {
-        for x in self.flags.iter_mut() {
-            for y in x.iter_mut() {
-                *y = TRANSPARENT;
-            }
+        for flag in self.flags.iter_mut() {
+            *flag = TRANSPARENT;
         }
     }
 
     fn is_transparent(&self, x: i32, y: i32) -> bool {
-        self.flags[x as usize][y as usize].contains(TRANSPARENT)
+        self.flags[(self.width * x + y) as usize].contains(TRANSPARENT)
     }
 
     fn set_transparent(&mut self, x: i32, y: i32, value: bool) {
         if value {
-            self.flags[x as usize][y as usize].insert(TRANSPARENT)
+            self.flags[(self.width * x + y) as usize].insert(TRANSPARENT)
         } else {
-            self.flags[x as usize][y as usize].remove(TRANSPARENT)
+            self.flags[(self.width * x + y) as usize].remove(TRANSPARENT)
         }
     }
 
     fn is_in_fov(&self, x: i32, y: i32) -> bool {
-        self.flags[x as usize][y as usize].contains(IN_FOV)
+        self.flags[(self.width * x + y) as usize].contains(IN_FOV)
     }
 
     fn can_see(&self, x: i32, y: i32) -> bool {
@@ -186,7 +183,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.flags[x as usize][y as usize].insert(IN_FOV);
+                    self.flags[(self.width * x + y) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y) {
@@ -203,7 +200,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.flags[x as usize][y as usize].remove(IN_FOV);
+                            self.flags[(self.width * x + y) as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -281,7 +278,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.flags[x as usize][y as usize].insert(IN_FOV);
+                    self.flags[(self.width * x + y) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y) {
@@ -298,7 +295,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.flags[x as usize][y as usize].remove(IN_FOV);
+                            self.flags[(self.width * x + y) as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -338,7 +335,7 @@ mod tests {
     fn clear_fov_it_clears_fov() {
         let mut fov = Fov::new(2, 2);
         fov.clear_fov();
-        assert!(fov.flags.iter().all(|ref row| row.iter().all(|&elem| elem != IN_FOV)));
+        assert!(fov.flags.iter().all(|flag| *flag != IN_FOV));
     }
 
     #[test]
