@@ -6,6 +6,7 @@ use cascadecs::render_component::RenderComponent;
 
 use config;
 
+use super::flags::{Flags, HAS_ENTITY, IN_FOV, NONE};
 use super::vertex::Vertex;
 
 use chunk_loc::ChunkLoc;
@@ -17,20 +18,6 @@ use terrain::Terrain;
 use chunks::Chunks;
 use world_coord::WorldCoord;
 use pixset::{Pix, Pixset};
-
-//derives Debug, Copy, Clone, PartialEq, Eq, PartialOrd, Ord and Hash
-bitflags! {
-    // attr can be added
-    // x: i32,
-    flags Flags: u32 {
-        const NONE            = 0b00000000,
-        const HAS_ENTITY      = 0b00000001,
-        const HAS_ITEM        = 0b00000010,
-        const BLOCKS_MOVEMENT = 0b00000100,
-        const BLOCKS_SIGHT    = 0b00001000,
-        const IN_FOV          = 0b00010000,
-    }
-}
 
 // better Matrix set-up
 // http://www.reddit.com/r/rust/comments/3exten/typechecked_matrix_operations_in_rust/ctk0pb4
@@ -158,7 +145,7 @@ impl Scratch {
 
         for entity in self.entities.iter() {
             if let Some(fc) = components.get_fov_component(*entity) {
-                fc.render();
+                //fc.render();
             }
         }
 

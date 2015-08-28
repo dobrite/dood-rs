@@ -32,7 +32,7 @@ use std::fmt;
 use std::rc::Weak;
 
 use super::vertex::Vertex;
-use super::scratch::Flags;
+use super::flags::{NONE, IN_FOV, TRANSPARENT, Flags};
 
 use size::Size;
 use pixset::Pixset;
@@ -41,9 +41,9 @@ use chunks::Chunks;
 
 // TODO maybe one day
 // http://stackoverflow.com/a/29531983 (accept mix of vecs and slices)
+// make 1d
 pub struct Fov {
-    transparent: Vec<Vec<bool>>,
-    in_fov: Vec<Vec<bool>>,
+    flags: Vec<Vec<Flags>>,
     start_angle: Vec<f64>,
     end_angle: Vec<f64>,
     width: i32,
@@ -62,27 +62,14 @@ pub struct Fov {
 
 impl Fov {
     pub fn new(width: i32, height: i32) -> Fov {
-        // TODO use vec![1; 3];
-        // variables works i.e. vec![1; width];
-
-        let mut transparent_x = Vec::with_capacity(height as usize);
-        transparent_x.resize(height as usize, Vec::new());
-
-        let mut transparent_y = Vec::with_capacity(width as usize);
-        transparent_y.resize(width as usize, true); // TODO false?
-
-        for elem in transparent_x.iter_mut() {
-            *elem = transparent_y.clone();
-        }
-
         let mut start_angle = Vec::new();
         let mut end_angle = Vec::new();
         start_angle.resize(1000, 0.0); // TODO fix
         end_angle.resize(1000, 1.0); // TODO fix
 
+        // TODO use 1d for FOV
         Fov {
-            transparent: transparent_x.clone(),
-            in_fov: transparent_x.clone(),
+            flags: vec![vec![TRANSPARENT; height as usize]; width as usize],
             start_angle: start_angle,
             end_angle: end_angle,
             width: width as i32,
@@ -98,9 +85,10 @@ impl Fov {
         self.height
     }
 
-    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, flags: &Vec<Flags>, size: Size) {
+    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool) {
         self.clear_fov();
-        self.in_fov[(size.width * x + y) as usize] |= IN_FOV;
+        //self.flags[(size.width * x + y) as usize].insert(IN_FOV);
+        self.flags[x as usize][y as usize].insert(IN_FOV);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1);
@@ -112,23 +100,27 @@ impl Fov {
     }
 
     fn clear_fov(&mut self) {
-        for x in self.in_fov.iter_mut() {
+        for x in self.flags.iter_mut() {
             for y in x.iter_mut() {
-                *y = false;
+                *y = TRANSPARENT;
             }
         }
     }
 
     fn is_transparent(&self, x: i32, y: i32) -> bool {
-        return self.transparent[x as usize][y as usize]
+        self.flags[x as usize][y as usize].contains(TRANSPARENT)
     }
 
     fn set_transparent(&mut self, x: i32, y: i32, value: bool) {
-        self.transparent[x as usize][y as usize] = value
+        if value {
+            self.flags[x as usize][y as usize].insert(TRANSPARENT)
+        } else {
+            self.flags[x as usize][y as usize].remove(TRANSPARENT)
+        }
     }
 
     fn is_in_fov(&self, x: i32, y: i32) -> bool {
-        self.in_fov[x as usize][y as usize]
+        self.flags[x as usize][y as usize].contains(IN_FOV)
     }
 
     fn can_see(&self, x: i32, y: i32) -> bool {
@@ -194,7 +186,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.in_fov[x as usize][y as usize] = true;
+                    self.flags[x as usize][y as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y) {
@@ -211,7 +203,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.in_fov[x as usize][y as usize] = false;
+                            self.flags[x as usize][y as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -289,7 +281,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    self.in_fov[x as usize][y as usize] = true;
+                    self.flags[x as usize][y as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y) {
@@ -306,7 +298,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            self.in_fov[x as usize][y as usize] = false;
+                            self.flags[x as usize][y as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -329,6 +321,7 @@ impl Fov {
 #[cfg(test)]
 mod tests {
     use super::Fov;
+    use super::super::flags::IN_FOV;
 
     use std::rc::Rc;
     use std::cell::RefCell;
@@ -345,7 +338,7 @@ mod tests {
     fn clear_fov_it_clears_fov() {
         let mut fov = Fov::new(2, 2);
         fov.clear_fov();
-        assert!(fov.in_fov.iter().all(|ref row| row.iter().all(|&elem| !elem)));
+        assert!(fov.flags.iter().all(|ref row| row.iter().all(|&elem| elem != IN_FOV)));
     }
 
     #[test]
@@ -369,19 +362,19 @@ mod tests {
     #[test]
     fn set_transparent_it_sets_transparency_for_indices() {
         let mut fov = Fov::new(2, 2);
-        fov.set_transparent(1, 1, true);
-        assert!(fov.is_transparent(1, 1) == true);
+        fov.set_transparent(1, 1, false);
+        assert!(fov.is_transparent(1, 1) == false);
     }
 
     #[test]
     fn is_in_fov_it_returns_value_at_indices() {
         let mut fov = Fov::new(2, 2);
-        assert!(fov.is_in_fov(1, 1) == true);
+        assert!(fov.is_in_fov(1, 1) == false);
     }
 
     #[test]
     fn can_see_it_returns_and_of_is_in_fov_and_is_transparent() {
         let mut fov = Fov::new(2, 2);
-        assert!(fov.can_see(1, 1) == true);
+        assert!(fov.can_see(1, 1) == false);
     }
 }

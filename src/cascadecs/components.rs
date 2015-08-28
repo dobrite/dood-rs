@@ -60,8 +60,8 @@ impl Components {
                     };
 
                     if let Some(fc) = self.fov_components.get_mut(&entity) {
-                        // XXX this is world coords, we need scratch coords
-                        fc.fov.compute_fov(loc.x, loc.y, fc.range, false)
+                        let indices = scratch.loc_to_indices(loc);
+                        fc.fov.compute_fov(indices.col, indices.row, fc.range, false);
                     }
                 }
                 Event::Hunger { entity, minus_hunger } => {
@@ -196,6 +196,10 @@ impl Components {
 
     pub fn get_hunger_component(&self, entity: Entity) -> Option<&HungerComponent> {
         self.hunger_components.get(&entity)
+    }
+
+    pub fn get_fov_component(&self, entity: Entity) -> Option<&FovComponent> {
+        self.fov_components.get(&entity)
     }
 
     pub fn remove_entity(&mut self, entity: Entity) {

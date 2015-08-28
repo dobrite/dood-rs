@@ -16,6 +16,8 @@ impl Process for FovProcess {
     // rather than looking it up during apply. This portion (hopefully) can be threaded.
     fn process(&self, components: &Components) -> Vec<Event> {
         components.fov_components.keys().map(|&entity| {
+            // TODO pass in scratch? so we can decide to copute
+            // fov if it'll make it to the camera
             Event::ComputeFov { entity: entity }
         }).collect()
     }
