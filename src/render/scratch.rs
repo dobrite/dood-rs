@@ -154,14 +154,7 @@ impl Scratch {
                      self.size.width + camera_loc.x - self.loc.x) as usize;
         let end_camera_row = (camera_dim.height * 2) as usize;
 
-        for entity in self.entities.iter() {
-            if let Some(fc) = components.get_fov_component(*entity) {
-                fc.render();
-            }
-        }
-
-        for (camera_row, row_terrain) in self.terrain[start..]
-            .chunks(camera_dim.width as usize).enumerate() {
+        for (camera_row, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
             if camera_row % 2 == 1 {
                 continue;
             };
@@ -170,9 +163,12 @@ impl Scratch {
             };
             let row = camera_row / 2;
             for (col, terrain) in row_terrain.iter().enumerate() {
-                let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE) as f32;
-                let y = ((camera_loc.y - row as i32) * config::SQUARE_SIZE) as f32;
-                terrain.render(x, y, &mut vertex_data, tiles);
+                let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE);
+                let y = ((camera_loc.y - row as i32) * config::SQUARE_SIZE);
+                let offset = col * camera_dim.width as usize + camera_row + start;
+                if self.flags[offset].contains(IN_FOV) {
+                    terrain.render(x as f32, y as f32, &mut vertex_data, tiles);
+                }
             }
         }
 

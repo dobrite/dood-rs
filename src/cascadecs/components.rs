@@ -50,8 +50,8 @@ impl Components {
         }
     }
 
-    pub fn apply(&mut self, events: Vec<Event>, mut scratch: &mut Scratch) {
-        scratch.clear_fov(); // TODO soo gross
+    pub fn apply(&mut self, events: Vec<Event>, mut scratch: &mut Scratch, clear: bool) {
+        if clear { scratch.clear_fov(); } // TODO soo gross
 
         for event in events.into_iter() {
             match event {
