@@ -210,11 +210,24 @@ fn main() {
                     components.new_render_component(entity, Pix::Food, color);
                     components.new_position_component(entity, loc);
                     components.new_food_component(entity, Food::Meat, 100.0);
+                    // TODO at the very least don't do this to both chunk and scratch
                     chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
                     // TODO do bounds checking
                     scratch.insert_into_entities(entity);
                 },
-                Output::SpawnWall(_) => {}, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
+                Output::SpawnWall(window_loc) => {
+                    let loc = camera.to_game_loc(window_loc);
+                    let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
+                    // TODO some sort of "blueprint"
+                    let entity = Entity::new();
+                    let color = [1.0, 1.0, 1.0];
+                    components.new_render_component(entity, Pix::Wall, color);
+                    components.new_position_component(entity, loc);
+                    // TODO at the very least don't do this to both chunk and scratch
+                    chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
+                    // TODO do bounds checking
+                    scratch.insert_into_entities(entity);
+                }, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir) => {
                     camera.pan(dir);
                     let camera_loc = camera.get_loc();
