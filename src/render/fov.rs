@@ -83,7 +83,7 @@ impl Fov {
     }
 
     pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, mut flags: &mut Vec<Flags>) {
-        flags[(self.width * x + y) as usize].insert(IN_FOV);
+        flags[(self.width * y + x) as usize].insert(IN_FOV);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1, flags);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1, flags);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, -1, flags);
@@ -95,19 +95,19 @@ impl Fov {
     }
 
     fn is_transparent(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
-        flags[(self.width * x + y) as usize].contains(TRANSPARENT)
+        flags[(self.width * y + x) as usize].contains(TRANSPARENT)
     }
 
     fn set_transparent(&mut self, x: i32, y: i32, value: bool, mut flags: &mut Vec<Flags>) {
         if value {
-            flags[(self.width * x + y) as usize].insert(TRANSPARENT)
+            flags[(self.width * y + x) as usize].insert(TRANSPARENT)
         } else {
-            flags[(self.width * x + y) as usize].remove(TRANSPARENT)
+            flags[(self.width * y + x) as usize].remove(TRANSPARENT)
         }
     }
 
     fn is_in_fov(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
-        flags[(self.width * x + y) as usize].contains(IN_FOV)
+        flags[(self.width * y + x) as usize].contains(IN_FOV)
     }
 
     fn can_see(&self, x: i32, y: i32, flags: &Vec<Flags>) -> bool {
@@ -174,7 +174,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    flags[(self.width * x + y) as usize].insert(IN_FOV);
+                    flags[(self.width * y + x) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y, flags) {
@@ -191,7 +191,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            flags[(self.width * x + y) as usize].remove(IN_FOV);
+                            flags[(self.width * y + x) as usize].remove(IN_FOV);
                         }
                     }
                 }
@@ -270,7 +270,7 @@ impl Fov {
                     }
                 }
                 if visible {
-                    flags[(self.width * x + y) as usize].insert(IN_FOV);
+                    flags[(self.width * y + x) as usize].insert(IN_FOV);
                     done = false;
                     // if the cell is opaque, block the adjacent slopes
                     if !self.is_transparent(x, y, flags) {
@@ -287,7 +287,7 @@ impl Fov {
                             total_obstacle_count += 1;
                         }
                         if !light_walls {
-                            flags[(self.width * x + y) as usize].remove(IN_FOV);
+                            flags[(self.width * y + x) as usize].remove(IN_FOV);
                         }
                     }
                 }

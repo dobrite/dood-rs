@@ -165,7 +165,7 @@ impl Scratch {
             for (col, terrain) in row_terrain.iter().enumerate() {
                 let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE);
                 let y = ((camera_loc.y - row as i32) * config::SQUARE_SIZE);
-                let offset = col * camera_dim.width as usize + camera_row + start;
+                let offset = camera_row * camera_dim.width as usize + col + start;
                 if self.flags[offset].contains(IN_FOV) {
                     terrain.render(x as f32, y as f32, &mut vertex_data, tiles);
                 }
