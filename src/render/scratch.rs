@@ -81,19 +81,20 @@ impl Scratch {
         }
     }
 
-    pub fn inflate(mut self, chunks: &mut Chunks) -> Scratch {
-        let loc_box = self.to_loc_box();
+    pub fn inflate(mut self, chunks: &mut Chunks, components: &Components) -> Scratch {
+        let (tl_loc, br_loc) = self.to_loc_box();
+        //Loc { x: -80, y: 80 }, Loc { x: 111, y: -111 }
         let size = Size { width: 16, height: 16 }; // TODO gross
-        let tl = WorldCoord::from_loc(&self.loc).get_chunk_loc();
-        let br = WorldCoord::from_loc(&loc_box.1).get_chunk_loc();
+        let tl_wc = WorldCoord::from_loc(&tl_loc).get_chunk_loc();
+        let br_wc = WorldCoord::from_loc(&br_loc).get_chunk_loc();
 
         let width = size.width as usize;
         let mut offset_start: usize = 0;
         let mut offset_end: usize = width;
 
-        for y in (br.y..tl.y + 1).rev() {
+        for y in (br_wc.y..tl_wc.y + 1).rev() {
             for row in 0..size.height {
-                for x in tl.x..br.x + 1 {
+                for x in tl_wc.x..br_wc.x + 1 {
                     let chunk = chunks.get_chunk_mut(&ChunkLoc { x: x, y: y });
                     let start = (row * size.width) as usize;
                     let end = ((row + 1) * size.width) as usize;
@@ -107,10 +108,9 @@ impl Scratch {
 
         // TODO hack
         // TODO obv less than ideal
-        for y in (br.y..tl.y + 1).rev() {
-            for x in tl.x..br.x + 1 {
-                let chunk = chunks.get_chunk_mut(&ChunkLoc { x: x, y: y });
-                for entity in chunk.get_entities() {
+        for y in (br_loc.y..tl_loc.y + 1).rev() {
+            for x in (tl_loc.x..br_loc.x + 1) {
+                if let Some(entity) = components.get_position_component_by_value(Loc { x: x, y: y }) {
                     self.entities.push(*entity);
                     self.flags[(self.size.width * x + y) as usize] = HAS_ENTITY;
                 }

@@ -6,6 +6,7 @@ use loc::Loc;
 use cascadecs::entity::Entity;
 use cascadecs::position_component::PositionComponent;
 
+// TODO make this generic
 pub struct DenormalizedHashMap {
     hm: HashMap<Entity, PositionComponent>,
     rhm: HashMap<Loc, Entity>,
@@ -39,5 +40,9 @@ impl DenormalizedHashMap {
 
     pub fn iter(&self) -> hash_map::Iter<Entity, PositionComponent> {
         self.hm.iter()
+    }
+
+    pub fn get_by_value(&self, loc: Loc) -> Option<&Entity> {
+        self.rhm.get(&loc)
     }
 }

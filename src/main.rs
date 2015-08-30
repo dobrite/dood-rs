@@ -171,7 +171,7 @@ fn main() {
 
     let mut scratch = {
         let loc = Loc { x: -80, y: 80 };
-        Scratch::new(loc, scratch_size).inflate(&mut chunks)
+        Scratch::new(loc, scratch_size).inflate(&mut chunks, &components)
     };
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
@@ -237,7 +237,7 @@ fn main() {
                         let loc = WorldCoord::from_chunk_loc(&wc).to_loc();
                         // TODO dont hardcode this
                         let scratch_dim = Loc { x: 48, y: -64 };
-                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut chunks);
+                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut chunks, &components);
                     }
                 },
                 Output::Nothing => {}

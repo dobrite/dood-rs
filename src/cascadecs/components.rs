@@ -214,6 +214,10 @@ impl Components {
         self.position_components.get(&entity)
     }
 
+    pub fn get_position_component_by_value(&self, loc: Loc) -> Option<&Entity> {
+        self.position_components.get_by_value(loc)
+    }
+
     pub fn get_hunger_component(&self, entity: Entity) -> Option<&HungerComponent> {
         self.hunger_components.get(&entity)
     }
