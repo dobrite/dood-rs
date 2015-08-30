@@ -157,7 +157,7 @@ fn main() {
 
     {
         let loc = Loc { x: 20, y: 0 };
-        let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
+        let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
         // TODO some sort of "blueprint"
         let entity = Entity::new();
         let color = [1.0, 1.0, 1.0];
@@ -202,7 +202,7 @@ fn main() {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
+                    let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
                     // TODO some sort of "blueprint"
                     let entity = Entity::new();
                     let color = [0.2313725, 0.3254902, 0.1372549];
@@ -214,7 +214,7 @@ fn main() {
                 },
                 Output::SpawnWall(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    let ref mut chunk = chunks.get_chunk(&WorldCoord::from_loc(&loc).get_chunk_loc());
+                    let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
                     // TODO some sort of "blueprint"
                     let entity = Entity::new();
                     let color = [1.0, 1.0, 1.0];

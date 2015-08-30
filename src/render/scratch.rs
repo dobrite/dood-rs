@@ -94,7 +94,7 @@ impl Scratch {
         for y in (br.y..tl.y + 1).rev() {
             for row in 0..size.height {
                 for x in tl.x..br.x + 1 {
-                    let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
+                    let chunk = chunks.get_chunk_mut(&ChunkLoc { x: x, y: y });
                     let start = (row * size.width) as usize;
                     let end = ((row + 1) * size.width) as usize;
                     let source = &chunk.get_terrain()[start..end];
@@ -109,7 +109,7 @@ impl Scratch {
         // TODO obv less than ideal
         for y in (br.y..tl.y + 1).rev() {
             for x in tl.x..br.x + 1 {
-                let chunk = chunks.get_chunk(&ChunkLoc { x: x, y: y });
+                let chunk = chunks.get_chunk_mut(&ChunkLoc { x: x, y: y });
                 for entity in chunk.get_entities() {
                     self.entities.push(*entity);
                     self.flags[(self.size.width * x + y) as usize] = HAS_ENTITY;

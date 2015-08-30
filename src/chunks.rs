@@ -32,7 +32,7 @@ impl Chunks {
         self.chunks.insert(cl, chunk);
     }
 
-    pub fn get_chunk(&mut self, cl: &ChunkLoc) -> &mut Chunk {
+    pub fn get_chunk_mut(&mut self, cl: &ChunkLoc) -> &mut Chunk {
         let chunk_size = self.chunk_size;
         self.chunks.entry(*cl).or_insert_with(|| Chunk::new(chunk_size))
     }
