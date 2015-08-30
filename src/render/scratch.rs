@@ -120,11 +120,6 @@ impl Scratch {
         self
     }
 
-    // TODO hack
-    pub fn insert_into_entities(&mut self, entity: Entity) {
-        self.entities.push(entity);
-    }
-
     fn to_loc_box(&self) -> (Loc, Loc) {
         (Loc { x: self.loc.x, y: self.loc.y },
          Loc { x: self.loc.x + self.size.width - 1, y: self.loc.y - self.size.height + 1 })

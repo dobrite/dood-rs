@@ -154,10 +154,6 @@ fn main() {
     let processes = Processes::new();
     let camera_dim = camera.get_dim();
     let scratch_size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
-    let mut scratch = {
-        let loc = Loc { x: -80, y: 80 };
-        Scratch::new(loc, scratch_size).inflate(&mut chunks)
-    };
 
     {
         let loc = Loc { x: 20, y: 0 };
@@ -171,9 +167,12 @@ fn main() {
         components.new_hunger_component(entity, 100 as u16, 1 as u8);
         components.new_fov_component(entity, scratch_size, 10);
         chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
-        // TODO do bounds checking
-        scratch.insert_into_entities(entity);
     }
+
+    let mut scratch = {
+        let loc = Loc { x: -80, y: 80 };
+        Scratch::new(loc, scratch_size).inflate(&mut chunks)
+    };
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
@@ -212,8 +211,6 @@ fn main() {
                     components.new_food_component(entity, Food::Meat, 100.0);
                     // TODO at the very least don't do this to both chunk and scratch
                     chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
-                    // TODO do bounds checking
-                    scratch.insert_into_entities(entity);
                 },
                 Output::SpawnWall(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
@@ -227,8 +224,6 @@ fn main() {
                     components.new_impassable_component(entity);
                     // TODO at the very least don't do this to both chunk and scratch
                     chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
-                    // TODO do bounds checking
-                    scratch.insert_into_entities(entity);
                 }, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir) => {
                     camera.pan(dir);
