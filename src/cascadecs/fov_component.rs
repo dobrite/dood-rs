@@ -1,6 +1,5 @@
 
 use render::Fov;
-use render::{TRANSPARENT, IN_FOV}; // TODO remove this
 use size::Size;
 
 pub struct FovComponent {

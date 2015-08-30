@@ -6,7 +6,7 @@ use cascadecs::render_component::RenderComponent;
 
 use config;
 
-use super::flags::{Flags, HAS_ENTITY, IN_FOV, TRANSPARENT, NONE};
+use super::flags::{Flags, NONE, HAS_ENTITY, IN_FOV, TRANSPARENT, PASSABLE};
 use super::vertex::Vertex;
 
 use chunk_loc::ChunkLoc;
@@ -77,7 +77,7 @@ impl Scratch {
 
     pub fn clear_fov(&mut self) {
         for flag in self.flags.iter_mut() {
-            *flag = TRANSPARENT;
+            flag.remove(IN_FOV);
         }
     }
 
@@ -106,13 +106,18 @@ impl Scratch {
             }
         }
 
-        // TODO hack
-        // TODO obv less than ideal
         for y in (br_loc.y..tl_loc.y + 1).rev() {
             for x in (tl_loc.x..br_loc.x + 1) {
                 if let Some(entity) = components.get_position_component_by_value(Loc { x: x, y: y }) {
                     self.entities.push(*entity);
-                    self.flags[(self.size.width * x + y) as usize] = HAS_ENTITY;
+                    let offset = self.loc_to_indices(Loc { x: x, y: y }).to_1d();
+                    self.flags[offset].insert(HAS_ENTITY);
+                    if let Some(_) = components.get_opaque_component(*entity) {
+                        self.flags[offset].remove(TRANSPARENT);
+                    }
+                    if let Some(_) = components.get_impassable_component(*entity) {
+                        self.flags[offset].remove(PASSABLE);
+                    }
                 }
             }
         }

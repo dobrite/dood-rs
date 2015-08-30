@@ -12,6 +12,6 @@ impl Indices {
     }
 
     pub fn to_1d(&self) -> usize {
-        (self.width * self.col + self.row) as usize
+        (self.width * self.row + self.col) as usize
     }
 }
