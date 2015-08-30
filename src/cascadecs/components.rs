@@ -13,18 +13,20 @@ use path::{path, Path, PathTarget};
 
 use utils::get_closest;
 
-use cascadecs::event::Event;
-use cascadecs::entity::Entity;
+use super::event::Event;
+use super::entity::Entity;
 
-use cascadecs::brain_component::BrainComponent;
-use cascadecs::hunger_component::HungerComponent;
-use cascadecs::render_component::RenderComponent;
-use cascadecs::position_component::PositionComponent;
-use cascadecs::path_component::PathComponent;
-use cascadecs::food_component::FoodComponent;
-use cascadecs::fov_component::FovComponent;
+use super::brain_component::BrainComponent;
+use super::hunger_component::HungerComponent;
+use super::render_component::RenderComponent;
+use super::position_component::PositionComponent;
+use super::path_component::PathComponent;
+use super::food_component::FoodComponent;
+use super::fov_component::FovComponent;
+use super::impassable_component::ImpassableComponent;
+use super::opaque_component::OpaqueComponent;
 
-use cascadecs::denormalized_hash_map::DenormalizedHashMap;
+use super::denormalized_hash_map::DenormalizedHashMap;
 
 pub struct Components {
     // TODO fixme
@@ -34,6 +36,8 @@ pub struct Components {
     pub path_components: HashMap<Entity, PathComponent>,
     pub food_components: HashMap<Entity, FoodComponent>,
     pub fov_components: HashMap<Entity, FovComponent>,
+    pub impassable_components: HashMap<Entity, ImpassableComponent>,
+    pub opaque_components: HashMap<Entity, OpaqueComponent>,
     pub position_components: DenormalizedHashMap,
 }
 
@@ -46,6 +50,8 @@ impl Components {
             path_components: HashMap::new(),
             food_components: HashMap::new(),
             fov_components: HashMap::new(),
+            impassable_components: HashMap::new(),
+            opaque_components: HashMap::new(),
             position_components: DenormalizedHashMap::new(),
         }
     }
@@ -160,6 +166,8 @@ impl Components {
         }
     }
 
+    // New
+
     pub fn new_brain_component(&mut self, entity: Entity, brain: Brain) {
         self.brain_components.insert(entity, BrainComponent::new(brain));
     }
@@ -188,6 +196,16 @@ impl Components {
         self.fov_components.insert(entity, FovComponent::new(size, range));
     }
 
+    pub fn new_impassable_component(&mut self, entity: Entity) {
+        self.impassable_components.insert(entity, ImpassableComponent::new());
+    }
+
+    pub fn new_opaque_component(&mut self, entity: Entity) {
+        self.opaque_components.insert(entity, OpaqueComponent::new());
+    }
+
+    // GET
+
     pub fn get_render_component(&self, entity: Entity) -> Option<&RenderComponent> {
         self.render_components.get(&entity)
     }
@@ -202,6 +220,14 @@ impl Components {
 
     pub fn get_fov_component(&self, entity: Entity) -> Option<&FovComponent> {
         self.fov_components.get(&entity)
+    }
+
+    pub fn get_impassable_component(&self, entity: Entity) -> Option<&ImpassableComponent> {
+        self.impassable_components.get(&entity)
+    }
+
+    pub fn get_opaque_component(&self, entity: Entity) -> Option<&OpaqueComponent> {
+        self.opaque_components.get(&entity)
     }
 
     pub fn remove_entity(&mut self, entity: Entity) {

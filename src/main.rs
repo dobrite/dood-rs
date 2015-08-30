@@ -223,6 +223,8 @@ fn main() {
                     let color = [1.0, 1.0, 1.0];
                     components.new_render_component(entity, Pix::Wall, color);
                     components.new_position_component(entity, loc);
+                    components.new_opaque_component(entity);
+                    components.new_impassable_component(entity);
                     // TODO at the very least don't do this to both chunk and scratch
                     chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
                     // TODO do bounds checking
