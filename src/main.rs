@@ -155,24 +155,21 @@ fn main() {
     let camera_dim = camera.get_dim();
     let scratch_size = Size { width: camera_dim.width * 2, height: camera_dim.height * 3 };
 
-    {
-        let loc = Loc { x: 20, y: 0 };
-        let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
-        // TODO some sort of "blueprint"
-        let entity = Entity::new();
-        let color = [1.0, 1.0, 1.0];
-        components.new_brain_component(entity, Brain::Dood);
-        components.new_render_component(entity, Pix::Dood, color);
-        components.new_position_component(entity, loc);
-        components.new_hunger_component(entity, 100 as u16, 1 as u8);
-        components.new_fov_component(entity, scratch_size, 10);
-        chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
-    }
-
     let mut scratch = {
         let loc = Loc { x: -80, y: 80 };
         Scratch::new(loc, scratch_size).inflate(&mut chunks, &components)
     };
+
+    {
+        let loc = Loc { x: 20, y: 0 };
+        let entity = Entity::new();
+        components.new_brain_component(entity, Brain::Dood);
+        components.new_render_component(entity, Pix::Dood, [1.0, 1.0, 1.0]);
+        components.new_position_component(entity, loc);
+        components.new_hunger_component(entity, 100 as u16, 1 as u8);
+        components.new_fov_component(entity, scratch_size, 10);
+        scratch.insert_entity(entity);
+    }
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
     window.set_ups(config::UPDATES_PER_SECOND);
@@ -202,28 +199,20 @@ fn main() {
             match input.press(button) {
                 Output::SpawnFood(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
-                    // TODO some sort of "blueprint"
                     let entity = Entity::new();
-                    let color = [0.2313725, 0.3254902, 0.1372549];
-                    components.new_render_component(entity, Pix::Food, color);
+                    components.new_render_component(entity, Pix::Food, [0.2313725, 0.3254902, 0.1372549]);
                     components.new_position_component(entity, loc);
                     components.new_food_component(entity, Food::Meat, 100.0);
-                    // TODO at the very least don't do this to both chunk and scratch
-                    chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
+                    scratch.insert_entity(entity);
                 },
                 Output::SpawnWall(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
-                    let ref mut chunk = chunks.get_chunk_mut(&WorldCoord::from_loc(&loc).get_chunk_loc());
-                    // TODO some sort of "blueprint"
                     let entity = Entity::new();
-                    let color = [1.0, 1.0, 1.0];
-                    components.new_render_component(entity, Pix::Wall, color);
+                    components.new_render_component(entity, Pix::Wall, [1.0, 1.0, 1.0]);
                     components.new_position_component(entity, loc);
                     components.new_opaque_component(entity);
                     components.new_impassable_component(entity);
-                    // TODO at the very least don't do this to both chunk and scratch
-                    chunk.insert_entity(entity); // maybe chunks.add_entity_to_chunk?
+                    scratch.insert_entity(entity);
                 }, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir) => {
                     camera.pan(dir);

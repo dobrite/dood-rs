@@ -9,7 +9,6 @@ use terrain::Terrain;
 pub struct Chunk {
     size: Size,
     terrain: Vec<Terrain>,
-    entities: Vec<Entity>,
 }
 
 impl Chunk {
@@ -22,20 +21,10 @@ impl Chunk {
             }
         }
 
-        Chunk { size: size, terrain: terrain, entities: vec![] }
-    }
-
-    // TODO terrible hack - inflate should pull from denormalized_hash_map
-    // or some similar rangable data structure
-    pub fn insert_entity(&mut self, entity: Entity) {
-        self.entities.push(entity);
+        Chunk { size: size, terrain: terrain }
     }
 
     pub fn get_terrain(&self) -> &Vec<Terrain> {
         &self.terrain
-    }
-
-    pub fn get_entities(&self) -> &Vec<Entity> {
-        &self.entities
     }
 }

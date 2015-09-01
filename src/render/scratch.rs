@@ -75,6 +75,10 @@ impl Scratch {
         &mut self.flags
     }
 
+    pub fn insert_entity(&mut self, entity: Entity) {
+        self.entities.push(entity);
+    }
+
     pub fn clear_fov(&mut self) {
         for flag in self.flags.iter_mut() {
             flag.remove(IN_FOV);
