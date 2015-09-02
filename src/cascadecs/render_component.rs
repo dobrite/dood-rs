@@ -1,5 +1,9 @@
 
 use render::Vertex;
+
+use config;
+
+use loc::Loc;
 use pixset::{Pix, Pixset};
 
 pub struct RenderComponent {
@@ -12,7 +16,10 @@ impl RenderComponent {
         RenderComponent { pix: pix, color: color }
     }
 
-    pub fn render(&self, x: f32, y: f32, vertex_data: &mut Vec<Vertex>, tiles: &Pixset) {
+    pub fn render(&self, loc: Loc, vertex_data: &mut Vec<Vertex>, tiles: &Pixset) {
+        let x = (loc.x * config::SQUARE_SIZE) as f32;
+        let y = (loc.y * config::SQUARE_SIZE) as f32;
+
         vertex_data.push(Vertex {
             vertex_position: [0.0, 0.0],
             tex_coords: tiles.get(&self.pix)[0],

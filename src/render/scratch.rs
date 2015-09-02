@@ -4,8 +4,6 @@ use cascadecs::components::Components;
 use cascadecs::position_component::PositionComponent;
 use cascadecs::render_component::RenderComponent;
 
-use config;
-
 use super::flags::{Flags, NONE, HAS_ENTITY, IN_FOV, TRANSPARENT, PASSABLE};
 use super::vertex::Vertex;
 
@@ -151,8 +149,9 @@ impl Scratch {
                   camera_dim: Size,
                   tiles: &Pixset,
                   components: &Components)
-                  -> (Vec<Vertex>, &Vec<u32>) {
-        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4);
+                  -> (Vec<Vertex>, &[u32]) {
+        // TODO get rid of the assumption on camera dim ratios, i.e. `* 2`
+        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4 + self.entities.len() * 4);
 
         let start = ((self.loc.y - camera_loc.y) *
                      self.size.width + camera_loc.x - self.loc.x) as usize;
@@ -167,11 +166,10 @@ impl Scratch {
             };
             let row = camera_row / 2;
             for (col, terrain) in row_terrain.iter().enumerate() {
-                let x = ((camera_loc.x + col as i32) * config::SQUARE_SIZE);
-                let y = ((camera_loc.y - row as i32) * config::SQUARE_SIZE);
                 let offset = camera_row * camera_dim.width as usize + col + start;
                 if self.flags[offset].contains(IN_FOV) {
-                    terrain.render(x as f32, y as f32, &mut vertex_data, tiles);
+                    let loc = Loc { x: camera_loc.x + col as i32, y: camera_loc.y - row as i32 };
+                    terrain.render(loc, &mut vertex_data, tiles);
                 }
             }
         }
@@ -184,14 +182,17 @@ impl Scratch {
                     continue;
                 };
                 if let Some(rc) = components.get_render_component(*entity) {
-                    let x = (loc.x * config::SQUARE_SIZE) as f32;
-                    let y = (loc.y * config::SQUARE_SIZE) as f32;
-                    rc.render(x, y, &mut vertex_data, tiles);
+                    let offset = (((camera_loc.y - loc.y) * camera_dim.width * 2) + (loc.x - camera_loc.x)) as usize + start;
+                    // so with it in an if it renders none and crashes
+                    if self.flags[offset].contains(IN_FOV) {
+                        rc.render(loc, &mut vertex_data, tiles);
+                    }
                 }
             }
         }
 
-        (vertex_data, &self.indices)
+        let len = vertex_data.len();
+        (vertex_data, &self.indices[..len * 4])
     }
 }
 

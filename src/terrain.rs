@@ -1,6 +1,10 @@
 
-use pixset::{Pix, Pixset};
 use render::Vertex;
+
+use config;
+
+use loc::Loc;
+use pixset::{Pix, Pixset};
 
 #[derive(Clone, Debug)]
 pub enum Terrain {
@@ -18,7 +22,9 @@ pub enum Terrain {
 //http://rustbyexample.com/custom_types/enum/c_like.html
 
 impl Terrain {
-    pub fn render(&self, x: f32, y: f32, vertex_data: &mut Vec<Vertex>, tiles: &Pixset) {
+    pub fn render(&self, loc: Loc, vertex_data: &mut Vec<Vertex>, tiles: &Pixset) {
+        let x = (loc.x * config::SQUARE_SIZE) as f32;
+        let y = (loc.y * config::SQUARE_SIZE) as f32;
         match self {
             &Terrain::Dirt => {
                 // bottom left
