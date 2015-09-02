@@ -112,7 +112,12 @@ impl Scratch {
             for x in (tl_loc.x..br_loc.x + 1) {
                 if let Some(entity) = components.get_position_component_by_value(Loc { x: x, y: y }) {
                     self.entities.push(*entity);
-                    let offset = self.loc_to_indices(Loc { x: x, y: y }).to_1d();
+
+                    let offset = match self.loc_to_indices(Loc { x: x, y: y }) {
+                        None => continue,
+                        Some(indices) => indices.to_1d(),
+                    };
+
                     self.flags[offset].insert(HAS_ENTITY);
                     if let Some(_) = components.get_opaque_component(*entity) {
                         self.flags[offset].remove(TRANSPARENT);
@@ -132,15 +137,17 @@ impl Scratch {
          Loc { x: self.loc.x + self.size.width - 1, y: self.loc.y - self.size.height + 1 })
     }
 
-    pub fn loc_to_indices(&self, loc: Loc) -> Indices {
+    pub fn loc_to_indices(&self, loc: Loc) -> Option<Indices> {
         let (tl, br) = self.to_loc_box();
-        assert!(loc.x >= tl.x);
-        assert!(loc.y <= tl.y);
-        assert!(loc.x <= br.x);
-        assert!(loc.y >= br.y);
-        let y_offset = self.loc.y - loc.y;
-        let x_offset = loc.x - self.loc.x;
-        Indices { row: y_offset, col: x_offset, width: self.size.width }
+
+        if loc.x >= tl.x || loc.y <= tl.y || loc.x <= br.x || loc.y >= br.y {
+            let y_offset = self.loc.y - loc.y;
+            let x_offset = loc.x - self.loc.x;
+            Some(Indices { row: y_offset, col: x_offset, width: self.size.width })
+        } else {
+            None
+        }
+
     }
 
     // TODO return &[Vertex] using vec as_slice?
