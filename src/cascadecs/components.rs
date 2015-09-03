@@ -77,7 +77,9 @@ impl Components {
                 }
                 Event::Hunger { entity, minus_hunger } => {
                     if let Some(hc) = self.hunger_components.get_mut(&entity) {
-                        hc.value -= minus_hunger as u16;
+                        if hc.value > 0 {
+                            hc.value -= minus_hunger as u16;
+                        }
                     }
                 },
                 Event::Movement { entity, dir } => {
