@@ -73,8 +73,23 @@ impl Scratch {
         &mut self.flags
     }
 
-    pub fn insert_entity(&mut self, entity: Entity) {
-        self.entities.push(entity);
+    pub fn insert_entity(&mut self, entity: Entity, components: &Components) {
+        if let Some(pc) = components.get_position_component(entity) {
+            self.entities.push(entity);
+
+            let offset = match self.loc_to_indices(pc.loc) {
+                None => return,
+                Some(indices) => indices.to_1d(),
+            };
+
+            self.flags[offset].insert(HAS_ENTITY);
+            if let Some(_) = components.get_opaque_component(entity) {
+                self.flags[offset].remove(TRANSPARENT);
+            }
+            if let Some(_) = components.get_impassable_component(entity) {
+                self.flags[offset].remove(PASSABLE);
+            }
+        }
     }
 
     pub fn clear_fov(&mut self) {
@@ -110,21 +125,10 @@ impl Scratch {
 
         for y in (br_loc.y..tl_loc.y + 1).rev() {
             for x in (tl_loc.x..br_loc.x + 1) {
+                // TODO dont like denormalized hash map
+                // maybe make a chunk component and entities belong to those?
                 if let Some(entity) = components.get_position_component_by_value(Loc { x: x, y: y }) {
-                    self.entities.push(*entity);
-
-                    let offset = match self.loc_to_indices(Loc { x: x, y: y }) {
-                        None => continue,
-                        Some(indices) => indices.to_1d(),
-                    };
-
-                    self.flags[offset].insert(HAS_ENTITY);
-                    if let Some(_) = components.get_opaque_component(*entity) {
-                        self.flags[offset].remove(TRANSPARENT);
-                    }
-                    if let Some(_) = components.get_impassable_component(*entity) {
-                        self.flags[offset].remove(PASSABLE);
-                    }
+                    self.insert_entity(*entity, components);
                 }
             }
         }

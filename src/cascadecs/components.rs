@@ -71,7 +71,7 @@ impl Components {
                         match scratch.loc_to_indices(loc) {
                             None => continue,
                             Some(indices) => fc.fov.compute_fov(
-                                indices.col, indices.row, fc.range, false, scratch.get_flags()),
+                                indices.col, indices.row, fc.range, true, scratch.get_flags()),
                         }
                     }
                 }

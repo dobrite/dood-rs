@@ -168,7 +168,7 @@ fn main() {
         components.new_position_component(entity, loc);
         components.new_hunger_component(entity, 100 as u16, 1 as u8);
         components.new_fov_component(entity, scratch_size, 10);
-        scratch.insert_entity(entity);
+        scratch.insert_entity(entity, &components);
     }
 
     window.set_max_fps(config::FRAMES_PER_SECOND);
@@ -203,7 +203,7 @@ fn main() {
                     components.new_render_component(entity, Pix::Food, [0.2313725, 0.3254902, 0.1372549]);
                     components.new_position_component(entity, loc);
                     components.new_food_component(entity, Food::Meat, 100.0);
-                    scratch.insert_entity(entity);
+                    scratch.insert_entity(entity, &components);
                 },
                 Output::SpawnWall(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
@@ -212,7 +212,7 @@ fn main() {
                     components.new_position_component(entity, loc);
                     components.new_opaque_component(entity);
                     components.new_impassable_component(entity);
-                    scratch.insert_entity(entity);
+                    scratch.insert_entity(entity, &components);
                 }, // chunks.spawn_wall(camera.to_game_loc(window_loc)),
                 Output::CameraMove(dir) => {
                     camera.pan(dir);
