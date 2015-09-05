@@ -4,7 +4,7 @@ use piston::input::GenericEvent;
 use std::sync::mpsc;
 
 use ai_behavior;
-use ai_behavior::{Action, If, Fail, Sequence, Wait, WaitForever, While};
+use ai_behavior::{Action, If, Sequence, WaitForever, While};
 
 use cascadecs::entity::Entity;
 use cascadecs::event::Event;
@@ -12,7 +12,6 @@ use cascadecs::components::Components;
 
 use action::Action;
 use dir;
-use path::PathTarget;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Brain {
@@ -37,13 +36,8 @@ impl Brain {
         }
     }
 
-    fn none(&self, entity: Entity, components: &Components, send: mpsc::Sender<Event>) {
-        //send.send(event::Event::None);
-    }
-
     fn dood<E: GenericEvent>(&self, e: &E, entity: Entity, components: &Components, send: mpsc::Sender<Event>) {
         use rand;
-        use rand::Rng;
         use rand::distributions::{IndependentSample, Range};
 
         if let Some(bc) = components.brain_components.get(&entity) {
@@ -63,6 +57,7 @@ impl Brain {
                         ((ai_behavior::Success, 0.0), event)
                     },
                     Action::Content => {
+                        // TODO switch these direct gets with get_X_components;
                         if let Some(hc) = components.hunger_components.get(&entity) {
                             if hc.value > 50 {
                                 ((ai_behavior::Success, action_args.dt), Event::None)
@@ -76,7 +71,7 @@ impl Brain {
                     Action::PathToFood => {
                         if let Some(pc) = components.path_components.get(&entity) {
                             match pc.path.last() {
-                                Some(loc) => ((ai_behavior::Running, 0.0), Event::PopPath { entity: entity }),
+                                Some(_) => ((ai_behavior::Running, 0.0), Event::PopPath { entity: entity }),
                                 None => ((ai_behavior::Success, action_args.dt), Event::None)
                             }
                         } else {
@@ -101,10 +96,10 @@ impl Brain {
                         }
                     },
                 };
-                send.send(event);
+                send.send(event).unwrap();
                 result
             });
-            send.send(Event::UpdateBrainState { entity: entity, state: state.clone() });
+            send.send(Event::UpdateBrainState { entity: entity, state: state.clone() }).unwrap();
         }
     }
 }

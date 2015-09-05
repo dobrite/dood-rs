@@ -2,9 +2,8 @@
 use cascadecs::entity::Entity;
 use cascadecs::components::Components;
 use cascadecs::position_component::PositionComponent;
-use cascadecs::render_component::RenderComponent;
 
-use super::flags::{Flags, NONE, HAS_ENTITY, IN_FOV, TRANSPARENT, PASSABLE};
+use super::flags::{Flags, HAS_ENTITY, IN_FOV, TRANSPARENT, PASSABLE};
 use super::vertex::Vertex;
 
 use chunk_loc::ChunkLoc;
@@ -15,7 +14,7 @@ use indices::Indices;
 use terrain::Terrain;
 use chunks::Chunks;
 use world_coord::WorldCoord;
-use pixset::{Pix, Pixset};
+use pixset::Pixset;
 
 // better Matrix set-up
 // http://www.reddit.com/r/rust/comments/3exten/typechecked_matrix_operations_in_rust/ctk0pb4

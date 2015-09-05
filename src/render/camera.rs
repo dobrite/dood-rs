@@ -24,10 +24,6 @@ impl Camera {
         }
     }
 
-    pub fn get_screen_size(&self) -> ScreenSize {
-        self.screen_size
-    }
-
     pub fn get_loc(&self) -> Loc {
         self.loc
     }
@@ -67,6 +63,7 @@ impl Camera {
         self
     }
 
+    #[allow(dead_code)]
     pub fn to_game_loc(&self, window_loc: WindowLoc) -> Loc {
         let x = window_loc.x as f32 / self.square_size() as f32;
         let y = window_loc.y as f32 / self.square_size() as f32;

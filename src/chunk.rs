@@ -1,8 +1,6 @@
 
 use rand;
 
-use cascadecs::entity::Entity;
-
 use size::Size;
 use terrain::Terrain;
 

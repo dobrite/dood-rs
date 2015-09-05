@@ -4,10 +4,7 @@ use std::sync::mpsc;
 use piston::input::GenericEvent;
 
 use cascadecs::event;
-use cascadecs::process;
 use cascadecs::components;
-
-use dir::Dir;
 
 pub struct BrainProcess;
 

@@ -26,18 +26,9 @@
 //  g.print();
 //}
 
-use std::cell::RefCell;
 use std::cmp;
-use std::fmt;
-use std::rc::Weak;
 
-use super::vertex::Vertex;
-use super::flags::{NONE, IN_FOV, TRANSPARENT, Flags};
-
-use size::Size;
-use pixset::Pixset;
-
-use chunks::Chunks;
+use super::flags::{IN_FOV, TRANSPARENT, Flags};
 
 // TODO maybe one day
 // http://stackoverflow.com/a/29531983 (accept mix of vecs and slices)
@@ -72,14 +63,6 @@ impl Fov {
             width: width as i32,
             height: height as i32,
         }
-    }
-
-    pub fn get_width(&self) -> i32 {
-        self.width
-    }
-
-    pub fn get_height(&self) -> i32 {
-        self.height
     }
 
     pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, mut flags: &mut Vec<Flags>) {

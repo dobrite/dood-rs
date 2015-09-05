@@ -38,6 +38,7 @@ impl DenormalizedHashMap {
         self.hm.get_mut(entity)
     }
 
+    #[allow(dead_code)]
     pub fn iter(&self) -> hash_map::Iter<Entity, PositionComponent> {
         self.hm.iter()
     }

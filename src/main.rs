@@ -1,4 +1,4 @@
-#![feature(vec_resize, rc_weak, clone_from_slice)]
+#![feature(vec_resize, clone_from_slice)]
 
 #[macro_use]
 extern crate bitflags;
@@ -177,7 +177,7 @@ fn main() {
     // maybe a less magic event loop?
     // http://jadpole.github.io/arcaders/arcaders-1-3/
     for e in window {
-        e.update(|dt| {
+        e.update(|_| {
             // TODO can I unify this again?
             let brain_delta = processes.update_brain(&e, &components);
             components.apply(brain_delta, &mut scratch, false);

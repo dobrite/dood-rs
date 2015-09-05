@@ -3,6 +3,7 @@ pub mod entity;
 pub mod components;
 pub mod processes;
 
+// TODO fix this like you did with render
 // TODO move these into app code -- they don't belong in the "lib"
 pub mod brain_component;
 pub mod food_component;

@@ -2,7 +2,6 @@
 use ai_behavior;
 
 use cascadecs::entity::Entity;
-use cascadecs::components::Components;
 
 use action::Action;
 use dir::Dir;

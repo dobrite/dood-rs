@@ -215,6 +215,10 @@ impl Components {
         self.render_components.get(&entity)
     }
 
+    pub fn get_brain_component(&self, entity: Entity) -> Option<&BrainComponent> {
+        self.brain_components.get(&entity)
+    }
+
     pub fn get_position_component(&self, entity: Entity) -> Option<&PositionComponent> {
         self.position_components.get(&entity)
     }
