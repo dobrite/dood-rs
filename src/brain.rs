@@ -19,27 +19,6 @@ pub enum Brain {
     Dood,
 }
 
-//let circling = Action(Action::Circling);
-//let give_up_or_attack = WhenAny(vec![
-//    Action(Action::PlayerFarAwayFromTarget(100.0)),
-//    Sequence(vec![
-//        Action(Action::PlayerWithinDistance(10.0)),
-//        Action(Action::AttackPlayer(0.1)),
-//    ])
-//]);
-//let attack_attempt =
-//    While(Box::new(give_up_or_attack), vec![
-//        Action(Action::FlyTowardPlayer)
-//    ]);
-//let behavior = While(Box::new(WaitForever), vec![Sequence(vec![
-//        While(Box::new(Wait(5.0)), vec![circling.clone()]),
-//        While(Box::new(Action(Action::PlayerWithinDistance(50.0))), vec![circling.clone()]),
-//    ]),
-//    While(Box::new(give_up_or_attack), vec![
-//        Action(Action::FlyTowardPlayer)
-//    ]);
-//]);
-
 impl Brain {
     pub fn new_state(brain: Brain) -> ai_behavior::State<Action, ()> {
         match brain {
