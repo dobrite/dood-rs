@@ -106,19 +106,19 @@ impl Components {
                     let mut hm = HashMap::new();
 
                     for entity in self.food_components.keys() {
-                        hm.insert(self.position_components.get(&entity).unwrap().loc, *entity);
+                        hm.insert(self.position_components.get(&entity).expect("unwrapped position component that was None").loc, *entity);
                     }
 
                     if let Some(goal) = get_closest(loc, hm.keys().collect::<Vec<_>>()) {
                         let path = path(scratch.get_grid(), loc, goal);
-                        let target = *hm.get(&goal).unwrap();
+                        let target = *hm.get(&goal).expect("unwrapped goal that was None");
                         self.new_path_component(entity, path, PathTarget::Entity(target));
-                        self.brain_components.get_mut(&entity).unwrap().target = Some(target);
+                        self.brain_components.get_mut(&entity).expect("unwrapped brain component that was None").target = Some(target);
                     }
                 },
                 Event::PopPath { entity } => {
                     let loc_opt = {
-                        let mut pc = self.path_components.get_mut(&entity).unwrap();
+                        let mut pc = self.path_components.get_mut(&entity).expect("unwrapped path component that was None");
                         pc.path.pop()
                     };
 
@@ -160,9 +160,8 @@ impl Components {
 
                     if done {
                         self.remove_entity(target);
-                        match self.brain_components.get_mut(&entity) {
-                            Some(bc) => bc.target = None,
-                            _ => unreachable!(),
+                        if let Some(bc) = self.brain_components.get_mut(&entity) {
+                            bc.target = None;
                         };
                     };
                 },

@@ -65,7 +65,7 @@ impl Pixset {
     }
 
     pub fn get(&self, pix: &Pix) -> [[f32; 2]; 4] {
-        *self.tiles.get(pix).unwrap()
+        *self.tiles.get(pix).expect("tile did not contain that pix")
     }
 }
 
