@@ -1,5 +1,5 @@
 
-use std::collections::HashMap;
+use std::collections::{hash_map, HashMap};
 
 use render::Scratch;
 
@@ -241,6 +241,22 @@ impl Components {
 
     pub fn get_opaque_component(&self, entity: Entity) -> Option<&OpaqueComponent> {
         self.opaque_components.get(&entity)
+    }
+
+    pub fn get_path_component(&self, entity: Entity) -> Option<&PathComponent> {
+        self.path_components.get(&entity)
+    }
+
+    pub fn get_food_component(&self, entity: Entity) -> Option<&FoodComponent> {
+        self.food_components.get(&entity)
+    }
+
+    pub fn brain_iter(&self) -> hash_map::Iter<Entity, BrainComponent> {
+        self.brain_components.iter()
+    }
+
+    pub fn hunger_iter(&self) -> hash_map::Iter<Entity, HungerComponent> {
+        self.hunger_components.iter()
     }
 
     pub fn remove_entity(&mut self, entity: Entity) {

@@ -40,7 +40,7 @@ impl Brain {
         use rand;
         use rand::distributions::{IndependentSample, Range};
 
-        if let Some(bc) = components.brain_components.get(&entity) {
+        if let Some(bc) = components.get_brain_component(entity) {
             let mut state = bc.state.clone(); // TODO dumb
             state.event(e, &mut |action_args| {
                 if action_args.dt == 0.0 { return (ai_behavior::Running, 0.0) };
@@ -58,7 +58,7 @@ impl Brain {
                     },
                     Action::Content => {
                         // TODO switch these direct gets with get_X_components;
-                        if let Some(hc) = components.hunger_components.get(&entity) {
+                        if let Some(hc) = components.get_hunger_component(entity) {
                             if hc.value > 50 {
                                 ((ai_behavior::Success, action_args.dt), Event::None)
                             } else {
@@ -69,7 +69,7 @@ impl Brain {
                         }
                     },
                     Action::PathToFood => {
-                        if let Some(pc) = components.path_components.get(&entity) {
+                        if let Some(pc) = components.get_path_component(entity) {
                             match pc.path.last() {
                                 Some(_) => ((ai_behavior::Running, 0.0), Event::PopPath { entity: entity }),
                                 None => ((ai_behavior::Success, action_args.dt), Event::None)
@@ -79,11 +79,11 @@ impl Brain {
                         }
                     },
                     Action::EatFood => {
-                        match components.brain_components.get(&entity) {
+                        match components.get_brain_component(entity) {
                             Some(bc) => {
                                 match bc.target {
                                     None => ((ai_behavior::Success, 0.0), Event::None),
-                                    Some(target) => match components.food_components.get(&target) {
+                                    Some(target) => match components.get_food_component(target) {
                                         None => ((ai_behavior::Success, 0.0), Event::None),
                                         Some(_) => {
                                             let event = Event::EatFood { entity: entity, target: target };
