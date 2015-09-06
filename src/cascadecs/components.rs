@@ -57,14 +57,16 @@ impl Components {
     }
 
     pub fn apply(&mut self, events: Vec<Event>, mut scratch: &mut Scratch, clear: bool) {
-        if clear { scratch.clear_fov(); } // TODO soo gross
+        if clear {
+            scratch.clear_fov();
+        } // TODO soo gross
 
         for event in events.into_iter() {
             match event {
                 Event::ComputeFov { entity } => {
                     let loc = match self.position_components.get(&entity) {
                         None => return,
-                        Some(pc) => pc.loc
+                        Some(pc) => pc.loc,
                     };
 
                     if let Some(fc) = self.fov_components.get_mut(&entity) {
@@ -81,44 +83,57 @@ impl Components {
                             hc.value -= minus_hunger as u16;
                         }
                     }
-                },
+                }
                 Event::Movement { entity, dir } => {
                     if let Some(pc) = self.position_components.get_mut(&entity) {
                         match dir {
-                            Dir::Down  => { pc.loc.y -= 1 },
-                            Dir::Up    => { pc.loc.y += 1 },
-                            Dir::Left  => { pc.loc.x -= 1 },
-                            Dir::Right => { pc.loc.x += 1 },
+                            Dir::Down => {
+                                pc.loc.y -= 1
+                            }
+                            Dir::Up => {
+                                pc.loc.y += 1
+                            }
+                            Dir::Left => {
+                                pc.loc.x -= 1
+                            }
+                            Dir::Right => {
+                                pc.loc.x += 1
+                            }
                         }
                     }
-                },
+                }
                 Event::UpdateBrainState { entity, state } => {
                     if let Some(bc) = self.brain_components.get_mut(&entity) {
                         bc.state = state
                     }
-                },
+                }
                 Event::PathToFood { entity } => {
                     let loc = match self.position_components.get(&entity) {
                         None => return,
-                        Some(pc) => pc.loc
+                        Some(pc) => pc.loc,
                     };
 
                     let mut hm = HashMap::new();
 
                     for entity in self.food_components.keys() {
-                        hm.insert(self.position_components.get(&entity).expect("unwrapped position component that was None").loc, *entity);
+                        hm.insert(self.position_components.get(&entity)
+                                  .expect("unwrapped position component that was None")
+                                  .loc, *entity);
                     }
 
                     if let Some(goal) = get_closest(loc, hm.keys().collect::<Vec<_>>()) {
                         let path = path(scratch.get_grid(), loc, goal);
                         let target = *hm.get(&goal).expect("unwrapped goal that was None");
                         self.new_path_component(entity, path, PathTarget::Entity(target));
-                        self.brain_components.get_mut(&entity).expect("unwrapped brain component that was None").target = Some(target);
+                        self.brain_components.get_mut(&entity)
+                            .expect("unwrapped brain component that was None")
+                            .target = Some(target);
                     }
-                },
+                }
                 Event::PopPath { entity } => {
                     let loc_opt = {
-                        let mut pc = self.path_components.get_mut(&entity).expect("unwrapped path component that was None");
+                        let mut pc = self.path_components.get_mut(&entity)
+                            .expect("unwrapped path component that was None");
                         pc.path.pop()
                     };
 
@@ -130,7 +145,7 @@ impl Components {
                         self.path_components.remove(&entity);
                         return
                     };
-                },
+                }
                 Event::EatFood { entity, target } => {
                     let dood_loc = match self.position_components.get_mut(&entity) {
                         None => return,
@@ -155,7 +170,7 @@ impl Components {
 
                     match self.hunger_components.get_mut(&entity) {
                         None => return,
-                        Some(hc) => hc.value += ate as u16
+                        Some(hc) => hc.value += ate as u16,
                     }
 
                     if done {
@@ -164,8 +179,8 @@ impl Components {
                             bc.target = None;
                         };
                     };
-                },
-                Event::None => {},
+                }
+                Event::None => {}
             }
         }
     }

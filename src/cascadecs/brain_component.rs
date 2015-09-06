@@ -28,14 +28,14 @@ impl fmt::Debug for BrainComponent {
 
 impl BrainComponent {
     pub fn new(brain: Brain) -> Self {
-        BrainComponent {
-            kind: brain,
-            target: None,
-            state: Brain::new_state(brain),
-        }
+        BrainComponent { kind: brain, target: None, state: Brain::new_state(brain) }
     }
 
-    pub fn update<E: input::GenericEvent>(&self, e: &E, entity: Entity, components: &Components, send: mpsc::Sender<Event>) {
+    pub fn update<E: input::GenericEvent>(&self,
+                                          e: &E,
+                                          entity: Entity,
+                                          components: &Components,
+                                          send: mpsc::Sender<Event>) {
         self.kind.update(e, entity, components, send)
     }
 }

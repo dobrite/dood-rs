@@ -35,22 +35,22 @@ impl Input{
         match button {
             Button::Keyboard(key) => {
                 match key {
-                    Key::Up    => Output::CameraMove(Dir::Up),
-                    Key::Down  => Output::CameraMove(Dir::Down),
+                    Key::Up => Output::CameraMove(Dir::Up),
+                    Key::Down => Output::CameraMove(Dir::Down),
                     Key::Right => Output::CameraMove(Dir::Right),
-                    Key::Left  => Output::CameraMove(Dir::Left),
-                    _ => Output::Nothing
+                    Key::Left => Output::CameraMove(Dir::Left),
+                    _ => Output::Nothing,
                 }
-            },
-            Button::Mouse(MouseButton::Left)  => {
-                self.mouse_left  = state;
+            }
+            Button::Mouse(MouseButton::Left) => {
+                self.mouse_left = state;
                 Output::SpawnFood(self.mouse_loc.clone())
-            },
+            }
             Button::Mouse(MouseButton::Right) => {
                 self.mouse_right = state;
                 Output::SpawnWall(self.mouse_loc.clone())
-            },
-            _ => Output::Nothing
+            }
+            _ => Output::Nothing,
         }
     }
 

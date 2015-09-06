@@ -144,10 +144,7 @@ fn main() {
     let pixset = Pixset::new(config::TOTAL_TILES);
     let clear_data = gfx::ClearData { color: [0.0, 0.0, 0.0, 1.0], depth: 1.0, stencil: 0 };
 
-    let mut chunks = Chunks::new(Size {
-            width: config::CHUNK_WIDTH,
-            height: config::CHUNK_HEIGHT,
-        });
+    let mut chunks = Chunks::new(Size { width: config::CHUNK_WIDTH, height: config::CHUNK_HEIGHT });
     let mut components = Components::new();
     let mut input = Input::new();
     let mut camera = Camera::new(screen_size, Loc { x: -32, y: 16 }, config::SQUARE_SIZE);
@@ -200,7 +197,8 @@ fn main() {
                 Output::SpawnFood(window_loc) => {
                     let loc = camera.to_game_loc(window_loc);
                     let entity = Entity::new();
-                    components.new_render_component(entity, Pix::Food, [0.2313725, 0.3254902, 0.1372549]);
+                    let color = [0.2313725, 0.3254902, 0.1372549];
+                    components.new_render_component(entity, Pix::Food, color);
                     components.new_position_component(entity, loc);
                     components.new_food_component(entity, Food::Meat, 100.0);
                     scratch.insert_entity(entity, &components);
@@ -226,7 +224,8 @@ fn main() {
                         let loc = WorldCoord::from_chunk_loc(&wc).to_loc();
                         // TODO dont hardcode this
                         let scratch_dim = Loc { x: 48, y: -64 };
-                        scratch = Scratch::new(loc - scratch_dim, scratch_size).inflate(&mut chunks, &components);
+                        scratch = Scratch::new(loc - scratch_dim, scratch_size)
+                            .inflate(&mut chunks, &components);
                     }
                 },
                 Output::Nothing => {}

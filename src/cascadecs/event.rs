@@ -20,8 +20,17 @@ pub enum Event {
         entity: Entity,
         state: ai_behavior::State<Action, ()>,
     },
-    PathToFood { entity: Entity },
-    PopPath { entity: Entity },
-    EatFood { entity: Entity, target: Entity },
-    ComputeFov { entity: Entity },
+    PathToFood {
+        entity: Entity,
+    },
+    PopPath {
+        entity: Entity,
+    },
+    EatFood {
+        entity: Entity,
+        target: Entity,
+    },
+    ComputeFov {
+        entity: Entity,
+    },
 }

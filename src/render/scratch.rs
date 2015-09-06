@@ -126,7 +126,8 @@ impl Scratch {
             for x in (tl_loc.x..br_loc.x + 1) {
                 // TODO dont like denormalized hash map
                 // maybe make a chunk component and entities belong to those?
-                if let Some(entity) = components.get_position_component_by_value(Loc { x: x, y: y }) {
+                let loc = Loc { x: x, y: y };
+                if let Some(entity) = components.get_position_component_by_value(loc) {
                     self.insert_entity(*entity, components);
                 }
             }
@@ -161,13 +162,15 @@ impl Scratch {
                   components: &Components)
                   -> (Vec<Vertex>, &[u32]) {
         // TODO get rid of the assumption on camera dim ratios, i.e. `* 2`
-        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4 + self.entities.len() * 4);
+        let mut vertex_data: Vec<Vertex> = Vec::with_capacity(self.terrain.len() * 4 +
+                                                              self.entities.len() * 4);
 
         let start = ((self.loc.y - camera_loc.y) *
                      self.size.width + camera_loc.x - self.loc.x) as usize;
         let end_camera_row = (camera_dim.height * 2) as usize;
 
-        for (camera_row, row_terrain) in self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
+        for (camera_row, row_terrain) in
+            self.terrain[start..].chunks(camera_dim.width as usize).enumerate() {
             if camera_row % 2 == 1 {
                 continue;
             };
@@ -188,11 +191,14 @@ impl Scratch {
             if let Some(&PositionComponent { loc }) = components.get_position_component(*entity) {
                 // TODO maybe implement loc.contains(loc) and loc.outside(loc)
                 if loc.x < camera_loc.x || loc.x > camera_loc.x + camera_dim.width ||
-                   loc.y > camera_loc.y || loc.y < camera_loc.y - camera_dim.height {
+                   loc.y > camera_loc.y ||
+                   loc.y < camera_loc.y - camera_dim.height {
                     continue;
                 };
                 if let Some(rc) = components.get_render_component(*entity) {
-                    let offset = (((camera_loc.y - loc.y) * camera_dim.width * 2) + (loc.x - camera_loc.x)) as usize + start;
+                    let offset = (((camera_loc.y - loc.y) * camera_dim.width * 2) +
+                                  (loc.x - camera_loc.x)) as usize +
+                                 start;
                     // so with it in an if it renders none and crashes
                     if self.flags[offset].contains(IN_FOV) {
                         rc.render(loc, &mut vertex_data, tiles);

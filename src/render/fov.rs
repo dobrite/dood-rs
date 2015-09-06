@@ -65,7 +65,12 @@ impl Fov {
         }
     }
 
-    pub fn compute_fov(&mut self, x: i32, y: i32, max_radius: i32, light_walls: bool, mut flags: &mut Vec<Flags>) {
+    pub fn compute_fov(&mut self,
+                       x: i32,
+                       y: i32,
+                       max_radius: i32,
+                       light_walls: bool,
+                       mut flags: &mut Vec<Flags>) {
         flags[(self.width * y + x) as usize].insert(IN_FOV);
         self.compute_quadrant_vertical(x, y, max_radius, light_walls, 1, 1, flags);
         self.compute_quadrant_horizontal(x, y, max_radius, light_walls, 1, 1, flags);
@@ -127,7 +132,8 @@ impl Fov {
                 let mut extended = false;
                 if last_line_obstacle_count > 0 && !self.is_in_fov(x, y, flags) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x, y - dy, flags) && x - dx >= 0 && x - dx < self.width &&
+                    if visible && !self.can_see(x, y - dy, flags) && x - dx >= 0 &&
+                       x - dx < self.width &&
                        !self.can_see(x - dx, y - dy, flags) {
                         visible = false;
                     } else {
@@ -146,7 +152,8 @@ impl Fov {
                                        end_slope <= self.end_angle[idx] {
                                         visible = false;
                                     } else {
-                                        self.start_angle[idx] = self.start_angle[idx].min(start_slope);
+                                        self.start_angle[idx] =
+                                            self.start_angle[idx].min(start_slope);
                                         self.end_angle[idx] = self.end_angle[idx].max(end_slope);
                                         extended = true;
                                     }
@@ -223,7 +230,8 @@ impl Fov {
                 let mut extended = false;
                 if last_line_obstacle_count > 0 && !self.is_in_fov(x, y, flags) {
                     let mut idx = 0;
-                    if visible && !self.can_see(x - dx, y, flags) && y - dy >= 0 && y - dy < self.height &&
+                    if visible && !self.can_see(x - dx, y, flags) && y - dy >= 0 &&
+                       y - dy < self.height &&
                        !self.can_see(x - dx, y - dy, flags) {
                         visible = false;
                     } else {
@@ -242,7 +250,8 @@ impl Fov {
                                        end_slope <= self.end_angle[idx] {
                                         visible = false;
                                     } else {
-                                        self.start_angle[idx] = self.start_angle[idx].min(start_slope);
+                                        self.start_angle[idx] =
+                                            self.start_angle[idx].min(start_slope);
                                         self.end_angle[idx] = self.end_angle[idx].max(end_slope);
                                         extended = true;
                                     }

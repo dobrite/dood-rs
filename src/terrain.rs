@@ -59,7 +59,7 @@ impl Terrain {
                     scale: 16.0,
                     color: [0.4784, 0.3215, 0.1882]
                 });
-            },
+            }
             &Terrain::Grass => {
                 // bottom left
                 vertex_data.push(Vertex {
@@ -93,7 +93,7 @@ impl Terrain {
                     scale: 16.0,
                     color: [0.0, 255.0, 0.0]
                 });
-            },
+            }
             &Terrain::None => {
                 // bottom left
                 vertex_data.push(Vertex {

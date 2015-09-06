@@ -31,8 +31,10 @@ pub fn path(grid: &Grid, start: Loc, goal: Loc) -> Path {
         };
         for next in grid.neighbors(current.loc, &blocked).iter() {
             // TODO implement costs for terrain
-            let new_cost: usize = cost_so_far.get(&current.loc).expect("get on current loc returned None") + 1;
-            if !cost_so_far.contains_key(next) || new_cost < *cost_so_far.get(next).expect("cost so far returned None") {
+            let new_cost: usize =
+                cost_so_far.get(&current.loc).expect("get on current loc returned None") + 1;
+            if !cost_so_far.contains_key(next) ||
+               new_cost < *cost_so_far.get(next).expect("cost so far returned None") {
                 cost_so_far.insert(*next, new_cost);
                 frontier.push(State { cost: new_cost, loc: *next });
                 came_from.insert(*next, current.loc);

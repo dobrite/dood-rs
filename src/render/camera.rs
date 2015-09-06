@@ -38,11 +38,11 @@ impl Camera {
 
     // TODO don't allocate a new one each frame
     pub fn as_mat(&self) -> [[f32; 4]; 4] {
-        let x_offset =  (self.loc.x      * self.square_size()) as f32;
+        let x_offset = (self.loc.x      * self.square_size()) as f32;
         let y_offset = ((self.loc.y + 1) * self.square_size()) as f32;
 
         let x_o = -(self.screen_size.width / 2.0) - x_offset;
-        let y_o =  (self.screen_size.height / 2.0) - y_offset;
+        let y_o = (self.screen_size.height / 2.0) - y_offset;
 
         [
             [1.0, 0.0, 0.0, 0.0],
@@ -55,9 +55,9 @@ impl Camera {
     pub fn pan(&mut self, dir: Dir) -> &mut Self {
         match dir {
             Dir::Right => self.loc.x += 1,
-            Dir::Left  => self.loc.x -= 1,
-            Dir::Up    => self.loc.y += 1,
-            Dir::Down  => self.loc.y -= 1,
+            Dir::Left => self.loc.x -= 1,
+            Dir::Up => self.loc.y += 1,
+            Dir::Down => self.loc.y -= 1,
         }
 
         self
