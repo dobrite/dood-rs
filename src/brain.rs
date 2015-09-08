@@ -9,8 +9,8 @@ use cascadecs::entity::Entity;
 use cascadecs::event::Event;
 use cascadecs::components::Components;
 
+use dir::Dir;
 use action::Action;
-use dir;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Brain {
@@ -56,10 +56,10 @@ impl Brain {
                 let (result, event) = match *action_args.action {
                     Action::Idle => {
                         let event = match Range::new(0, 11).ind_sample(&mut rand::thread_rng()) {
-                            0 => Event::Movement { entity: entity, dir: dir::Dir::Up },
-                            1 => Event::Movement { entity: entity, dir: dir::Dir::Down },
-                            2 => Event::Movement { entity: entity, dir: dir::Dir::Left },
-                            3 => Event::Movement { entity: entity, dir: dir::Dir::Right },
+                            0 => Event::Movement { entity: entity, dir: Dir::Up },
+                            1 => Event::Movement { entity: entity, dir: Dir::Down },
+                            2 => Event::Movement { entity: entity, dir: Dir::Left },
+                            3 => Event::Movement { entity: entity, dir: Dir::Right },
                             4...10 => Event::None,
                             _ => unreachable!()
                         };
