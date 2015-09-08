@@ -122,7 +122,7 @@ impl Components {
                     }
 
                     if let Some(goal) = get_closest(loc, hm.keys().collect::<Vec<_>>()) {
-                        let path = path(scratch.get_grid(), loc, goal);
+                        let path = path(scratch, loc, goal);
                         let target = *hm.get(&goal).expect("unwrapped goal that was None");
                         self.new_path_component(entity, path, PathTarget::Entity(target));
                         self.brain_components.get_mut(&entity)

@@ -27,7 +27,6 @@ mod config;
 mod dir;
 mod dist;
 mod food;
-mod grid;
 mod indices;
 mod input;
 mod loc;

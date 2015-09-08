@@ -9,7 +9,6 @@ use super::vertex::Vertex;
 use chunk_loc::ChunkLoc;
 use loc::Loc;
 use size::Size;
-use grid::Grid;
 use indices::Indices;
 use terrain::Terrain;
 use chunks::Chunks;
@@ -29,7 +28,6 @@ use pixset::Pixset;
 pub struct Scratch {
     loc: Loc,
     size: Size,
-    grid: Grid,
     terrain: Vec<Terrain>,
     flags: Vec<Flags>,
     // vertices: Vec<Vertex>,
@@ -45,9 +43,9 @@ impl Scratch {
         Scratch {
             loc: loc,
             size: size,
-            grid: Grid::new(size),
+            // TODO Arrays on nightlies implement Default
             terrain: vec![Terrain::None; len],
-            flags: vec![TRANSPARENT; len],
+            flags: vec![TRANSPARENT | PASSABLE; len],
             // vertices: vec![NONE; len * 4],
             entities: vec![],
             indices: indices(len * 4),
@@ -62,12 +60,7 @@ impl Scratch {
         self.size
     }
 
-    // TODO not sure if this is a good idea
-    pub fn get_grid(&self) -> &Grid {
-        &self.grid
-    }
-
-    // TODO not sure if this is a good idea
+    // TODO I don't really like this
     pub fn get_flags(&mut self) -> &mut Vec<Flags> {
         &mut self.flags
     }
@@ -209,6 +202,29 @@ impl Scratch {
 
         let len = vertex_data.len();
         (vertex_data, &self.indices[..len * 4])
+    }
+
+    pub fn neighbors(&self, loc: Loc) -> Vec<Loc> {
+        let Loc { x, y } = loc;
+
+        let results: Vec<Loc> = vec![
+            Loc { x: x + 1, y: y     },
+            Loc { x: x,     y: y - 1 },
+            Loc { x: x - 1, y: y     },
+            Loc { x: x,     y: y + 1 },
+        ];
+        //if (x + y) % 2 == 0 { results.reverse(); }
+        results
+            .into_iter()
+            .filter(|l| self.passable(l))
+            .collect()
+    }
+
+    fn passable(&self, loc: &Loc) -> bool {
+        match self.loc_to_indices(*loc) {
+            None => false,
+            Some(indices) => self.flags[indices.to_1d()].contains(PASSABLE),
+        }
     }
 }
 

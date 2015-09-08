@@ -2,7 +2,7 @@
 use std::collections::{HashMap, BinaryHeap};
 
 use loc::Loc;
-use grid::Grid;
+use render::Scratch;
 use state::State;
 use cascadecs::entity::Entity;
 
@@ -14,9 +14,7 @@ pub enum PathTarget {
 
 pub type Path = Vec<Loc>;
 
-pub fn path(grid: &Grid, start: Loc, goal: Loc) -> Path {
-    let blocked = vec![]; // TODO do something with this
-
+pub fn path(scratch: &Scratch, start: Loc, goal: Loc) -> Path {
     let mut frontier = BinaryHeap::new();
     frontier.push(State { cost: 0, loc: start });
     let mut came_from = HashMap::new();
@@ -29,7 +27,7 @@ pub fn path(grid: &Grid, start: Loc, goal: Loc) -> Path {
         if current.loc == goal {
             break;
         };
-        for next in grid.neighbors(current.loc, &blocked).iter() {
+        for next in scratch.neighbors(current.loc).iter() {
             // TODO implement costs for terrain
             let new_cost: usize =
                 cost_so_far.get(&current.loc).expect("get on current loc returned None") + 1;
