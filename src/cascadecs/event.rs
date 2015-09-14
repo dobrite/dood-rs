@@ -5,6 +5,7 @@ use cascadecs::entity::Entity;
 
 use action::Action;
 use dir::Dir;
+use path::PathTarget;
 
 pub enum Event {
     None,
@@ -20,8 +21,9 @@ pub enum Event {
         entity: Entity,
         state: ai_behavior::State<Action, ()>,
     },
-    PathToFood {
+    PathTo {
         entity: Entity,
+        path_target: PathTarget,
     },
     PopPath {
         entity: Entity,

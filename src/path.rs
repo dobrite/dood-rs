@@ -1,12 +1,16 @@
 
 use std::collections::{HashMap, BinaryHeap};
 
+use cascadecs::food_component::FoodComponent;
+
 use loc::Loc;
 use render::Scratch;
 use state::State;
 use cascadecs::entity::Entity;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum PathTarget {
+    Component(FoodComponent),
     Entity(Entity),
     Loc(Loc),
     None,

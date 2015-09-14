@@ -8,9 +8,13 @@ use ai_behavior::{Success, Running, Failure, Action, If, Sequence, WaitForever, 
 use cascadecs::entity::Entity;
 use cascadecs::event::Event;
 use cascadecs::components::Components;
+use cascadecs::food_component::FoodComponent;
 
 use dir::Dir;
+use loc::Loc;
+use food::Food;
 use action::Action;
+use path::PathTarget;
 
 #[derive(Clone, Copy, Debug)]
 pub enum Brain {
@@ -22,7 +26,8 @@ impl Brain {
         match brain {
             Brain::Dood => {
                 // abtract travelTo(X), eat(X)?
-                let find_food = Sequence(vec![Action(Action::PathToFood), Action(Action::EatFood)]);
+                let path_target = PathTarget::Component(FoodComponent::new(Food::Meat, 0.0));
+                let find_food = Sequence(vec![Action(Action::PathTo { path_target: path_target }), Action(Action::EatFood)]);
                 let dood_behavior = If(Box::new(Action(Action::Content)),
                                        Box::new(Action(Action::Idle)),
                                        Box::new(find_food));
@@ -66,25 +71,22 @@ impl Brain {
                         ((Success, 0.0), event)
                     },
                     Action::Content => {
-                        // TODO switch these direct gets with get_X_components;
                         if let Some(hc) = components.get_hunger_component(entity) {
-                            if hc.value > 50 {
-                                ((Success, action_args.dt), Event::None)
-                            } else {
-                                ((Failure, action_args.dt), Event::PathToFood { entity: entity })
-                            }
+                            ((if hc.value > 50 { Success } else { Failure }, action_args.dt), Event::None)
                         } else {
                             unreachable!()
                         }
                     },
-                    Action::PathToFood => {
+                    Action::PathTo { path_target } => {
+                        // TODO this could use a rethink. also ignores noms and food type
                         if let Some(pc) = components.get_path_component(entity) {
                             match pc.path.last() {
                                 Some(_) => ((Running, 0.0), Event::PopPath { entity: entity }),
                                 None => ((Success, action_args.dt), Event::None)
                             }
                         } else {
-                            ((Running, action_args.dt), Event::PathToFood { entity: entity })
+                            let evnt = Event::PathTo { entity: entity, path_target: path_target };
+                            ((Running, action_args.dt), evnt)
                         }
                     },
                     Action::EatFood => {

@@ -1,6 +1,7 @@
 
 use food::Food;
 
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub struct FoodComponent {
     pub kind: Food,
     pub noms: f32,

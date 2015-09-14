@@ -107,7 +107,7 @@ impl Components {
                         bc.state = state
                     }
                 }
-                Event::PathToFood { entity } => {
+                Event::PathTo { entity, path_target } => {
                     let loc = match self.position_components.get(&entity) {
                         None => return,
                         Some(pc) => pc.loc,

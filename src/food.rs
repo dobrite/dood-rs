@@ -1,5 +1,5 @@
 
-#[derive(Debug, PartialEq)]
+#[derive(Clone, Copy, Debug, PartialEq)]
 pub enum Food {
     Meat,
     Plant,

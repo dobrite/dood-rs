@@ -1,8 +1,10 @@
 
-#[derive(Clone, Debug, Eq, PartialEq)]
+use path::PathTarget;
+
+#[derive(Clone, Debug, PartialEq)]
 pub enum Action {
     Idle,
     Content,
-    PathToFood,
+    PathTo { path_target: PathTarget },
     EatFood,
 }
