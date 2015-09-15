@@ -108,27 +108,36 @@ impl Components {
                     }
                 }
                 Event::PathTo { entity, path_target } => {
-                    let loc = match self.position_components.get(&entity) {
-                        None => return,
-                        Some(pc) => pc.loc,
+                    match path_target {
+                        PathTarget::Component(fc) => {
+                            let searcher_loc = match self.position_components.get(&entity) {
+                                None => return,
+                                Some(pc) => pc.loc,
+                            };
+
+                            let mut hm = HashMap::new();
+
+                            // TODO this ignores fc above and just does food_components
+                            for entity in self.food_components.keys() {
+                                hm.insert(self.position_components.get(&entity)
+                                        .expect("unwrapped position component that was None")
+                                        .loc, *entity);
+                            }
+
+                            if let Some(goal) = get_closest(searcher_loc, hm.keys().collect::<Vec<_>>()) {
+                                let path = path(scratch, searcher_loc, goal);
+                                let target = *hm.get(&goal).expect("unwrapped goal that was None");
+                                self.new_path_component(entity, path, PathTarget::Entity(target));
+                                self.brain_components.get_mut(&entity)
+                                    .expect("unwrapped brain component that was None")
+                                    .target = Some(target);
+                            }
+                        },
+                        PathTarget::Entity(entity) => unimplemented!(),
+                        PathTarget::Loc(loc) => unimplemented!(),
+                        PathTarget::None => unimplemented!()
                     };
 
-                    let mut hm = HashMap::new();
-
-                    for entity in self.food_components.keys() {
-                        hm.insert(self.position_components.get(&entity)
-                                  .expect("unwrapped position component that was None")
-                                  .loc, *entity);
-                    }
-
-                    if let Some(goal) = get_closest(loc, hm.keys().collect::<Vec<_>>()) {
-                        let path = path(scratch, loc, goal);
-                        let target = *hm.get(&goal).expect("unwrapped goal that was None");
-                        self.new_path_component(entity, path, PathTarget::Entity(target));
-                        self.brain_components.get_mut(&entity)
-                            .expect("unwrapped brain component that was None")
-                            .target = Some(target);
-                    }
                 }
                 Event::PopPath { entity } => {
                     let loc_opt = {
