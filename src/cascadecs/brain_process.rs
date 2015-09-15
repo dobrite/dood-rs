@@ -4,6 +4,7 @@ use std::sync::mpsc;
 use piston::input::GenericEvent;
 
 use cascadecs::event::Event;
+use cascadecs::process::Process;
 use cascadecs::components::Components;
 
 pub struct BrainProcess;
@@ -14,8 +15,8 @@ impl BrainProcess {
     }
 }
 
-impl BrainProcess {
-    pub fn process_brain<E: GenericEvent>(&self, e: &E, components: &Components) -> Vec<Event> {
+impl Process for BrainProcess {
+    fn process<E: GenericEvent>(&self, e: &E, components: &Components) -> Vec<Event> {
         let (send, recv) = mpsc::channel();
         components.brain_iter().map(|(&entity, bc)|
             bc.update(e, entity, components, send.clone())

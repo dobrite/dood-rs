@@ -1,4 +1,4 @@
-#![feature(vec_resize, clone_from_slice)]
+#![feature(vec_resize, clone_from_slice, append)]
 
 #[macro_use]
 extern crate bitflags;
@@ -174,10 +174,7 @@ fn main() {
     // http://jadpole.github.io/arcaders/arcaders-1-3/
     for e in window {
         e.update(|_| {
-            // TODO can I unify this again?
-            let brain_delta = processes.update_brain(&e, &components);
-            components.apply(brain_delta, &mut scratch, false);
-            let delta = processes.update(&components);
+            let delta = processes.update(&e, &components);
             components.apply(delta, &mut scratch, true);
         });
 

@@ -10,25 +10,27 @@ use cascadecs::hunger_process::HungerProcess;
 use cascadecs::fov_process::FovProcess;
 
 pub struct Processes {
-    processes: Vec<Box<Process>>,
-    brain: Box<BrainProcess>,
+    hunger_process: HungerProcess,
+    fov_process: FovProcess,
+    brain_process: BrainProcess,
 }
 
 impl Processes {
     pub fn new() -> Processes {
-        let mut processes: Vec<Box<Process>> = vec![];
-        processes.push(Box::new(HungerProcess::new()));
-        processes.push(Box::new(FovProcess::new()));
-        Processes { processes: processes, brain: Box::new(BrainProcess::new()) }
+        Processes {
+            hunger_process: HungerProcess::new(),
+            fov_process: FovProcess::new(),
+            brain_process: BrainProcess::new(),
+        }
     }
 
-    pub fn update_brain<E: GenericEvent>(&self, e: &E, components: &Components) -> Vec<Event> {
-        self.brain.process_brain(e, components)
-    }
-
-    pub fn update(&self, components: &Components) -> Vec<Event> {
-        self.processes.iter().flat_map(|process|
-            process.process(components)
-        ).collect()
+    pub fn update<E: GenericEvent>(&self, e: &E, components: &Components) -> Vec<Event> {
+        // TODO obv room for improvement
+        let mut brain_events = BrainProcess.process(e, components);
+        let mut hunger_events = HungerProcess.process(e, components);
+        let mut fov_events = FovProcess.process(e, components);
+        brain_events.append(&mut hunger_events);
+        brain_events.append(&mut fov_events);
+        brain_events
     }
 }

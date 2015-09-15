@@ -14,7 +14,6 @@ use action::Action;
 use brain::Brain;
 
 pub struct BrainComponent {
-    // TODO rename to type or something
     pub kind: Brain,
     pub target: Option<Entity>,
     pub state: ai_behavior::State<Action, ()>,
