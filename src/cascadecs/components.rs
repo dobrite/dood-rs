@@ -288,5 +288,8 @@ impl Components {
         self.path_components.remove(&entity);
         self.food_components.remove(&entity);
         self.position_components.remove(&entity);
+        self.fov_components.remove(&entity);
+        self.impassable_components.remove(&entity);
+        self.opaque_components.remove(&entity);
     }
 }
