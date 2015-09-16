@@ -152,7 +152,6 @@ impl Components {
                         };
                     } else {
                         self.path_components.remove(&entity);
-                        return
                     };
                 }
                 Event::EatFood { entity, target } => {

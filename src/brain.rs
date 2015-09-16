@@ -82,7 +82,8 @@ impl Brain {
                         if let Some(pc) = components.get_path_component(entity) {
                             match pc.path.last() {
                                 Some(_) => ((Running, 0.0), Event::PopPath { entity: entity }),
-                                None => ((Success, action_args.dt), Event::None)
+                                // this removes path
+                                None => ((Success, action_args.dt), Event::PopPath { entity: entity })
                             }
                         } else {
                             let evnt = Event::PathTo { entity: entity, path_target: path_target };
