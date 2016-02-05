@@ -1,4 +1,4 @@
-#![feature(vec_resize, clone_from_slice, append)]
+#![feature(vec_resize, clone_from_slice, collections)]
 
 #[macro_use]
 extern crate bitflags;
